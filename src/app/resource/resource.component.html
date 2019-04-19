@@ -1,0 +1,235 @@
+<h1
+  *ngIf="isDataLoaded && !resource.user_may_view"
+  [hidden]="resource.user_may_view"
+  class="mat-h1"
+  color="warn"
+>
+  You do not have permission to view this Resource.
+</h1>
+<div
+  *ngIf="isDataLoaded"
+  [ngClass]="{'mat-typography': true, 'resource': true, 'private': resource.private}"
+  class="mat-typography resource"
+  [hidden]="!resource.user_may_view"
+  [@zoomTransition]="transitionState"
+>
+  <div
+    class="category-color"
+    [appCategoryColorBorder]="resource"
+  ></div>
+  <div
+    *ngIf="resource"
+    fxLayout="row"
+    fxLayout.xs="column"
+    fxLayoutWrap
+    fxLayoutGap="1em"
+    fxLayoutAlign="center"
+  >
+    <div
+      fxFlex.xl="75%"
+      fxFlex.lg="75%"
+      fxFlex.md="67%"
+      fxFlex.sm="50%"
+      fxFlex.xs="100%"
+    >
+      <h1
+        *ngIf="resource.website"
+        class="mat-display-2 resource-name"
+        (click)="goWebsite($event)"
+      ><a [href]="resource.website">{{resource.name}}</a></h1>
+      <h1
+        *ngIf="!resource.website"
+        class="mat-display-2"
+      >{{resource.name}}</h1>
+      <div
+        class="button-row"
+        *ngIf="resource.website || resource.user_may_edit"
+      >
+        <button
+          *ngIf="resource.website"
+          mat-flat-button
+          (click)="goWebsite($event)"
+          color="primary"
+          id="resource-website"
+        >
+          <mat-icon>exit_to_app</mat-icon>
+          Visit Website
+        </button>
+        <button
+          *ngIf="resource.user_may_edit"
+          mat-flat-button
+          (click)="openEdit($event)"
+          color="accent"
+          id="resource-edit"
+        >
+          <mat-icon>edit</mat-icon>
+          Edit Resource
+        </button>
+      </div>
+
+      <markdown [data]="resource.description"></markdown>
+      <div
+        class="container"
+        fxLayout="row wrap"
+        fxLayout.xs="column"
+        fxLayoutAlign="center center"
+        fxLayoutGap="10px"
+        fxLayoutGap.xs="0"
+      >
+        <a
+          (click)="goInstitution($event, resource.institution)"
+          class="available-institution"
+        >
+          <img
+            src="/assets/institutions/{{resource.institution.name}}.png"
+            matTooltip="{{resource.institution.name}}"
+          />
+        </a>
+      </div>
+    </div>
+    <mat-card
+      fxFlex.xl="25%"
+      fxFlex.lg="25%"
+      fxFlex.md="33%"
+      fxFlex.sm="50%"
+      fxFlex.xs="100%"
+    >
+      <app-approved-badge
+        [resource]="resource"
+        [user]="user"
+      ></app-approved-badge>
+      <mat-card-title>
+        Information
+      </mat-card-title>
+      <mat-card-content>
+        <mat-chip-list *ngIf="resource.user_may_edit">
+          <mat-chip
+            *ngIf="resource.private"
+            matTooltip="This Resource is only visible to users from {{resource.institution.name}}. Click here to change this setting."
+            (click)="togglePrivate(!resource.private)"
+            id="button-not-private"
+          >
+            <mat-icon style="margin-right: 8px;">visibility_off</mat-icon>
+            PRIVATE
+          </mat-chip>
+          <mat-chip
+            *ngIf="!resource.private"
+            matTooltip="This Resource will be visible to all iTHRIV users if approved. Click to restrict it to {{resource.institution.name}}."
+            (click)="togglePrivate(!resource.private)"
+            id="button-private"
+          >
+            <mat-icon style="margin-right: 8px;">visibility</mat-icon>
+            NOT PRIVATE
+          </mat-chip>
+        </mat-chip-list>
+        <mat-list dense>
+          <mat-list-item *ngIf="resource.type">
+            <h4 mat-line>Type</h4>
+            <a
+              mat-line
+              href="#"
+              (click)="goResourceType($event, resource.type)"
+            >{{resource.type.name}}</a>
+          </mat-list-item>
+          <mat-list-item *ngIf="resource.institution">
+            <h4 mat-line>Home Institution</h4>
+            <a
+              mat-line
+              href="#"
+              (click)="goInstitution($event, resource.institution)"
+            >{{resource.institution.name}}</a>
+          </mat-list-item>
+          <mat-list-item *ngIf="resource.availabilities">
+            <h4 mat-line>Institutions with access</h4>
+            <a
+              *ngFor="let institution of getAvailableInstitutions()"
+              mat-line
+              href="#"
+              (click)="goInstitution($event, institution)"
+            >{{institution.name}}</a>
+          </mat-list-item>
+          <mat-list-item *ngIf="resource.cost">
+            <h4 mat-line>Cost Type</h4>
+            <p mat-line>{{resource.cost}}</p>
+          </mat-list-item>
+          <mat-list-item *ngIf="resource.contact_notes || resource.contact_email || resource.contact_phone">
+            <h4 mat-line>Contact</h4>
+            <p
+              mat-line
+              *ngIf="resource.contact_notes"
+            >{{resource.contact_notes}}</p>
+            <p
+              mat-line
+              *ngIf="resource.contact_email"
+            >
+              <a href="mailto://{{resource.contact_email}}">{{resource.contact_email}}</a>
+            </p>
+            <p
+              mat-line
+              *ngIf="resource.contact_phone"
+            >{{resource.contact_phone}}</p>
+          </mat-list-item>
+          <mat-list-item *ngIf="categories">
+            <h4 mat-line>Categories</h4>
+            <div
+              class="category"
+              *ngFor="let rc of categories"
+              mat-line
+            >
+              <a
+                href="#"
+                (click)="goCategory($event, rc.category.parent.parent)"
+              >{{rc.category.parent.parent.name}}</a>
+              <mat-icon class="category-separator">chevron_right</mat-icon>
+              <a
+                href="
+                #"
+                (click)="goCategory($event, rc.category.parent)"
+                matTooltip="{{rc.category.parent.name}}"
+              >
+                <mat-icon
+                  class="category-icon"
+                  svgIcon="{{getCategoryIcon(rc.category)}}"
+                ></mat-icon>
+              </a>
+              <mat-icon class="category-separator">chevron_right</mat-icon>
+              <a
+                href="#"
+                (click)="goCategory($event, rc.category)"
+                matTooltip="{{rc.category.parent.parent.name}} > {{rc.category.parent.name}} > {{rc.category.name}}"
+              >{{rc.category.name}}</a>
+            </div>
+          </mat-list-item>
+          <mat-list-item *ngIf="resource.files && (resource.files.length > 0)">
+            <h4 mat-line>Attachments</h4>
+            <a
+              *ngFor="let file of resource.files"
+              mat-line
+              [href]="file.url"
+            >
+              <img [src]="fileIcon(file)" /> {{file.display_name || file.name || file.file_name}}
+            </a>
+          </mat-list-item>
+          <app-favorite-resource-button
+            [resource]="resource"
+            [user]="user"
+          ></app-favorite-resource-button>
+        </mat-list>
+      </mat-card-content>
+      <mat-card-actions>
+        <button
+          *ngIf="resource.website"
+          mat-button
+          (click)="goWebsite($event)"
+          id="resource-actions-website"
+        >VISIT WEBSITE</button>
+        <div fxFlex></div>
+        <app-edit-resource-button [resource]="resource"></app-edit-resource-button>
+      </mat-card-actions>
+
+    </mat-card>
+  </div>
+  <div *ngIf="!resource">
+    <mat-progress-spinner></mat-progress-spinner>
+  </div>
+</div>

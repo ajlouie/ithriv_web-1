@@ -1,0 +1,260 @@
+<div class="main">
+  <mat-sidenav-container>
+    <mat-sidenav
+      #sidenav
+      [mode]="mobileQuery.matches ? 'over' : 'side'"
+      [fixedInViewport]="mobileQuery.matches"
+      fixedTopGap="56"
+    >
+      <mat-nav-list>
+        <mat-list-item>
+          <button
+            mat-button
+            (click)="closeSidenav(); goHome($event)"
+          >
+            <mat-icon>home</mat-icon>
+            Home
+          </button>
+        </mat-list-item>
+        <mat-list-item *ngIf="session && (session.role === 'Admin')">
+          <button
+            mat-button
+            (click)="closeSidenav(); goUserAdmin($event)"
+            id="user-admin-button-mobile"
+          >
+            <mat-icon>person_add</mat-icon>
+            User Administration
+          </button>
+        </mat-list-item>
+        <mat-list-item *ngIf="!session">
+          <button
+            mat-button
+            (click)="closeSidenav(); goLogin($event)"
+            id="login-button-mobile"
+          >
+            <mat-icon>account_circle</mat-icon>
+            Log in
+          </button>
+        </mat-list-item>
+        <mat-list-item *ngIf="session">
+          <button
+            mat-button
+            (click)="closeSidenav(); goHome($event)"
+          >
+            <mat-icon>account_circle</mat-icon>
+            {{session.display_name}}
+          </button>
+        </mat-list-item>
+        <mat-list-item *ngIf="session">
+          <button
+            mat-button
+            (click)="closeSidenav(); goLogout($event)"
+            id="logout-button-mobile"
+          >
+            <mat-icon>exit_to_app</mat-icon>
+            Log Out
+          </button>
+        </mat-list-item>
+      </mat-nav-list>
+    </mat-sidenav>
+    <mat-sidenav-content>
+      <mat-toolbar
+        *ngIf="!hideHeader"
+        class="mat-toolbar-tools"
+      >
+        <mat-toolbar-row
+          class="menubar menubar-xs"
+          *ngIf="mobileQuery.matches"
+        >
+          <button
+            mat-icon-button
+            (tap)="toggleSidenav()"
+          >
+            <mat-icon>menu</mat-icon>
+          </button>
+          <a
+            mat-button
+            [routerLink]="['/']"
+            aria-label="Go Home"
+          >
+            <img
+              src="/assets/logo/ithriv-logomark.png"
+              alt="iTHRIV"
+              class="logomark"
+            />
+            iTHRIV Research Concierge Portal
+          </a>
+        </mat-toolbar-row>
+
+        <mat-toolbar-row
+          class="menubar"
+          [ngClass]="toolBarWarningClass()"
+          *ngIf="!mobileQuery.matches"
+        >
+          <span class="fill-remaining-space"></span>
+
+          <ng-container *ngIf="session">
+            <a
+              mat-button
+              *ngIf="session.role === 'Admin'"
+              id="user-admin-button"
+              [routerLink]="['/admin/users']"
+            >
+              <mat-icon>person_add</mat-icon>
+              User Administration
+            </a>
+            <a
+              mat-button
+              *ngIf="session"
+              [routerLink]="['/']"
+              id="user_{{session.id}}"
+              [ngClass]="{'user-name': true}"
+            >
+              <mat-icon>account_circle</mat-icon>
+              {{session.display_name}}
+
+              <strong *ngIf="toolBarWarningClass() === 'warning'">Your session will time out in
+                {{timeLeftInSession | timeLeft}}</strong>
+            </a>
+            <button
+              mat-button
+              *ngIf="session"
+              (click)="goLogout($event)"
+              id="logout-button"
+            >
+              <mat-icon>exit_to_app</mat-icon>
+              Log Out
+            </button>
+          </ng-container>
+          <ng-container *ngIf="!session">
+            <button
+              mat-button
+              *ngIf="!session && institution"
+              (click)="goLogin($event)"
+            >
+              {{ institution.name }} View
+            </button>
+            <button
+              mat-button
+              *ngIf="!session"
+              (click)="goLogin($event)"
+              id="login-button"
+            >
+              <mat-icon>account_circle</mat-icon>
+              Log in
+            </button>
+          </ng-container>
+        </mat-toolbar-row>
+
+        <mat-toolbar-row
+          fxLayout.gt-xs="row wrap"
+          fxLayout.xs="row"
+          fxLayoutAlign.gt-xs="space-around center"
+          fxLayoutAlign.xs="space-around center"
+          fxLayoutGap.gt-xs="20px"
+          fxLayoutGap.xs="10px"
+          class="logo"
+          [style.marginTop.px]="mobileQuery.matches ? 56 : 0"
+        >
+          <h1 *ngIf="!mobileQuery.matches">
+            <a
+              href="#"
+              [routerLink]="['/']"
+              aria-label="Go Home"
+              id="logomark-link"
+            >
+              <img
+                src="/assets/logo/ithriv-logomark.png"
+                alt="iTHRIV"
+                class="logomark"
+              />
+              Research Concierge Portal
+            </a>
+          </h1>
+          <span
+            *ngIf="!mobileQuery.matches"
+            class="fill-remaining-space"
+          ></span>
+          <button
+            id="search-button"
+            mat-stroked-button
+            [routerLink]="['/search']"
+            fxFlex.xs="calc(50% - 20px)"
+          >
+            <mat-icon>search</mat-icon>
+            Search
+          </button>
+          <button
+            mat-stroked-button
+            [routerLink]="['/help']"
+            fxFlex.xs="calc(50% - 20px)"
+          >
+            <mat-icon>help</mat-icon>
+            Help
+          </button>
+          <a
+            href="http://www.ithriv.org"
+            *ngIf="!mobileQuery.matches"
+            id="logo-horizontal-link"
+          >
+            <img
+              src="/assets/logo/ithriv-logo.png"
+              alt="iTHRIV"
+              class="logo-horizontal"
+            />
+          </a>
+        </mat-toolbar-row>
+
+        <mat-toolbar-row
+          fxLayout="row wrap"
+          fxLayoutAlign="space-around center"
+          fxLayoutGap="20px"
+          class="secondary-nav"
+        >
+          <h1 *ngIf="!mobileQuery.matches">{{pageTitle}}</h1>
+          <span
+            *ngIf="!mobileQuery.matches"
+            class="fill-remaining-space"
+          ></span>
+          <ng-container *ngIf="isGraphViewSupported()">
+            <div>Change View:</div>
+            <mat-button-toggle-group #group="matButtonToggleGroup">
+              <mat-button-toggle
+                (click)="viewMode(group.value)"
+                [value]="true"
+                matTooltip="View network graph of category relationships"
+                color="primary"
+                [checked]="isNetworkView"
+              >
+                <mat-icon>device_hub</mat-icon>
+              </mat-button-toggle>
+              <mat-button-toggle
+                (click)="viewMode(group.value)"
+                [value]="false"
+                matTooltip="View category/resource listing"
+                color="primary"
+                [checked]="!isNetworkView"
+              >
+                <mat-icon>view_list</mat-icon>
+              </mat-button-toggle>
+            </mat-button-toggle-group>
+          </ng-container>
+        </mat-toolbar-row>
+      </mat-toolbar>
+
+      <div
+        class="content"
+        [@fadeTransition]="getState(o)"
+        fxFlexFill
+      >
+        <router-outlet
+          #o="outlet"
+          fxFlexFill
+        ></router-outlet>
+      </div>
+
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+  <router-outlet></router-outlet>
+
+</div>

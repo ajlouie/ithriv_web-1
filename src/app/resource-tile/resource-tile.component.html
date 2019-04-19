@@ -1,0 +1,50 @@
+<mat-card
+  *ngIf="resource && resource.id"
+  [routerLink]="resourceRoute(resource)"
+  [ngClass]="{'resource': true, 'private': resource.private}"
+  [hidden]="!resource.user_may_view"
+>
+  <div
+    class="category-color"
+    [appCategoryColorBorder]="resource"
+  ></div>
+
+  <div class="icon-with-content">
+    <div>
+      <div
+        class="type-icon"
+        *ngIf="typeIconId(resource)"
+      >
+        <mat-icon
+          svgIcon="ithriv_{{typeIconId(resource)}}"
+          matTooltip="{{resource.type.name}}"
+          [routerLink]="typeRoute(resource.type)"
+        ></mat-icon>
+      </div>
+      <div
+        class="institution"
+        matTooltip="{{resource.institution.name}}"
+        [routerLink]="institutionRoute(resource.institution)"
+      >
+        <img src="/assets/institutions/{{resource.institution.name}}.png" />
+      </div>
+    </div>
+
+    <div>
+      <mat-card-header [routerLink]="resourceRoute(resource)">
+        <mat-card-title>{{resource.name}}</mat-card-title>
+        <app-approved-badge
+          [resource]="resource"
+          [user]="user"
+        ></app-approved-badge>
+        <app-favorite-resource-button
+          [resource]="resource"
+          [user]="user"
+        ></app-favorite-resource-button>
+      </mat-card-header>
+      <mat-card-content [routerLink]="resourceRoute(resource)">
+        <markdown [data]="truncateWords(resource.description, 20)"></markdown>
+      </mat-card-content>
+    </div>
+  </div>
+</mat-card>

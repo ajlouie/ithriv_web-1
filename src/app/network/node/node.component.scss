@@ -1,0 +1,34 @@
+// Import theming functions
+@import '~@angular/material/theming';
+@import '../../../ithriv_material';
+@include ithriv-theme($ithriv-theme);
+
+g, circle, rect, text, image, g > svg {
+  transition: $animationDuration ease-in-out all;
+}
+
+circle, rect {
+  stroke-width: 4px;
+}
+
+circle, rect, text, image, .sibling-node {
+  cursor: pointer;
+}
+
+#self-node {
+  cursor: default;
+
+  g, circle, rect, text, image, g > svg {
+    cursor: default;
+  }
+}
+
+tspan.category-name {
+  font-weight: 900;
+  font-size: 14px;
+}
+
+circle {
+  color: #fff;
+  padding: .5em;
+}

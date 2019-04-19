@@ -1,0 +1,243 @@
+<div
+  *ngFor="let c of prevCategories()"
+  class="mat-typography prev-category"
+  [ngStyle]="{'background-color': c.color}"
+  [routerLink]="categoryRoute(c)"
+>
+  <h1>{{c.name}}</h1>
+</div>
+
+<div
+  id="browse-top-level"
+  class="mat-typography"
+  *ngIf="isDataLoaded && !category"
+>
+  <div
+    class="header"
+    *ngFor="let rootCategory of allCategories"
+    [routerLink]="categoryRoute(rootCategory)"
+  >
+    <h1 class="mat-display-1">
+      <mat-icon
+        *ngIf="rootCategory.icon"
+        svgIcon="{{categoryIcon(rootCategory)}}"
+      ></mat-icon>
+      {{rootCategory.name}}
+      <app-move-category-button
+        *ngIf="showMoveButtons()"
+        [category]="rootCategory"
+        [user]="user"
+        [siblings]="allCategories"
+        (updatedCategory)="updateCategory(rootCategory)"
+        [direction]="'up'"
+        class="up"
+      ></app-move-category-button>
+      <app-move-category-button
+        *ngIf="showMoveButtons()"
+        [category]="rootCategory"
+        [user]="user"
+        [siblings]="allCategories"
+        (updatedCategory)="updateCategory(rootCategory)"
+        [direction]="'down'"
+        class="down"
+      ></app-move-category-button>
+      <app-edit-category-button
+        [category]="rootCategory"
+        [user]="user"
+        (updatedCategory)="updateCategory($event)"
+      ></app-edit-category-button>
+      <app-add-category-button
+        [category]="rootCategory"
+        [user]="user"
+        (updatedCategory)="addCategory($event)"
+      ></app-add-category-button>
+    </h1>
+    <markdown class="root-category-description">{{rootCategory.brief_description || dummyText.category}}</markdown>
+    <button mat-raised-button>Start {{gerunding(rootCategory.name)}}</button>
+    <div
+      class="bg-img"
+      [ngStyle]="{'background-image': headerImage(rootCategory)}"
+    ></div>
+    <div
+      class="gradient-overlay"
+      [appGradientBackground]='rootCategory.color'
+    ></div>
+  </div>
+</div>
+<div
+  id="browse"
+  class="mat-typography"
+  *ngIf="isDataLoaded && category"
+>
+  <div class="header">
+    <h1
+      class="mat-display-1"
+      id="category_{{category.id}}"
+    >
+      <mat-icon
+        *ngIf="category.icon"
+        svgIcon="{{categoryIcon(category)}}"
+      ></mat-icon>
+      {{category.name}}
+      <app-edit-category-button
+        [category]="category"
+        [user]="user"
+        (updatedCategory)="updateCategory($event)"
+      ></app-edit-category-button>
+      <app-add-category-button
+        [category]="category"
+        [user]="user"
+        (updatedCategory)="addCategory($event)"
+      ></app-add-category-button>
+      <app-move-category-button
+        *ngIf="showMoveButtons()"
+        [category]="category"
+        [user]="user"
+        [siblings]="getSiblings(category)"
+        (updatedCategory)="updateCategory(category)"
+        [direction]="'up'"
+        class="up"
+      ></app-move-category-button>
+      <app-move-category-button
+        *ngIf="showMoveButtons()"
+        [category]="category"
+        [user]="user"
+        [siblings]="getSiblings(category)"
+        (updatedCategory)="updateCategory(category)"
+        [direction]="'down'"
+        class="down"
+      ></app-move-category-button>
+    </h1>
+    <markdown class="category-description">{{category.description || dummyText.category}}</markdown>
+    <div
+      class="bg-img"
+      [ngStyle]="{'background-image': headerImage(category)}"
+    ></div>
+    <div
+      class="gradient-overlay"
+      [appGradientBackground]='category.color'
+    ></div>
+  </div>
+
+  <div>
+    <section
+      *ngFor="let c of category.children"
+      class="sub-category"
+      [ngStyle]="{'border-top-color': category.color}"
+      id="category_{{c.id}}"
+    >
+      <div>
+        <mat-icon
+          *ngIf="c.icon"
+          class="cat-icon-2"
+          svgIcon="{{categoryIcon(c)}}"
+          [ngStyle]="c.hover ? {'background-color': category.color, 'border-color': category.color} : {'color': category.color, 'border-color': category.color}"
+          (mouseover)="c.hover=true"
+          (mouseleave)="c.hover=false"
+          [routerLink]="categoryRoute(c)"
+        ></mat-icon>
+        <h2 id="category_{{c.id}}">{{c.name}}</h2>
+      </div>
+      <app-edit-category-button
+        [category]="c"
+        [user]="user"
+        [parent]="category"
+        (updatedCategory)="updateCategory($event)"
+      ></app-edit-category-button>
+      <app-add-category-button
+        [category]="c"
+        [user]="user"
+        (updatedCategory)="addCategory($event)"
+      ></app-add-category-button>
+      <app-move-category-button
+        *ngIf="showMoveButtons()"
+        [category]="c"
+        [user]="user"
+        [siblings]="category.children"
+        (updatedCategory)="updateCategory(c)"
+        [direction]="'up'"
+        class="up"
+      ></app-move-category-button>
+      <app-move-category-button
+        *ngIf="showMoveButtons()"
+        [category]="c"
+        [user]="user"
+        [siblings]="category.children"
+        (updatedCategory)="updateCategory(c)"
+        [direction]="'down'"
+        class="down"
+      ></app-move-category-button>
+      <markdown class="sub-category-description">{{c.description || dummyText.c}}</markdown>
+
+      <div
+        class="sub-categories container"
+        fxLayout="row wrap"
+        fxLayout.xs="column"
+        fxLayoutGap="0px grid"
+        fxLayoutAlign="center"
+      >
+        <mat-card
+          *ngFor="let sc of c.children"
+          class="sub-sub-category"
+          fxFlex="30%"
+          [routerLink]="categoryRoute(sc)"
+          id="category_{{sc.id}}"
+        >
+          <mat-card-header>
+            <div
+              mat-card-avatar
+              *ngIf="sc.icon"
+            >
+              <mat-icon
+                class="cat-icon-3"
+                svgIcon="{{categoryIcon(sc)}}"
+                [ngStyle]="{'background-color': sc.color}"
+              ></mat-icon>
+            </div>
+            <mat-card-title>{{sc.name}}</mat-card-title>
+            <mat-card-subtitle>
+              <markdown class="sub-sub-category-description">{{sc.brief_description || dummyText.sc}}</markdown>
+            </mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content></mat-card-content>
+          <mat-card-footer>
+            <p [ngStyle]="{'color': sc.color}">{{sc.resource_count || 0}} resources</p>
+          </mat-card-footer>
+          <app-edit-category-button
+            [category]="sc"
+            [parent]="c"
+            [user]="user"
+            (updatedCategory)="updateCategory($event)"
+          ></app-edit-category-button>
+          <app-move-category-button
+            *ngIf="showMoveButtons()"
+            [category]="sc"
+            [user]="user"
+            [siblings]="c.children"
+            (updatedCategory)="updateCategory(sc)"
+            [direction]="'up'"
+            class="up"
+          ></app-move-category-button>
+          <app-move-category-button
+            *ngIf="showMoveButtons()"
+            [category]="sc"
+            [user]="user"
+            [siblings]="c.children"
+            (updatedCategory)="updateCategory(sc)"
+            [direction]="'down'"
+            class="down"
+          ></app-move-category-button>
+        </mat-card>
+      </div>
+    </section>
+  </div>
+</div>
+
+<div
+  *ngFor="let c of nextCategories()"
+  class="mat-typography next-category"
+  [ngStyle]="{'background-color': c.color}"
+  [routerLink]="categoryRoute(c)"
+>
+  <h1>{{c.name}}</h1>
+</div>

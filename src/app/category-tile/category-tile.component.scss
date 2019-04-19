@@ -1,0 +1,75 @@
+// Import theming functions
+@import '~@angular/material/theming';
+// Import your custom theme
+@import '../../ithriv_material';
+// Load the UVA Theme
+@include ithriv-theme($ithriv-theme);
+
+$category-tile-size: 90px;
+$category-tile-padding: 10px;
+$category-tile-border-width: 4px;
+$category-tile-inner-border-width: 1px;
+
+.category-tile-root-title {
+  background-color: #FFEEEE;
+  border: $category-tile-border-width solid #FFEEEE;
+  width: $category-tile-size;
+  height: $category-tile-size;
+  margin-top: -(($category-tile-size / 2) + ($category-tile-padding));
+  z-index: 1;
+  text-align: center;
+  position: relative;
+  box-shadow: none;
+  cursor: pointer;
+
+  > a {
+    position: absolute;
+    top: $category-tile-padding;
+    left: $category-tile-border-width / 2;
+    right: $category-tile-border-width / 2;
+    bottom: $category-tile-border-width / 2;
+    padding-top: $category-tile-size / 2;
+    border-style: solid;
+    border-image: linear-gradient(to bottom, rgba(255, 0, 0, 0), rgba(0, 255, 255, 1));
+    border-image-slice: 1;
+    border-width: $category-tile-inner-border-width;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: black;
+    font-weight: 900;
+    box-shadow: none;
+  }
+}
+
+.category-tile {
+  border-radius: 50%;
+  border: solid $category-tile-border-width magenta;
+  height: $category-tile-size;
+  width: $category-tile-size;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3;
+
+  &.category-tile-root {
+    background-size: cover;
+    background-position: center center;
+    position: relative;
+    z-index: 3;
+    cursor: pointer;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      right: 0px;
+      bottom: 0px;
+      border: $category-tile-border-width solid white;
+      border-radius: 50%;
+      z-index: 2;
+    }
+  }
+}
