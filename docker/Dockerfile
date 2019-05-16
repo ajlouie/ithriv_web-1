@@ -1,4 +1,5 @@
 FROM node:11-alpine as node
+LABEL maintainer="rkc7h@virginia.edu"
 ENV APP_LOC /ithriv_web
 RUN apk update && apk upgrade && \
     apk add --no-cache bash git openssh python3 python2
@@ -11,6 +12,7 @@ COPY . .
 RUN npm run build_dev
 
 FROM nginx:alpine
+LABEL maintainer="rkc7h@virginia.edu"
 ENV APP_LOC /ithriv_web
 RUN rm -rf /usr/share/nginx/html/*
 COPY --from=node $APP_LOC/dist /usr/share/nginx/html
