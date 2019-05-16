@@ -1,4 +1,4 @@
-FROM node:11-alpine as node
+FROM node:12-alpine as node
 ENV APP_LOC /ithriv_web
 RUN apk update && apk upgrade && \
     apk add --no-cache bash git openssh python3 python2
