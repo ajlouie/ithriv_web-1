@@ -1,4 +1,4 @@
-FROM node:11-alpine as node
+FROM node:10-alpine as node
 LABEL maintainer="rkc7h@virginia.edu"
 ENV APP_LOC /ithriv_web
 RUN apk update && apk upgrade && \
