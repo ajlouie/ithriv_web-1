@@ -1,8 +1,7 @@
 branches:
   only:
   - master
-  - staging
-  - dev
+  - qa
 
 language: bash
 
@@ -16,11 +15,11 @@ before_install:
   - echo $DOCKER_PASSWORD | docker login -u "$DOCKER_USERNAME" --password-stdin 
 
 install:
+  - docker build -f docker/Dockerfile --no-cache -t ithriv/ithriv_web:"$TRAVIS_BRANCH" . || exit 1 ;
+  - docker push ithriv/ithriv_web:"$TRAVIS_BRANCH" || exit 1 ;
   - if [ "$TRAVIS_BRANCH" == "master" ]; then
-    docker build -f docker/Dockerfile --no-cache -t ithriv/ithriv_web:latest . || exit 1 ;
+    docker tag ithriv/ithriv_web:"$TRAVIS_BRANCH" ithriv/ithriv_web:latest || exit 1 ;
     docker push ithriv/ithriv_web:latest || exit 1 ;
-    docker tag ithriv/ithriv_web:latest ithriv/ithriv_web:"$TRAVIS_BRANCH" || exit 1 ;
-    docker push ithriv/ithriv_web:"$TRAVIS_BRANCH" || exit 1 ;
     fi
 
 
