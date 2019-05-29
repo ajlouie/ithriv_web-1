@@ -5,7 +5,8 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build_dev": "ng build --source-map",
+    "build_local": "ng build --source-map",
+    "build_dev": "ng build --configuration=dev --source-map",
     "build": "ng build --prod --source-map",
     "test": "ng test",
     "lint": "ng lint",

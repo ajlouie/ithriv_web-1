@@ -63,6 +63,23 @@
                   "with": "src/environments/environment.staging.ts"
                 }
               ]
+            },
+            "dev": {
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.dev.ts"
+                }
+              ]
             }
           }
         },
@@ -77,6 +94,9 @@
             },
             "staging": {
               "browserTarget": "frontend:build:staging"
+            },
+            "dev": {
+              "browserTarget": "frontend:build:dev"
             }
           }
         },
