@@ -17,4 +17,4 @@ ENV APP_LOC /ithriv_web
 RUN rm -rf /usr/share/nginx/html/*
 COPY --from=node $APP_LOC/dist /usr/share/nginx/html
 COPY ./nginx_app.conf /etc/nginx/conf.d/default.conf
-EXPOSE 5000
+EXPOSE 4200
