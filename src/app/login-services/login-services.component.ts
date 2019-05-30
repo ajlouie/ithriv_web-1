@@ -66,7 +66,7 @@ export class LoginServicesComponent implements OnInit {
   loadServices() {
     const services = [
       { id: null, color: 'orange', name: 'UVA', image: '/assets/institutions/UVA.png', url: this.loginUrl },
-      { id: null, color: 'navy', name: 'Carilion', image: '/assets/institutions/Carilion.png' },
+      { id: null, color: 'navy', name: 'Carilion', image: '/assets/institutions/Carilion.png', url: this.loginUrl },
       { id: null, color: 'purple', name: 'Virginia Tech', image: '/assets/institutions/Virginia Tech.png', url: this.loginUrl },
       { id: null, color: 'blue', name: 'Inova', image: '/assets/institutions/Inova.png' },
     ];
