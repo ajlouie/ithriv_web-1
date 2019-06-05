@@ -16,10 +16,10 @@ before_install:
 
 install:
   - if [ "$TRAVIS_BRANCH" == "master" ]; then
-    export BUILD_ENV=build_dev
+    export BUILD_ENV=build_dev || exit 1 ;
     fi
   - if [ "$TRAVIS_BRANCH" == "uat" ]; then
-    export BUILD_ENV=build_uat
+    export BUILD_ENV=build_uat || exit 1 ;
     fi
   - docker build --build-arg BUILD_ENV -f docker/Dockerfile --no-cache -t ithriv/ithriv_web:"$TRAVIS_BRANCH" . || exit 1 ;
   - docker push ithriv/ithriv_web:"$TRAVIS_BRANCH" || exit 1 ;
