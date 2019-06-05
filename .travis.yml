@@ -15,7 +15,6 @@ before_install:
   - echo $DOCKER_PASSWORD | docker login -u "$DOCKER_USERNAME" --password-stdin 
 
 install:
-  BUILD_ENV
   - if [ "$TRAVIS_BRANCH" == "master" ]; then
     export BUILD_ENV=build_dev
     fi
