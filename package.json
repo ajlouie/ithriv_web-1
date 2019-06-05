@@ -7,6 +7,8 @@
     "start": "ng serve",
     "build_local": "ng build --source-map",
     "build_dev": "ng build --configuration=dev --source-map",
+    "build_docker": "ng build --configuration=docker --source-map",
+    "build_uat": "ng build --prod --configuration=staging --source-map",
     "build": "ng build --prod --source-map",
     "test": "ng test",
     "lint": "ng lint",

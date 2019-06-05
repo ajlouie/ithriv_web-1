@@ -15,7 +15,14 @@ before_install:
   - echo $DOCKER_PASSWORD | docker login -u "$DOCKER_USERNAME" --password-stdin 
 
 install:
-  - docker build -f docker/Dockerfile --no-cache -t ithriv/ithriv_web:"$TRAVIS_BRANCH" . || exit 1 ;
+  BUILD_ENV
+  - if [ "$TRAVIS_BRANCH" == "master" ]; then
+    export BUILD_ENV=build_dev
+    fi
+  - if [ "$TRAVIS_BRANCH" == "uat" ]; then
+    export BUILD_ENV=build_uat
+    fi
+  - docker build --build-arg BUILD_ENV -f docker/Dockerfile --no-cache -t ithriv/ithriv_web:"$TRAVIS_BRANCH" . || exit 1 ;
   - docker push ithriv/ithriv_web:"$TRAVIS_BRANCH" || exit 1 ;
   - if [ "$TRAVIS_BRANCH" == "master" ]; then
     docker tag ithriv/ithriv_web:"$TRAVIS_BRANCH" ithriv/ithriv_web:latest || exit 1 ;

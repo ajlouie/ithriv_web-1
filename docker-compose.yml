@@ -8,8 +8,45 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: ithriv_web
-    ports:
-      - 4200:4200
+    # ports:
+    #   - 4200:4200
+    # environment:
+    #   - SERVICE_PORTS=4200
+    # deploy:
+    #   replicas: 5
+    #   update_config:
+    #     parallelism: 5
+    #     delay: 10s
+    #   restart_policy:
+    #     condition: on-failure
+    #     max_attempts: 3
+    #     window: 120s
     networks:
       - ithriv_network
+  # proxy:
+  #     image: haproxy
+  #     depends_on:
+  #       - ithriv_web
+  #     environment:
+  #       - BALANCE=leastconn
+  #     volumes:
+  #       - /var/run/docker.sock:/var/run/docker.sock
+  #       - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
+  #     ports:
+  #       - 80:80
+  #     networks:
+  #       - ithriv_network
+  #     deploy:
+  #       placement:
+  #         constraints: [node.role == manager]
 
+  apache_proxy:
+    image: diouxx/apache-proxy
+    container_name: apache_proxy
+    volumes:
+      - ./apache_proxy.conf:/opt/proxy-conf/apache_proxy.conf
+      - ./apache_proxy.conf:/etc/apache2/sites-available/000-default.conf
+    ports:
+      - 80:80
+    networks:
+      - ithriv_network

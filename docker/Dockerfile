@@ -1,4 +1,5 @@
 FROM node:11-alpine as node
+ARG BUILD_ENV
 LABEL maintainer="rkc7h@virginia.edu"
 ENV APP_LOC /ithriv_web
 RUN apk update && apk upgrade && \
@@ -9,7 +10,7 @@ RUN npm install -g @angular/cli
 RUN npm install
 RUN npm install source-map-explorer --save-dev
 COPY . .
-RUN npm run build_dev
+RUN npm run $BUILD_ENV
 
 FROM nginx:alpine
 LABEL maintainer="rkc7h@virginia.edu"
