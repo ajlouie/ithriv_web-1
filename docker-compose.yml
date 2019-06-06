@@ -1,4 +1,4 @@
-version: '3.5'
+version: '3.7'
 networks:
   ithriv_network:
     external: true
@@ -6,7 +6,9 @@ services:
   ithriv_web:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: docker/Dockerfile
+      args:
+        - BUILD_ENV=docker
     container_name: ithriv_web
     # ports:
     #   - 4200:4200
