@@ -1,7 +1,7 @@
 branches:
   only:
   - master
-  - qa
+  - uat
   - prod
 
 language: bash
