@@ -42,7 +42,7 @@
             (click)="closeSidenav(); goHome($event)"
           >
             <mat-icon>account_circle</mat-icon>
-            {{session.display_name}}
+            {{session.display_name}} ({{timeLeftInSession | timeLeft }})
           </button>
         </mat-list-item>
         <mat-list-item *ngIf="session">
@@ -111,10 +111,8 @@
               [ngClass]="{'user-name': true}"
             >
               <mat-icon>account_circle</mat-icon>
-              {{session.display_name}}
-
-              <strong *ngIf="toolBarWarningClass() === 'warning'">Your session will time out in
-                {{timeLeftInSession | timeLeft}}</strong>
+              {{session.display_name}}&nbsp;
+              ({{timeLeftInSession | timeLeft }})
             </a>
             <button
               mat-button
@@ -255,6 +253,6 @@
 
     </mat-sidenav-content>
   </mat-sidenav-container>
-  <router-outlet></router-outlet>
+
 
 </div>
