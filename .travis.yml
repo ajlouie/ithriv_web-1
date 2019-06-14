@@ -1,5 +1,6 @@
 branches:
   only:
+  - develop
   - master
   - uat
   - prod
@@ -16,7 +17,7 @@ before_install:
   - echo $DOCKER_PASSWORD | docker login -u "$DOCKER_USERNAME" --password-stdin 
 
 install:
-  - if [ "$TRAVIS_BRANCH" == "master" ]; then
+  - if [ "$TRAVIS_BRANCH" == "develop" ]; then
     export BUILD_ENV="dev" || exit 1 ;
     docker build --build-arg BUILD_ENV -f docker/Dockerfile --no-cache -t ithriv/ithriv_web:"$TRAVIS_BRANCH" . || exit 1 ;
     docker push ithriv/ithriv_web:"$TRAVIS_BRANCH" || exit 1 ;
@@ -28,8 +29,14 @@ install:
     docker push ithriv/ithriv_web:"$TRAVIS_BRANCH" || exit 1 ;
     aws sqs send-message --queue-url 'https://queue.amazonaws.com/474683445819/ithriv-updates' --message-body ithriv/ithriv_web:$TRAVIS_BRANCH || exit 1;
     fi
-  - if [ "$TRAVIS_BRANCH" == "prod" ]; then
+  - if [ "$TRAVIS_BRANCH" == "hotfix" ]; then
     export BUILD_ENV="$TRAVIS_BRANCH" || exit 1 ;
+    docker build --build-arg BUILD_ENV -f docker/Dockerfile --no-cache -t ithriv/ithriv_web:"$TRAVIS_BRANCH" . || exit 1 ;
+    docker push ithriv/ithriv_web:"$TRAVIS_BRANCH" || exit 1 ;
+    aws sqs send-message --queue-url 'https://queue.amazonaws.com/474683445819/ithriv-updates' --message-body ithriv/ithriv_web:$TRAVIS_BRANCH || exit 1;
+    fi
+  - if [ "$TRAVIS_BRANCH" == "master" ]; then
+    export BUILD_ENV="prod" || exit 1 ;
     docker build --build-arg BUILD_ENV -f docker/Dockerfile --no-cache -t ithriv/ithriv_web:"$TRAVIS_BRANCH" . || exit 1 ;
     docker push ithriv/ithriv_web:"$TRAVIS_BRANCH" || exit 1 ;
     aws sqs send-message --queue-url 'https://queue.amazonaws.com/474683445819/ithriv-updates' --message-body ithriv/ithriv_web:$TRAVIS_BRANCH || exit 1;
