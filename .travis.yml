@@ -17,13 +17,12 @@ before_install:
   - echo $DOCKER_PASSWORD | docker login -u "$DOCKER_USERNAME" --password-stdin 
 
 install:
+  - export BUILD_ENV="uat" || exit 1 ;
   - if [ "$TRAVIS_BRANCH" == "develop" ]; then
     export BUILD_ENV="dev" || exit 1 ;
     fi
   - if [ "$TRAVIS_BRANCH" == "master" ]; then
     export BUILD_ENV="prod" || exit 1 ;
-    else
-    export BUILD_ENV="uat" || exit 1 ;
     fi
   - if [ "$TRAVIS_BRANCH" == "master" ]; then
     export GIT_TAG=prod-1.0 || exit 1 ;
