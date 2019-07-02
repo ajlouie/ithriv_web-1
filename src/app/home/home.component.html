@@ -1,8 +1,15 @@
 <div
+  *ngIf="!user"
+  class="please-log-in"
+>
+  <app-login-services></app-login-services>
+</div>
+<div
   id="tiles"
   fxLayout="row wrap"
   fxLayoutGap="45px grid"
   fxLayoutAlign="center"
+  *ngIf="user"
 >
   <app-category-tile
     *ngFor="let category of categories"
@@ -11,12 +18,13 @@
   ></app-category-tile>
 </div>
 
-<h1 class="mat-h1 page-title">myTHRIV Workspace</h1>
+<h1 *ngIf="user" class="mat-h1 page-title">myTHRIV Workspace</h1>
 
 <mat-tab-group
   mat-stretch-tabs
   dynamicHeight
   backgroundColor="primary"
+  *ngIf="user"
 >
   <mat-tab label="My Favorite Resources">
     <div class="example-large-box mat-elevation-z4">

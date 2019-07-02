@@ -260,6 +260,19 @@ export class AppComponent implements OnInit, OnDestroy {
     return network;
   }
 
+  isNetworkOrBrowseview() {
+    const pathArray = this.location.path().split('/');
+    if (
+      pathArray &&
+      (pathArray.length > 1) &&
+      (pathArray[1] === 'network' || pathArray[1] === 'browse')
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   viewMode(isNetworkView: boolean) {
 
     // URL may have been modified via location.replaceState. Retrieve

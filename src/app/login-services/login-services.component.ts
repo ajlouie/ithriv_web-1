@@ -69,6 +69,7 @@ export class LoginServicesComponent implements OnInit {
       { id: null, color: 'navy', name: 'Carilion', image: '/assets/institutions/Carilion.png', url: this.loginUrl },
       { id: null, color: 'purple', name: 'Virginia Tech', image: '/assets/institutions/Virginia Tech.png', url: this.loginUrl },
       { id: null, color: 'blue', name: 'Inova', image: '/assets/institutions/Inova.png' },
+      { id: null, color: 'green', name: 'Public', image: ''  }
     ];
 
     this.api.getInstitutions().subscribe(institutions => {
