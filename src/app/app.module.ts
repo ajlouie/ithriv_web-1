@@ -102,6 +102,7 @@ import { LoadingComponent } from './loading/loading.component';
 import { IntervalService } from './shared/interval/interval.service';
 import { TimeLeftPipe } from './shared/filters/time-left.pipe';
 import { UpgradeBrowserComponent } from './upgrade-browser/upgrade-browser.component';
+import { EventListComponent } from './event-list/event-list.component';
 
 @NgModule({
   declarations: [
@@ -154,7 +155,8 @@ import { UpgradeBrowserComponent } from './upgrade-browser/upgrade-browser.compo
     TimedoutComponent,
     LoadingComponent,
     TimeLeftPipe,
-    UpgradeBrowserComponent
+    UpgradeBrowserComponent,
+    EventListComponent
   ],
   imports: [
     Angular2CsvModule,

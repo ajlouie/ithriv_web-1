@@ -267,9 +267,14 @@ export class ResourceApiService {
   }
 
   /** getResources */
-  getResources(): Observable<Resource[]> {
-    return this.httpClient.get<Resource[]>(this._apiUrl('resourcelist'))
-      .pipe(catchError(this.handleError));
+  getResources(type?: String): Observable<Resource[]> {
+    if (type) {
+      return this.httpClient.get<Resource[]>(`${this._apiUrl('resourcelist')}?type=${type}`)
+        .pipe(catchError(this.handleError));
+    } else {
+      return this.httpClient.get<Resource[]>(this._apiUrl('resourcelist'))
+        .pipe(catchError(this.handleError));
+    }
   }
 
   /** getResourceCategories */
@@ -495,7 +500,7 @@ export class ResourceApiService {
    * Request a Consult */
   sendConsultRequestEmail(user: User, request_category: string, request_text: string): Observable<any> {
     const request_data = { user_id: user.id, request_category: request_category, request_text: request_text };
-    return this.httpClient.post<any>(this._apiUrl('consult'), request_data)
+    return this.httpClient.post<any>(this._apiUrl('consult_request'), request_data)
       .pipe(catchError(this.handleError));
   }
 

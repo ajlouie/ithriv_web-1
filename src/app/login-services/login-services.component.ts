@@ -74,7 +74,14 @@ export class LoginServicesComponent implements OnInit {
 
     this.api.getInstitutions().subscribe(institutions => {
       institutions.forEach(i => services.forEach(s => {
-        if (i.name === s.name) {
+        if (i.name === s.name && i.name !== 'Public') {
+          s.id = i.id;
+          this.loginServices.push(new LoginService(s));
+        }
+      }));
+
+      institutions.forEach(i => services.forEach(s => {
+        if (i.name === s.name && i.name === 'Public') {
           s.id = i.id;
           this.loginServices.push(new LoginService(s));
         }
@@ -97,6 +104,8 @@ export class LoginServicesComponent implements OnInit {
 
     if (loginService.url) {
       window.location.href = loginService.url;
+    } else if (loginService.name === 'Public') {
+      this.router.navigate(['home'], { queryParams: { publicpage: true } });
     } else {
       this.router.navigate(['login'], { queryParams: { institutionId: institutionId } });
     }

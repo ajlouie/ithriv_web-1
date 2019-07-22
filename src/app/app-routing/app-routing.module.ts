@@ -59,6 +59,7 @@ const routes: Routes = [
   { path: 'resource/:resource', component: ResourceComponent, data: { title: 'Resource Details' } },
   { path: 'resource/:resource/edit', component: ResourceFormComponent, data: { title: 'Edit Resource' } },
   { path: 'resource/add/:category', component: ResourceFormComponent, data: { title: 'Add Resource' } },
+  { path: 'event/add/:category', component: ResourceFormComponent, data: { title: 'Add Event' } },
   { path: 'search', component: SearchComponent, data: { title: 'Search Resources' } },
   { path: 'search/:query', component: SearchComponent, data: { title: 'Search Resources' } },
   { matcher: searchFilterMatcher, component: SearchComponent, data: { title: 'Search Resources' } },
