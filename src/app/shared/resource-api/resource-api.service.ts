@@ -25,6 +25,7 @@ import { ResourceAttachment } from '../../resource-attachment';
 import { ResourceCategory } from '../../resource-category';
 import { ResourceQuery } from '../../resource-query';
 import { ResourceType } from '../../resourceType';
+import { SegmentType } from '../../segmentType';
 import { User } from '../../user';
 import { UserSearchResults } from '../../user-search-results';
 import { ViewPreferences } from '../../view-preferences';
@@ -62,6 +63,7 @@ export class ResourceApiService {
     sessionstatus: '/api/session_status',
     type: '/api/type/<id>',
     typelist: '/api/type',
+    segmentlist: '/api/segment',
     user: '/api/user/<id>',
     userfavorite: '/api/session/favorite',
     userlist: '/api/user',
@@ -260,6 +262,12 @@ export class ResourceApiService {
       .pipe(catchError(this.handleError));
   }
 
+  /** getTypes */
+  getSegments(): Observable<ResourceType[]> {
+    return this.httpClient.get<SegmentType[]>(this._apiUrl('segmentlist'))
+      .pipe(catchError(this.handleError));
+  }
+
   /** getResource */
   getResource(id: Number): Observable<Resource> {
     return this.httpClient.get<Resource>(`${this._apiUrl('resourcelist')}/${id}`)
@@ -267,9 +275,9 @@ export class ResourceApiService {
   }
 
   /** getResources */
-  getResources(type?: String): Observable<Resource[]> {
-    if (type) {
-      return this.httpClient.get<Resource[]>(`${this._apiUrl('resourcelist')}?type=${type}`)
+  getResources(segment?: String): Observable<Resource[]> {
+    if (segment) {
+      return this.httpClient.get<Resource[]>(`${this._apiUrl('resourcelist')}?segment=${segment}`)
         .pipe(catchError(this.handleError));
     } else {
       return this.httpClient.get<Resource[]>(this._apiUrl('resourcelist'))

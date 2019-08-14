@@ -1,25 +1,22 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { Favorite } from '../favorite';
-import { Resource } from '../resource';
-import { ResourceApiService } from '../shared/resource-api/resource-api.service';
-import { User } from '../user';
+import { Component, Input, OnInit } from "@angular/core";
+import { Favorite } from "../favorite";
+import { Resource } from "../resource";
+import { ResourceApiService } from "../shared/resource-api/resource-api.service";
+import { User } from "../user";
 
 @Component({
-  selector: 'app-favorite-resource-button',
-  templateUrl: './favorite-resource-button.component.html',
-  styleUrls: ['./favorite-resource-button.component.scss']
+  selector: "app-favorite-resource-button",
+  templateUrl: "./favorite-resource-button.component.html",
+  styleUrls: ["./favorite-resource-button.component.scss"]
 })
 export class FavoriteResourceButtonComponent implements OnInit {
   @Input() resource: Resource;
   favorite: Favorite;
   @Input() user: User;
 
-  constructor(
-    private api: ResourceApiService
-  ) { }
+  constructor(private api: ResourceApiService) {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   userFavorite() {
     for (const f of this.resource.favorites) {
@@ -63,9 +60,9 @@ export class FavoriteResourceButtonComponent implements OnInit {
 
   instructions(): string {
     if (this.userFavorite()) {
-      return 'Delete Resource from Favorites';
+      return "Delete Resource/Event from Favorites";
     } else {
-      return 'Add Resource to Favorites';
+      return "Add Resource/Event to Favorites";
     }
   }
 }

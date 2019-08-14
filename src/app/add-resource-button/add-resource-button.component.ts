@@ -21,4 +21,7 @@ export class AddResourceButtonComponent implements OnInit {
   openAdd() {
     this.router.navigateByUrl(`resource/add/${this.category.id}`);
   }
+  eventAdd() {
+    this.router.navigateByUrl(`event/add/${this.category.id}`);
+  }
 }

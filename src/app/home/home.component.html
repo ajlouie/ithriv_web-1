@@ -1,7 +1,4 @@
-<div
-  *ngIf="!user && !publicpage"
-  class="please-log-in"
->
+<div *ngIf="!user && !publicpage" class="please-log-in">
   <app-login-services></app-login-services>
 </div>
 <div
@@ -18,7 +15,7 @@
   ></app-category-tile>
 </div>
 
-<h1 class="mat-h1 page-title" *ngIf="!user && publicpage">Public Viewspace</h1>
+<h1 class="mat-h1 page-title" *ngIf="!user && publicpage">Public View</h1>
 <mat-tab-group
   mat-stretch-tabs
   dynamicHeight
@@ -73,7 +70,7 @@
       ></app-user-resource-list>
     </div>
   </mat-tab>
-  <mat-tab label="Recently Updated Resources and Events" *ngIf="user">
+  <mat-tab label="Recently Updated Resources and Events">
     <div class="example-small-box mat-elevation-z4">
       <app-resource-list
         [resources]="resources"

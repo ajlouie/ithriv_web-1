@@ -44,7 +44,7 @@
         </mat-card>
       </div>
     </mat-tab>
-    <mat-tab label="Site Map" *ngIf="user">
+    <mat-tab label="Site Map">
       <div
         [ngClass]="{
         'pad-xl': breakpoint === 'xl',
@@ -94,11 +94,12 @@
         </mat-card>
       </div>
     </mat-tab>
-    <ng-container *ngIf="user">
-      <mat-tab
-        *ngFor="let article of privateArticles"
-        label="{{article.title}}"
-      >
+
+    <mat-tab
+      *ngFor="let article of privateArticles"
+      label="{{article.title}}"
+    >
+      <ng-container>
         <div [ngClass]="{
           'pad-xl': breakpoint === 'xl',
           'pad-lg': breakpoint === 'lg',
@@ -113,8 +114,8 @@
             </mat-card-content>
           </mat-card>
         </div>
-      </mat-tab>
-    </ng-container>
-
+      </ng-container>
+    </mat-tab>
   </mat-tab-group>
+  
 </div>
