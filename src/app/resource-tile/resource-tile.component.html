@@ -39,13 +39,16 @@
         ></app-favorite-resource-button>
       </mat-card-header>
       <mat-card-content [routerLink]="resourceRoute(resource)">
-        <markdown [data]="truncateWords(resource.description, 20)"></markdown>
+        <markdown
+          *ngIf="resource.segment.name != 'Event'"
+          [data]="truncateWords(resource.description, 20)"
+        ></markdown>
         <mat-list-item *ngIf="resource.segment.name === 'Event'">
           <p mat-line>
-            <b>Starts: </b>{{ resource.starts | date: "MMM d, y h:mm a" }}
+            <b>Starts: </b>{{ resource.starts | date: 'MMM d, y h:mm a' }}
           </p>
           <p mat-line>
-            <b>Ends: </b> {{ resource.ends | date: "MMM d, y h:mm a" }}
+            <b>Ends: </b> {{ resource.ends | date: 'MMM d, y h:mm a' }}
           </p>
           <h4 mat-line>Location:</h4>
           <p mat-line>{{ resource.location }}</p>
