@@ -22,11 +22,12 @@ import { User } from '../user';
   selector: 'app-search',
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.scss'],
-  animations: [fadeTransition()],
+  animations: [fadeTransition()]
 })
 export class SearchComponent implements OnInit {
   @HostBinding('@fadeTransition')
-  @Input() resourceQuery: ResourceQuery;
+  @Input()
+  resourceQuery: ResourceQuery;
   user: User;
 
   showFilters = false;
@@ -53,13 +54,11 @@ export class SearchComponent implements OnInit {
     this.categories = [];
     this.publicId = 87;
 
-    this.api.getSession().subscribe(user => this.user = user);
+    this.api.getSession().subscribe(user => (this.user = user));
 
-    this.api.getCategories().subscribe(
-      (categories) => {
-        this.categories = categories;
-      }
-    );
+    this.api.getCategories().subscribe(categories => {
+      this.categories = categories;
+    });
 
     this.route.queryParamMap.subscribe(qParams => {
       let query = '';
@@ -85,7 +84,7 @@ export class SearchComponent implements OnInit {
       });
     });
 
-    this.renderer.listen(window, 'resize', (event) => {
+    this.renderer.listen(window, 'resize', event => {
       this.checkWindowWidth();
     });
   }
@@ -98,10 +97,9 @@ export class SearchComponent implements OnInit {
     });
 
     this.searchBox.setValue(this.resourceQuery.query);
-    this.searchBox.valueChanges.pipe(
-      debounceTime(300)).subscribe(query => {
-        this.updateQuery(query);
-      });
+    this.searchBox.valueChanges.pipe(debounceTime(300)).subscribe(query => {
+      this.updateQuery(query);
+    });
 
     this.searchInput.focus();
   }
@@ -114,6 +112,14 @@ export class SearchComponent implements OnInit {
       this.sideNav.mode = 'over';
       this.sideNav.opened = false;
     }
+  }
+
+  getFacetFieldTitle(field) {
+    if (field === 'Segment') {
+      return 'Select Resources or Events';
+    }
+
+    return field;
   }
 
   updateQuery(query) {
@@ -135,32 +141,31 @@ export class SearchComponent implements OnInit {
       queryArray.push(`${filter.field}=${filter.value}`);
     }
 
-    const url = queryArray.length > 0 ? `/search/filter?${queryArray.join('&')}` : '/search';
+    const url =
+      queryArray.length > 0
+        ? `/search/filter?${queryArray.join('&')}`
+        : '/search';
     this.router.navigateByUrl(url);
-
   }
 
   doSearch() {
     this.loading = true;
 
-    this.hideResults = (
-      (this.resourceQuery.query === '') &&
-      (this.resourceQuery.filters.length === 0)
-    );
+    this.hideResults =
+      this.resourceQuery.query === '' &&
+      this.resourceQuery.filters.length === 0;
 
     this.updateUrl(this.resourceQuery);
 
-    this.api.searchResources(this.resourceQuery).subscribe(
-      (query) => {
-        this.loading = false;
-        this.resourceQuery = query;
-        this.resources = query.resources;
-        this.checkWindowWidth();
-      }
-    );
+    this.api.searchResources(this.resourceQuery).subscribe(query => {
+      this.loading = false;
+      this.resourceQuery = query;
+      this.resources = query.resources;
+      this.checkWindowWidth();
+    });
     if ((<any>window).gtag) {
       (<any>window).gtag('event', this.resourceQuery.query, {
-        'event_category': 'search'
+        event_category: 'search'
       });
     }
   }
@@ -199,8 +204,8 @@ export class SearchComponent implements OnInit {
 
   updatePage() {
     this.resourceQuery.size = this.paginator.pageSize;
-    this.resourceQuery.start = (this.paginator.pageIndex * this.paginator.pageSize) + 1;
+    this.resourceQuery.start =
+      this.paginator.pageIndex * this.paginator.pageSize + 1;
     this.doSearch();
   }
-
 }

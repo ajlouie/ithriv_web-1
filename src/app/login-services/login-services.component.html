@@ -22,7 +22,8 @@
       matTooltip="{{ s.name }}"
       id="btn-service-{{s.id}}"
     >
-      <img [src]="s.image">
+      <img *ngIf="s.image" [src]="s.image">
+      <span *ngIf="!s.image">{{s.name}}</span>
     </button>
   </div>
   <div

@@ -4,7 +4,7 @@
   [floatLabel]="formGroup && formGroup.value.floatLabel"
 >
   <input
-    *ngIf="(field.formControl && (field.type === 'color'))"
+    *ngIf="field.formControl && field.type === 'color'"
     matInput
     [formControl]="field.formControl"
     [errorStateMatcher]="errorMatcher"
@@ -18,7 +18,7 @@
     [cpPosition]="'top'"
     [cpPositionOffset]="'50%'"
     type="text"
-  >
+  />
   <input
     *ngIf="isTextField(field)"
     matInput
@@ -26,8 +26,8 @@
     [errorStateMatcher]="errorMatcher"
     [placeholder]="field.placeholder"
     [required]="field.required"
-    type="{{field.type}}"
-  >
+    type="{{ field.type }}"
+  />
   <textarea
     *ngIf="field.type === 'textarea'"
     matInput
@@ -35,7 +35,7 @@
     [errorStateMatcher]="errorMatcher"
     [placeholder]="field.placeholder"
     [required]="field.required"
-    type="{{field.type}}"
+    type="{{ field.type }}"
   ></textarea>
   <mat-select
     *ngIf="field.type === 'select'"
@@ -45,60 +45,101 @@
     [required]="field.required"
   >
     <mat-option *ngIf="!field.multiSelect">-- None --</mat-option>
-    <mat-option
-      *ngFor="let option of options"
-      [value]="option.id"
-    >
+    <mat-option *ngFor="let option of options" [value]="option.id">
       <mat-icon
         *ngIf="field.showIcons"
-        svgIcon="ithriv_{{option.id}}"
+        svgIcon="ithriv_{{ option.id }}"
       ></mat-icon>
-      {{option.name}}
+      {{ option.name }}
     </mat-option>
   </mat-select>
   <mat-label *ngIf="field.type === 'select'">
-    {{field.placeholder}}
+    {{ field.placeholder }}
   </mat-label>
 
   <mat-hint *ngIf="field.helpText">
-    <markdown>{{field.helpText}}</markdown>
+    <markdown>{{ field.helpText }}</markdown>
   </mat-hint>
 
-  <mat-hint
-    *ngIf="field.maxLength"
-    align="end"
+  <mat-hint *ngIf="field.maxLength" align="end">
+    {{ currentLength() }} / {{ field.maxLength }}
+  </mat-hint>
+
+  <mat-error
+    *ngIf="
+      field.formControl.errors &&
+      (field.formControl.dirty || field.formControl.touched)
+    "
   >
-    {{currentLength()}} / {{field.maxLength}}
-  </mat-hint>
-
-  <mat-error *ngIf="field.formControl.errors && (field.formControl.dirty || field.formControl.touched)">
-    <span *ngIf="field.formControl.hasError('email') && !field.formControl.hasError('required')">
+    <span
+      *ngIf="
+        field.formControl.hasError('email') &&
+        !field.formControl.hasError('required')
+      "
+    >
       Please enter a valid email address
     </span>
-    <span *ngIf="field.formControl.hasError('url') && !field.formControl.hasError('required')">
+    <span
+      *ngIf="
+        field.formControl.hasError('url') &&
+        !field.formControl.hasError('required')
+      "
+    >
       Please enter a valid URL, such as https://website.domain.com
     </span>
     <span *ngIf="field.required && field.formControl.hasError('required')">
-      {{field.placeholder}} is
+      {{ field.placeholder }} is
       <strong>required</strong>
     </span>
     <span *ngIf="field.minLength && field.formControl.hasError('minlength')">
       Must be at least
-      <strong>{{field.minLength}}</strong> characters long. You only entered
-      <strong>{{currentLength()}}</strong> characters.
+      <strong>{{ field.minLength }}</strong> characters long. You only entered
+      <strong>{{ currentLength() }}</strong> characters.
     </span>
     <span *ngIf="field.maxLength && field.formControl.hasError('maxlength')">
       Maximum length is
-      <strong>"{{field.maxLength}}"</strong> characters. You entered
-      <strong>{{currentLength()}}</strong> characters.
+      <strong>"{{ field.maxLength }}"</strong> characters. You entered
+      <strong>{{ currentLength() }}</strong> characters.
     </span>
   </mat-error>
 </mat-form-field>
 
-<div
-  *ngIf="field.type === 'tree'"
-  class="mat-typography"
+<mat-form-field
+  *ngIf="field.type === 'owldatetime'"
+  [hideRequiredMarker]="formGroup && formGroup.value.hideRequired"
+  [floatLabel]="formGroup && formGroup.value.floatLabel"
 >
+  <mat-label>{{ field.placeholder }}</mat-label>
+  <input
+    matInput
+    [formControl]="field.formControl"
+    [owlDateTime]="dt"
+    [selectMode]="field.selectMode"
+    [owlDateTimeFilter]="eventFilter"
+    [min]="min"
+    [disabled]="true"
+    [owlDateTimeTrigger]="dt"
+    [placeholder]="field.placeholder"
+    [required]="field.required"
+  />
+  <owl-date-time [pickerMode]="'dialog'" #dt></owl-date-time>
+  <mat-hint *ngIf="field.helpText">
+    <markdown>{{ field.helpText }}</markdown>
+  </mat-hint>
+  <mat-error
+    *ngIf="
+      field.formControl.errors &&
+      (field.formControl.dirty || field.formControl.touched)
+    "
+  >
+    <span *ngIf="field.required && field.formControl.hasError('required')">
+      {{ field.placeholder }} is
+      <strong>required</strong>
+    </span>
+  </mat-error>
+</mat-form-field>
+
+<div *ngIf="field.type === 'tree'" class="mat-typography">
   <app-form-field-label
     [field]="field"
     [errors]="errors"
@@ -106,28 +147,30 @@
   <app-tree-select [field]="field"></app-tree-select>
 </div>
 
-<div
-  *ngIf="field.type === 'richtexteditor'"
-  class="mat-typography"
->
+<div *ngIf="field.type === 'richtexteditor'" class="mat-typography">
   <app-form-field-label
     [field]="field"
     [errors]="errors"
   ></app-form-field-label>
-  <mat-error *ngIf="field.formControl.errors && (field.formControl.dirty || field.formControl.touched)">
+  <mat-error
+    *ngIf="
+      field.formControl.errors &&
+      (field.formControl.dirty || field.formControl.touched)
+    "
+  >
     <span *ngIf="field.required && field.formControl.hasError('required')">
-      {{field.placeholder}} is
+      {{ field.placeholder }} is
       <strong>required</strong>
     </span>
     <span *ngIf="field.minLength && field.formControl.hasError('minlength')">
       Must be at least
-      <strong>{{field.minLength}}</strong> characters long. You only entered
-      <strong>{{currentLength()}}</strong> characters.
+      <strong>{{ field.minLength }}</strong> characters long. You only entered
+      <strong>{{ currentLength() }}</strong> characters.
     </span>
     <span *ngIf="field.maxLength && field.formControl.hasError('maxlength')">
       Maximum length is
-      <strong>"{{field.maxLength}}"</strong> characters. You entered
-      <strong>{{currentLength()}}</strong> characters.
+      <strong>"{{ field.maxLength }}"</strong> characters. You entered
+      <strong>{{ currentLength() }}</strong> characters.
     </span>
   </mat-error>
   <td-text-editor
@@ -138,22 +181,13 @@
   ></td-text-editor>
 </div>
 
-<div
-  *ngIf="field.type === 'toggle'"
-  class="toggle mat-typography"
->
-  <mat-slide-toggle
-    color="primary"
-    [formControl]="field.formControl"
-  >
-    {{field.placeholder}}
+<div *ngIf="field.type === 'toggle'" class="toggle mat-typography">
+  <mat-slide-toggle color="primary" [formControl]="field.formControl">
+    {{ field.placeholder }}
   </mat-slide-toggle>
 </div>
 
-<div
-  *ngIf="field.type === 'files'"
-  class="mat-typography"
->
+<div *ngIf="field.type === 'files'" class="mat-typography">
   <app-form-field-label
     [field]="field"
     [errors]="errors"
@@ -161,10 +195,7 @@
   <app-file-upload [field]="field"></app-file-upload>
 </div>
 
-<div
-  *ngIf="field.type === 'checkbox'"
-  class="checkbox-container"
->
+<div *ngIf="field.type === 'checkbox'" class="checkbox-container">
   <app-form-field-label
     [field]="field"
     [errors]="errors"
@@ -172,24 +203,29 @@
   <mat-checkbox
     [formControl]="field.formControl"
     [required]="field.required"
-    title="{{field.placeholder}}"
+    title="{{ field.placeholder }}"
   >
-    {{field.helpText}}
+    {{ field.helpText }}
   </mat-checkbox>
-  <mat-error *ngIf="field.formControl.errors && (field.formControl.dirty || field.formControl.touched)">
+  <mat-error
+    *ngIf="
+      field.formControl.errors &&
+      (field.formControl.dirty || field.formControl.touched)
+    "
+  >
     <span *ngIf="field.required && field.formControl.hasError('required')">
-      {{field.placeholder}} is
+      {{ field.placeholder }} is
       <strong>required</strong>
     </span>
     <span *ngIf="field.minLength && field.formControl.hasError('minlength')">
       Must be at least
-      <strong>{{field.minLength}}</strong> characters long. You only entered
-      <strong>{{currentLength()}}</strong> characters.
+      <strong>{{ field.minLength }}</strong> characters long. You only entered
+      <strong>{{ currentLength() }}</strong> characters.
     </span>
     <span *ngIf="field.maxLength && field.formControl.hasError('maxlength')">
       Maximum length is
-      <strong>"{{field.maxLength}}"</strong> characters. You entered
-      <strong>{{currentLength()}}</strong> characters.
+      <strong>"{{ field.maxLength }}"</strong> characters. You entered
+      <strong>{{ currentLength() }}</strong> characters.
     </span>
   </mat-error>
 </div>

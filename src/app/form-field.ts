@@ -1,5 +1,5 @@
-import { FormControl, FormGroup } from '@angular/forms';
-import { FileAttachment } from './file-attachment';
+import { FormControl, FormGroup } from "@angular/forms";
+import { FileAttachment } from "./file-attachment";
 
 export class FormField {
   fieldsetId?: string;
@@ -16,6 +16,7 @@ export class FormField {
   showIcons = false;
   type: string;
   defaultValue?: any;
+  selectMode?: string;
 
   // 'files' type
   attachments = new Map<string, FileAttachment>();
@@ -34,4 +35,3 @@ export class FormField {
     }
   }
 }
-

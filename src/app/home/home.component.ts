@@ -6,6 +6,7 @@ import { Resource } from '../resource';
 import { ResourceApiService } from '../shared/resource-api/resource-api.service';
 import { ResourceQuery } from '../resource-query';
 import { fadeTransition } from '../shared/animations';
+import { ActivatedRoute } from '@angular/router';
 
 import { User } from '../user';
 import { Institution } from '../institution';
@@ -19,18 +20,20 @@ import { Institution } from '../institution';
 export class HomeComponent implements OnInit {
   @HostBinding('@fadeTransition')
   @Input() resourceQuery: ResourceQuery;
-
+  publicpage: Boolean;
   searchForm: FormGroup;
   searchBox: FormControl;
   loading = false;
   resources: Resource[];
+  events: Resource[];
   categories: Category[];
   user: User;
   institution: Institution;
 
   constructor(
     private api: ResourceApiService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {
     this.loadUser();
     this.categories = [];
@@ -46,6 +49,14 @@ export class HomeComponent implements OnInit {
         this.resources = resources;
       }
     );
+
+    this.api.getResources('Event').subscribe(
+      (events) => {
+        this.events = events;
+      }
+    );
+
+    this.publicpage = false;
   }
 
 
@@ -53,6 +64,11 @@ export class HomeComponent implements OnInit {
     this.searchBox = new FormControl();
     this.searchForm = new FormGroup({
       searchBox: this.searchBox
+    });
+    this.route.queryParamMap.subscribe(params => {
+        if (params.has('publicpage')) {
+          this.publicpage = Boolean(params.get('publicpage'));
+        }
     });
   }
 
