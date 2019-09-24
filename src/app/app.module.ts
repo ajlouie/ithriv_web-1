@@ -223,7 +223,7 @@ export const MY_NATIVE_FORMATS = {
     MatToolbarModule,
     MatTooltipModule,
     MatTreeModule,
-    NgProgressModule.forRoot(),
+    NgProgressModule,
     OwlDateTimeModule,
     OwlNativeDateTimeModule,
     ReactiveFormsModule,
