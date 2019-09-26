@@ -495,7 +495,7 @@ export class ResourceApiService {
    * Request a Consult */
   sendConsultRequestEmail(user: User, request_category: string, request_text: string): Observable<any> {
     const request_data = { user_id: user.id, request_category: request_category, request_text: request_text };
-    return this.httpClient.post<any>(this._apiUrl('consult'), request_data)
+    return this.httpClient.post<any>(this._apiUrl('consult_request'), request_data)
       .pipe(catchError(this.handleError));
   }
 

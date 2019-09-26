@@ -1,9 +1,9 @@
 branches:
   only:
-  - develop
-  - master
-  - /^release-.*$/
-  - /^hotfix-.*$/
+    - develop
+    - master
+    - /^release-.*$/
+    - /^hotfix-.*$/
 
 language: bash
 
@@ -14,7 +14,7 @@ before_install:
   - sudo pip install --upgrade pip
   - pip install --user awscli
   - export PATH=$PATH:$HOME/.local/bin
-  - echo $DOCKER_PASSWORD | docker login -u "$DOCKER_USERNAME" --password-stdin 
+  - echo $DOCKER_PASSWORD | docker login -u "$DOCKER_USERNAME" --password-stdin
 
 install:
   - export BUILD_ENV="uat" || exit 1 ;
@@ -25,7 +25,7 @@ install:
     export BUILD_ENV="prod" || exit 1 ;
     fi
   - if [ "$TRAVIS_BRANCH" == "master" ]; then
-    export GIT_TAG=prod-1.1 || exit 1 ;
+    export GIT_TAG=prod-1.2 || exit 1 ;
     docker build --build-arg BUILD_ENV -f docker/Dockerfile --no-cache -t ithriv/ithriv_web:"$GIT_TAG" . || exit 1 ;
     docker push ithriv/ithriv_web:"$GIT_TAG" || exit 1 ;
     docker tag ithriv/ithriv_web:"$GIT_TAG" ithriv/ithriv_web:latest || exit 1 ;
@@ -36,7 +36,6 @@ install:
     docker push ithriv/ithriv_web:"$TRAVIS_BRANCH" || exit 1 ;
     aws sqs send-message --queue-url 'https://queue.amazonaws.com/474683445819/ithriv-updates' --message-body ithriv/ithriv_web:$TRAVIS_BRANCH || exit 1;
     fi
-
 
 notifications:
   email:
