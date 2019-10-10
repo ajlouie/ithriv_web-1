@@ -53,13 +53,15 @@
     </div>
   </mat-tab>
   <mat-tab label="My Favorite Resources and Events">
-    <div class="example-large-box mat-elevation-z4">
-      <app-favorite-resource-list
-        [user]="user"
-        [institution]="institution"
-        *ngIf="user"
-      ></app-favorite-resource-list>
-    </div>
+    <ng-template matTabContent>
+      <div class="example-large-box mat-elevation-z4">
+        <app-favorite-resource-list
+          [user]="user"
+          [institution]="institution"
+          *ngIf="user"
+        ></app-favorite-resource-list>
+      </div>
+    </ng-template>
   </mat-tab>
   <mat-tab label="My Resources and Events">
     <div class="example-large-box mat-elevation-z4">
@@ -71,13 +73,15 @@
     </div>
   </mat-tab>
   <mat-tab label="Recently Updated Resources and Events">
-    <div class="example-small-box mat-elevation-z4">
-      <app-resource-list
-        [resources]="resources"
-        [user]="user"
-        [sidenavExpanded]="false"
-        *ngIf="user"
-      ></app-resource-list>
-    </div>
+    <ng-template matTabContent>
+      <div class="example-small-box mat-elevation-z4">
+        <app-resource-list
+          [resources]="resources"
+          [user]="user"
+          [sidenavExpanded]="false"
+          *ngIf="user"
+        ></app-resource-list>
+      </div>
+    </ng-template>
   </mat-tab>
 </mat-tab-group>
