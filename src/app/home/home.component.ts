@@ -6,6 +6,7 @@ import { Resource } from '../resource';
 import { ResourceApiService } from '../shared/resource-api/resource-api.service';
 import { ResourceQuery } from '../resource-query';
 import { fadeTransition } from '../shared/animations';
+import { ActivatedRoute } from '@angular/router';
 
 import { User } from '../user';
 import { Institution } from '../institution';
@@ -14,45 +15,70 @@ import { Institution } from '../institution';
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
-  animations: [fadeTransition()],
+  animations: [fadeTransition()]
 })
 export class HomeComponent implements OnInit {
   @HostBinding('@fadeTransition')
-  @Input() resourceQuery: ResourceQuery;
-
+  @Input()
+  resourceQuery: ResourceQuery;
+  publicpage: Boolean;
   searchForm: FormGroup;
   searchBox: FormControl;
   loading = false;
   resources: Resource[];
+  events: Array<Resource> = [];
   categories: Category[];
   user: User;
   institution: Institution;
 
   constructor(
     private api: ResourceApiService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {
     this.loadUser();
     this.categories = [];
 
-    this.api.getRootCategories().subscribe(
-      (categories) => {
-        this.categories = categories;
-      }
-    );
+    this.api.getRootCategories().subscribe(categories => {
+      this.categories = categories;
+    });
 
-    this.api.getResources().subscribe(
-      (resources) => {
-        this.resources = resources;
-      }
-    );
+    this.api.getResources().subscribe(resources => {
+      this.resources = resources;
+    });
+
+    this.api.getResources('Event').subscribe(events => {
+      events.forEach(event => {
+        const user = this.user;
+        event.availabilities.forEach(availability => {
+          if (this.user !== undefined && this.user !== null) {
+            if (
+              availability.institution.description ===
+              this.user.institution.description
+            ) {
+              this.events.push(event);
+            }
+          } else {
+            if (availability.institution.description === 'Public') {
+              this.events.push(event);
+            }
+          }
+        });
+      });
+    });
+
+    this.publicpage = false;
   }
-
 
   ngOnInit() {
     this.searchBox = new FormControl();
     this.searchForm = new FormGroup({
       searchBox: this.searchBox
+    });
+    this.route.queryParamMap.subscribe(params => {
+      if (params.has('publicpage')) {
+        this.publicpage = Boolean(params.get('publicpage'));
+      }
     });
   }
 
@@ -65,11 +91,11 @@ export class HomeComponent implements OnInit {
 
   getInstitution() {
     if (sessionStorage.getItem('institution_id')) {
-      this.api.getInstitution(parseInt(sessionStorage.getItem('institution_id'), 10)).subscribe(
-        (inst) => {
+      this.api
+        .getInstitution(parseInt(sessionStorage.getItem('institution_id'), 10))
+        .subscribe(inst => {
           this.institution = inst;
-        }
-      );
+        });
     }
   }
 
@@ -79,7 +105,10 @@ export class HomeComponent implements OnInit {
 
   goCategory(category: Category) {
     const viewPrefs = this.api.getViewPreferences();
-    const isNetworkView = viewPrefs && viewPrefs.hasOwnProperty('isNetworkView') ? viewPrefs.isNetworkView : true;
+    const isNetworkView =
+      viewPrefs && viewPrefs.hasOwnProperty('isNetworkView')
+        ? viewPrefs.isNetworkView
+        : true;
     const catId = category.id.toString();
 
     if (isNetworkView) {

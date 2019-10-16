@@ -1,19 +1,19 @@
-import { Component, Input, OnInit, HostBinding } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Category } from '../category';
-import { Institution } from '../institution';
-import { Resource } from '../resource';
-import { ResourceCategory } from '../resource-category';
-import { zoomTransition, fadeTransition } from '../shared/animations';
-import { ResourceApiService } from '../shared/resource-api/resource-api.service';
-import { FileAttachment } from '../file-attachment';
-import { ResourceType } from '../resourceType';
-import { User } from '../user';
+import { Component, Input, OnInit, HostBinding } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
+import { Category } from "../category";
+import { Institution } from "../institution";
+import { Resource } from "../resource";
+import { ResourceCategory } from "../resource-category";
+import { zoomTransition, fadeTransition } from "../shared/animations";
+import { ResourceApiService } from "../shared/resource-api/resource-api.service";
+import { FileAttachment } from "../file-attachment";
+import { ResourceType } from "../resourceType";
+import { User } from "../user";
 
 @Component({
-  selector: 'app-resource',
-  templateUrl: './resource.component.html',
-  styleUrls: ['./resource.component.scss'],
+  selector: "app-resource",
+  templateUrl: "./resource.component.html",
+  styleUrls: ["./resource.component.scss"],
   animations: [zoomTransition(), fadeTransition()]
 })
 export class ResourceComponent implements OnInit {
@@ -23,9 +23,9 @@ export class ResourceComponent implements OnInit {
   attachments: FileAttachment[];
   user: User;
 
-  transitionState = '';
+  transitionState = "";
 
-  @HostBinding('@fadeTransition')
+  @HostBinding("@fadeTransition")
   isDataLoaded = false;
 
   constructor(
@@ -34,42 +34,37 @@ export class ResourceComponent implements OnInit {
     private api: ResourceApiService
   ) {
     this.route.params.subscribe(params => {
-      this.resourceId = params['resource'];
+      this.resourceId = params["resource"];
       this.loadResource();
       this.loadUser();
     });
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   loadResource() {
-    this.api.getResource(this.resourceId).subscribe(
-      (resource) => {
-        this.resource = resource;
-        this.loadResourceCategories(resource);
-      }
-    );
+    this.api.getResource(this.resourceId).subscribe(resource => {
+      this.resource = resource;
+      this.loadResourceCategories(resource);
+    });
   }
 
   loadResourceCategories(resource: Resource) {
-    this.api
-      .getResourceCategories(resource)
-      .subscribe(rcs => {
-        this.categories = rcs;
-        this.transitionState = 'zoom-in-enter';
-        this.isDataLoaded = true;
-      });
+    this.api.getResourceCategories(resource).subscribe(rcs => {
+      this.categories = rcs;
+      this.transitionState = "zoom-in-enter";
+      this.isDataLoaded = true;
+    });
   }
 
   loadResourceAttachments(resource: Resource) {
     this.attachments = resource.files;
-    this.transitionState = 'zoom-in-enter';
+    this.transitionState = "zoom-in-enter";
     this.isDataLoaded = true;
   }
 
   loadUser() {
-    this.api.getSession().subscribe(user => this.user = user);
+    this.api.getSession().subscribe(user => (this.user = user));
   }
 
   getCategoryIcon(category: Category) {
@@ -79,8 +74,7 @@ export class ResourceComponent implements OnInit {
   }
 
   getAvailableInstitutions() {
-    return this.resource
-      .availabilities
+    return this.resource.availabilities
       .filter(av => av.available)
       .map(av => av.institution);
   }
@@ -94,12 +88,12 @@ export class ResourceComponent implements OnInit {
     $event.preventDefault();
 
     if (category.level === 2) {
-      this.router.navigate(['category', category.id]);
+      this.router.navigate(["category", category.id]);
     } else if (this.api.getViewPreferences().isNetworkView) {
-      this.router.navigate(['network', category.id]);
+      this.router.navigate(["network", category.id]);
     } else {
-      const id = (category.level === 1) ? category.parent.id : category.id;
-      this.router.navigate(['browse', id]);
+      const id = category.level === 1 ? category.parent.id : category.id;
+      this.router.navigate(["browse", id]);
     }
   }
 
@@ -110,16 +104,23 @@ export class ResourceComponent implements OnInit {
 
   goWebsite($event) {
     $event.preventDefault();
-    window.open(this.resource.website, '_blank');
+    window.open(this.resource.website, "_blank");
   }
 
-  openEdit() {
-    this.router.navigateByUrl(`resource/${this.resource.id}/edit`);
+  openEdit($event) {
+    this.router.navigateByUrl(
+      `<segment>/${this.resource.id}/edit`.replace(
+        "<segment>",
+        this.resource.segment.name.toLowerCase()
+      )
+    );
   }
 
   fileIcon(file: FileAttachment): string {
     const s = file.mime_type || file.type || file.name || file.file_name;
-    const nameArray = s.toLowerCase().split((file.mime_type || file.type) ? '/' : '.');
+    const nameArray = s
+      .toLowerCase()
+      .split(file.mime_type || file.type ? "/" : ".");
 
     if (nameArray.length > 0) {
       return `/assets/filetypes/${nameArray[nameArray.length - 1]}.svg`;

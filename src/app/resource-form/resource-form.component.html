@@ -1,6 +1,6 @@
 <div *ngIf="progress | async">
   <h1>Uploading attachements...</h1>
-  <h2>{{progressMessage}}</h2>
+  <h2>{{ progressMessage }}</h2>
 </div>
 
 <div
@@ -12,29 +12,27 @@
   fxLayoutGap="1em"
   fxLayoutAlign="center"
 >
-  <form
-    [formGroup]="resourceForm"
-    (ngSubmit)="onSubmit()"
-    fxFlex="90%"
-  >
-    <h2>Resource Details</h2>
-    <p>Minutes remaining before your login times out: <strong>{{timeLeftInSession | timeLeft }}</strong>. Please save
-      your work.</p>
-
+  <form [formGroup]="resourceForm" (ngSubmit)="onSubmit()" fxFlex="90%">
+    <h2>{{ resourceType }} Details</h2>
+    <p>
+      Minutes remaining before your login times out:
+      <strong>{{ timeLeftInSession | timeLeft }}</strong
+      >. Please save your work.
+    </p>
     <fieldset
       *ngFor="let fieldset of fieldsets"
-      [ngClass]="{'show': !!fieldset.label}"
+      [ngClass]="{ show: !!fieldset.label }"
     >
-      <h3 *ngIf="fieldset.label">{{fieldset.label}}</h3>
+      <h3 *ngIf="fieldset.label">{{ fieldset.label }}</h3>
       <app-form-field
         *ngFor="let field of fieldset.fields"
         [errors]="getFieldErrors(field)"
         [field]="field"
         [formGroup]="resourceForm"
         [errorMatcher]="errorMatcher"
+        [resourceType]="resourceType"
       ></app-form-field>
     </fieldset>
-
     <footer>
       <mat-toolbar>
         <button
@@ -43,38 +41,48 @@
           mat-raised-button
           (click)="onSubmit($event)"
           id="save"
-        >Save</button>
+        >
+          Save
+        </button>
         <button
           type="button"
           mat-raised-button
           (click)="onCancel()"
           id="cancel"
-        >Cancel</button>
+        >
+          Cancel
+        </button>
 
         <button
           type="button"
           mat-raised-button
-          *ngIf="userIsOwner() && (resource.approved === 'Unapproved')"
+          *ngIf="userIsOwner() && resource.approved === 'Unapproved'"
           (click)="onSubmit($event, true)"
           color="primary"
           id="submitForApproval"
-        >Submit for approval</button>
+        >
+          Submit for approval
+        </button>
 
         <button
           type="button"
           mat-raised-button
-          *ngIf="userIsOwner() && (resource.approved === 'Requested')"
+          *ngIf="userIsOwner() && resource.approved === 'Requested'"
           color="primary"
           disabled
-        >Approval requested</button>
+        >
+          Approval requested
+        </button>
 
         <button
           type="button"
           mat-raised-button
-          *ngIf="userIsOwner() && (resource.approved === 'Approved')"
+          *ngIf="userIsOwner() && resource.approved === 'Approved'"
           color="primary"
           disabled
-        >Approved</button>
+        >
+          Approved
+        </button>
 
         <button
           type="button"
@@ -82,7 +90,9 @@
           *ngIf="!showConfirmDelete && !createNew"
           (click)="showDelete()"
           color="warn"
-        >Delete</button>
+        >
+          Delete
+        </button>
 
         <button
           *ngIf="showConfirmDelete"
@@ -91,20 +101,17 @@
           mat-raised-button
           (click)="onDelete()"
           color="warn"
-        >Permanently Delete This Resource!!!</button>
+        >
+          Permanently Delete This Resource!!!
+        </button>
 
-        <div
-          id="error_message"
-          class="display mat-error"
-          *ngIf="error"
-        >{{error}}</div>
+        <div id="error_message" class="display mat-error" *ngIf="error">
+          {{ error }}
+        </div>
       </mat-toolbar>
     </footer>
   </form>
 </div>
-<div
-  *ngIf="!isDataLoaded"
-  id="spinnerContainer"
->
+<div *ngIf="!isDataLoaded" id="spinnerContainer">
   <mat-spinner></mat-spinner>
 </div>

@@ -175,6 +175,7 @@
           ></span>
           <button
             id="search-button"
+            *ngIf="session || isNetworkOrBrowseview()"
             mat-stroked-button
             [routerLink]="['/search']"
             fxFlex.xs="calc(50% - 20px)"
@@ -214,7 +215,7 @@
             *ngIf="!mobileQuery.matches"
             class="fill-remaining-space"
           ></span>
-          <ng-container *ngIf="isGraphViewSupported()">
+          <ng-container *ngIf="isNetworkOrBrowseview() && isGraphViewSupported()">
             <div>Change View:</div>
             <mat-button-toggle-group #group="matButtonToggleGroup">
               <mat-button-toggle

@@ -32,7 +32,7 @@ import { environment } from '../environments/environment';
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
-  animations: [fadeTransition()],
+  animations: [fadeTransition()]
 })
 export class AppComponent implements OnInit, OnDestroy {
   session: User = null;
@@ -74,7 +74,7 @@ export class AppComponent implements OnInit, OnDestroy {
     if (
       this.deviceDetector &&
       this.deviceDetector.browser &&
-      (this.deviceDetector.browser.toLowerCase() === 'ie')
+      this.deviceDetector.browser.toLowerCase() === 'ie'
     ) {
       this.router.navigate(['upgrade_browser']);
     }
@@ -85,7 +85,7 @@ export class AppComponent implements OnInit, OnDestroy {
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);
 
-    this.router.events.subscribe((e) => {
+    this.router.events.subscribe(e => {
       if (e instanceof NavigationEnd) {
         (<any>window).ga('set', 'page', e.urlAfterRedirects);
         (<any>window).ga('send', 'pageview');
@@ -100,7 +100,6 @@ export class AppComponent implements OnInit, OnDestroy {
 
           this.checkStatus();
         });
-
       }
 
       if (e instanceof ActivationStart || e instanceof ActivationEnd) {
@@ -108,7 +107,8 @@ export class AppComponent implements OnInit, OnDestroy {
           const data = e.snapshot.data;
           this.title = data.title ? `iTHRIV - ${data.title}` : 'iTHRIV';
           this.titleService.setTitle(this.title);
-          this.categoryId = e.snapshot && e.snapshot.params && e.snapshot.params.category;
+          this.categoryId =
+            e.snapshot && e.snapshot.params && e.snapshot.params.category;
           this.hideHeader = !!data.hideHeader;
           this.pageTitle = data.title || 'Find Resources';
         }
@@ -120,6 +120,9 @@ export class AppComponent implements OnInit, OnDestroy {
       }
     });
 
+    this.setIsNetworkView(
+      !(this.deviceDetector.isMobile() || this.deviceDetector.isTablet())
+    );
     this.isNetworkView = this.getIsNetworkView();
     const numMinutes = 1;
 
@@ -128,11 +131,10 @@ export class AppComponent implements OnInit, OnDestroy {
       this.timeLeftInSession -= 1000;
 
       // Check status every numMinutes
-      if ((this.timeLeftInSession % (numMinutes * 60 * 1000)) < 1000) {
+      if (this.timeLeftInSession % (numMinutes * 60 * 1000) < 1000) {
         this.checkStatus();
       }
     }, 1000);
-
   }
 
   // Warn the user if there session has less than 5 minutes remaining.
@@ -152,7 +154,7 @@ export class AppComponent implements OnInit, OnDestroy {
         const now = new Date();
         const exp = new Date(timestamp * 1000);
         const msLeft: number = exp.getTime() - now.getTime();
-        const loggedOut = (timestamp <= 0) || (msLeft <= 0);
+        const loggedOut = timestamp <= 0 || msLeft <= 0;
         this.timeLeftInSession = msLeft;
 
         if (loggedOut) {
@@ -171,9 +173,7 @@ export class AppComponent implements OnInit, OnDestroy {
     }
   }
 
-  ngOnInit() {
-
-  }
+  ngOnInit() {}
 
   ngOnDestroy(): void {
     this.mobileQuery.removeListener(this._mobileQueryListener);
@@ -195,10 +195,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   registerIcon(icon: Icon) {
-    this.iconRegistry.addSvgIcon(
-      `ithriv_${icon.id}`,
-      this.trustUrl(icon.url)
-    );
+    this.iconRegistry.addSvgIcon(`ithriv_${icon.id}`, this.trustUrl(icon.url));
   }
 
   getState(outlet: RouterOutlet) {
@@ -237,11 +234,11 @@ export class AppComponent implements OnInit, OnDestroy {
 
   getInstitution() {
     if (sessionStorage.getItem('institution_id')) {
-      this.api.getInstitution(parseInt(sessionStorage.getItem('institution_id'), 10)).subscribe(
-        (inst) => {
+      this.api
+        .getInstitution(parseInt(sessionStorage.getItem('institution_id'), 10))
+        .subscribe(inst => {
           this.institution = inst;
-        }
-      );
+        });
     }
   }
 
@@ -260,15 +257,27 @@ export class AppComponent implements OnInit, OnDestroy {
     return network;
   }
 
-  viewMode(isNetworkView: boolean) {
+  isNetworkOrBrowseview() {
+    const pathArray = this.location.path().split('/');
+    if (
+      pathArray &&
+      pathArray.length > 1 &&
+      (pathArray[1] === 'network' || pathArray[1] === 'browse')
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 
+  viewMode(isNetworkView: boolean) {
     // URL may have been modified via location.replaceState. Retrieve
     // categoryId from raw URL path string.
     const pathArray = this.location.path().split('/');
 
     if (
       pathArray &&
-      (pathArray.length === 3) &&
+      pathArray.length === 3 &&
       (pathArray[1] === 'network' || pathArray[1] === 'browse') &&
       /^[0-9]+$/.test(pathArray[2])
     ) {
@@ -292,7 +301,6 @@ export class AppComponent implements OnInit, OnDestroy {
           }
           this.router.navigate(['network', catId.toString()]);
         });
-
       } else {
         // Go up the hierarchy to the Level 0 parent for this category
         this.api.getCategory(parseInt(this.categoryId, 10)).subscribe(c => {
@@ -329,7 +337,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   isGraphViewSupported() {
     const ieVersion = this.getInternetExplorerVersion();
-    if ((ieVersion === -1) || (ieVersion > 11)) {
+    if (ieVersion === -1 || ieVersion > 11) {
       return true;
     } else {
       this.setIsNetworkView(false);
@@ -341,12 +349,16 @@ export class AppComponent implements OnInit, OnDestroy {
     let rv = -1;
     if (navigator.appName === 'Microsoft Internet Explorer') {
       const ua = navigator.userAgent;
-      const re = new RegExp('MSIE ([0-9]{1,}[\.0-9]{0,})');
-      if (re.exec(ua) != null) { rv = parseFloat(RegExp.$1); }
+      const re = new RegExp('MSIE ([0-9]{1,}[.0-9]{0,})');
+      if (re.exec(ua) != null) {
+        rv = parseFloat(RegExp.$1);
+      }
     } else if (navigator.appName === 'Netscape') {
       const ua = navigator.userAgent;
-      const re = new RegExp('Trident/.*rv:([0-9]{1,}[\.0-9]{0,})');
-      if (re.exec(ua) != null) { rv = parseFloat(RegExp.$1); }
+      const re = new RegExp('Trident/.*rv:([0-9]{1,}[.0-9]{0,})');
+      if (re.exec(ua) != null) {
+        rv = parseFloat(RegExp.$1);
+      }
     }
     return rv;
   }

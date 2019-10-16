@@ -1,6 +1,7 @@
 // Import theming functions
-@import '~@angular/material/theming';
-@import '../../ithriv_material';
+@import "~@angular/material/theming";
+@import "~ng-pick-datetime/assets/style/picker.min.css";
+@import "../../ithriv_material";
 @include ithriv-theme($ithriv-theme);
 form {
   width: 100%;
@@ -43,5 +44,5 @@ fieldset {
 }
 
 mat-toolbar.mat-toolbar {
-  background-color: #CCCCCC;
+  background-color: #cccccc;
 }

@@ -42,7 +42,7 @@ export class ResourceFormComponent implements OnInit {
   progressMessage: '';
   user: User;
   timeLeftInSession: number;
-
+  resourceType: string;
 
   // Field groupings
   fieldsets: Fieldset[] = [];
@@ -57,7 +57,6 @@ export class ResourceFormComponent implements OnInit {
     public snackBar: MatSnackBar,
     private intervalService: IntervalService
   ) {
-
     this.api.getSession().subscribe(user => {
       this.user = user;
       this.loadFields();
@@ -70,15 +69,27 @@ export class ResourceFormComponent implements OnInit {
       this.timeLeftInSession -= 1000;
 
       // Check status every numMinutes
-      if ((this.timeLeftInSession % (numMinutes * 60 * 1000)) < 1000) {
+      if (this.timeLeftInSession % (numMinutes * 60 * 1000) < 1000) {
         this.checkStatus();
       }
     }, 1000);
   }
-
   ngOnInit() {
     // this.api.getSession().subscribe(user => this.user = user);
     this.checkStatus();
+    if (this.router.url.includes('/event/')) {
+      this.resourceType = 'Event';
+    } else if (this.router.url.includes('/resource/')) {
+      this.resourceType = 'Resource';
+    }
+    this.api.getSegments().subscribe(segments => {
+      segments.forEach(segment => {
+        if (segment.name === this.resourceType) {
+          this.resource.segment_id = segment.id;
+          this.resource.segment = segment;
+        }
+      });
+    });
   }
 
   // Warn the user if there session has less than 5 minutes remaining.
@@ -98,7 +109,7 @@ export class ResourceFormComponent implements OnInit {
         const now = new Date();
         const exp = new Date(timestamp * 1000);
         const msLeft: number = exp.getTime() - now.getTime();
-        const loggedOut = (timestamp <= 0) || (msLeft <= 0);
+        const loggedOut = timestamp <= 0 || msLeft <= 0;
         this.timeLeftInSession = msLeft;
 
         if (loggedOut) {
@@ -125,25 +136,28 @@ export class ResourceFormComponent implements OnInit {
       if (resourceId) {
         this.createNew = false;
         this.loadAllCategories(() => {
-          this.api
-            .getResource(resourceId)
-            .subscribe(resource => {
-              this.resource = resource;
-              this.loadResourceCategories(resource, () => this.loadForm());
-            });
+          this.api.getResource(resourceId).subscribe(resource => {
+            this.resource = resource;
+            this.loadResourceCategories(resource, () => this.loadForm());
+          });
         });
       } else {
         this.createNew = true;
-        this.resource = { id: null, name: '', description: '', availabilities: [] };
+        this.resource = {
+          id: null,
+          name: '',
+          description: '',
+          availabilities: []
+        };
         this.loadAllCategories(() => this.loadForm());
       }
     });
   }
 
   loadAllCategories(callback: Function) {
-    const leafCats = function (cats, result = []) {
+    const leafCats = function(cats, result = []) {
       for (const c of cats) {
-        if (Array.isArray(c.children) && (c.children.length > 0)) {
+        if (Array.isArray(c.children) && c.children.length > 0) {
           result = leafCats(c.children, result);
         } else {
           result.push(c);
@@ -159,20 +173,20 @@ export class ResourceFormComponent implements OnInit {
   }
 
   loadResourceCategories(resource: Resource, callback: Function) {
-    this.api
-      .getResourceCategories(resource)
-      .subscribe(rcs => {
-        this.resourceCategories = rcs;
-        callback();
-      });
+    this.api.getResourceCategories(resource).subscribe(rcs => {
+      this.resourceCategories = rcs;
+      callback();
+    });
   }
 
   loadResourceFiles() {
-    if (this.resource.files && (this.resource.files.length > 0)) {
+    if (this.resource.files && this.resource.files.length > 0) {
       this.resource.files.forEach(fa => {
         if (fa.id) {
           this.fields.attachments.attachments.set(fa.md5, fa);
-          this.fields.attachments.formControl.updateValueAndValidity({ emitEvent: true });
+          this.fields.attachments.formControl.updateValueAndValidity({
+            emitEvent: true
+          });
         }
       });
     }
@@ -188,14 +202,16 @@ export class ResourceFormComponent implements OnInit {
 
         // If fieldset id is different from current, create new fieldset
         if (
-          (this.fieldsets.length === 0) ||
-          (this.fieldsets[this.fieldsets.length - 1].id !== field.fieldsetId)
+          this.fieldsets.length === 0 ||
+          this.fieldsets[this.fieldsets.length - 1].id !== field.fieldsetId
         ) {
-          this.fieldsets.push(new Fieldset({
-            id: field.fieldsetId || Math.random().toString(),
-            label: field.fieldsetLabel || null,
-            fields: []
-          }));
+          this.fieldsets.push(
+            new Fieldset({
+              id: field.fieldsetId || Math.random().toString(),
+              label: field.fieldsetLabel || null,
+              fields: []
+            })
+          );
         }
 
         // Add the field to the fieldset
@@ -211,13 +227,36 @@ export class ResourceFormComponent implements OnInit {
         required: true,
         maxLength: 140,
         minLength: 1,
-        placeholder: 'Resource Name',
+        placeholder: this.resourceType + ' Name',
         type: 'text',
         helpText: `
         You must be one of the persons responsible for a research resource to add it.
         After saving your resource page, a system administrator must review and approve
         it before it will be live in the system.
-      `
+        `
+      }),
+      location: new FormField({
+        formControl: new FormControl(),
+        required: true,
+        maxLength: 140,
+        minLength: 1,
+        placeholder: this.resourceType + ' Location',
+        type: 'text',
+        helpText: `
+        Please provide event location
+        `
+      }),
+      event_date: new FormField({
+        formControl: new FormControl(),
+        required: true,
+        maxLength: 140,
+        minLength: 1,
+        placeholder: 'Event Starts ~ End Ends',
+        type: 'owldatetime',
+        selectMode: 'range',
+        helpText: `
+        Please provide event datetime
+        `
       }),
       description: new FormField({
         formControl: new FormControl(),
@@ -225,7 +264,7 @@ export class ResourceFormComponent implements OnInit {
         placeholder: 'Description',
         type: 'richtexteditor',
         options: {
-          status: ['words'],
+          status: ['words']
         },
         helpText: `
         Describe your resource or service and when a researcher or community member
@@ -288,7 +327,7 @@ export class ResourceFormComponent implements OnInit {
           'Variable',
           'Free Across iTHRIV',
           'Free to Home Institution',
-          'Cost Recovery',
+          'Cost Recovery'
         ],
         helpText: `
         This is an optional field and can be used to generally indicate if there are
@@ -360,8 +399,12 @@ export class ResourceFormComponent implements OnInit {
         required: false,
         placeholder: 'Attachments',
         type: 'files'
-      }),
+      })
     };
+    if (this.resourceType !== 'Event') {
+      delete this.fields['location'];
+      delete this.fields['event_date'];
+    }
   }
 
   loadForm() {
@@ -397,25 +440,32 @@ export class ResourceFormComponent implements OnInit {
         }
 
         if (fieldName === 'categories') {
-          const selectedCatIds = this.resourceCategories.map(rc => rc.category.id);
+          const selectedCatIds = this.resourceCategories.map(
+            rc => rc.category.id
+          );
 
           if (this.categoryId) {
             selectedCatIds.push(parseInt(this.categoryId, 10));
           }
 
           for (const cat of this.allCategories) {
-            const checked = (
+            const checked =
               selectedCatIds &&
-              (selectedCatIds.length > 0) &&
-              selectedCatIds.includes(cat.id)
-            );
+              selectedCatIds.length > 0 &&
+              selectedCatIds.includes(cat.id);
             const control = new FormControl();
             control.setValue(checked);
-            this.fields.categories.formGroup.addControl(cat.id.toString(), control);
+            this.fields.categories.formGroup.addControl(
+              cat.id.toString(),
+              control
+            );
           }
 
           this.fields.categories.formGroup.setValidators(validators);
-          this.resourceForm.addControl(fieldName, this.fields.categories.formGroup);
+          this.resourceForm.addControl(
+            fieldName,
+            this.fields.categories.formGroup
+          );
           this.isDataLoaded = true;
         } else {
           if (field.formControl) {
@@ -424,8 +474,12 @@ export class ResourceFormComponent implements OnInit {
             if (fieldName === 'owner' && !this.resource[fieldName]) {
               field.formControl.patchValue(this.user.email.toLowerCase());
             } else if (fieldName === 'availabilities.institution_id') {
-              const selectedInstitutions = this.resource.availabilities.filter(av => av.available);
-              const selectedInstitutionIds = selectedInstitutions.map(i => i.institution_id);
+              const selectedInstitutions = this.resource.availabilities.filter(
+                av => av.available
+              );
+              const selectedInstitutionIds = selectedInstitutions.map(
+                i => i.institution_id
+              );
               field.formControl.patchValue(selectedInstitutionIds);
             } else if (!this.resource[fieldName] && field.defaultValue) {
               field.formControl.patchValue(field.defaultValue);
@@ -449,127 +503,149 @@ export class ResourceFormComponent implements OnInit {
   onSubmit($event, submitForApproval = false) {
     $event.preventDefault();
     this.validate();
+    if (this.router.url.includes('/event/')) {
+      this.resourceType = 'Event';
+    } else if (this.router.url.includes('/resource/')) {
+      this.resourceType = 'Resource';
+    }
+    this.api.getSegments().subscribe(segments => {
+      segments.forEach(segment => {
+        if (segment.name === this.resourceType) {
+          this.resource.segment_id = segment.id;
+          this.resource.segment = segment;
+          if (this.resourceForm.valid) {
+            this.isDataLoaded = false;
+            const fieldNames = Object.keys(this.fields);
+            for (const fieldName of fieldNames) {
+              if (this.fields[fieldName].formControl) {
+                // If the resource is being added, check that
+                // the user's email address is in the owner field
+                if (this.createNew && fieldName === 'owner') {
+                  const email = this.user.email.toLowerCase();
+                  const oldOwner = this.fields[
+                    fieldName
+                  ].formControl.value.toLowerCase();
 
-    if (this.resourceForm.valid) {
-      this.isDataLoaded = false;
-      const fieldNames = Object.keys(this.fields);
+                  if (oldOwner.includes(email)) {
+                    this.resource.owner = oldOwner;
+                  } else {
+                    this.resource.owner = `${email}, ${oldOwner}`;
+                  }
+                } else {
+                  this.resource[fieldName] = this.fields[
+                    fieldName
+                  ].formControl.value;
+                }
+              }
+            }
 
-      for (const fieldName of fieldNames) {
-        if (this.fields[fieldName].formControl) {
+            if (!this.resource.approved) {
+              this.resource.approved = submitForApproval
+                ? 'Requested'
+                : 'Unapproved';
+            } else if (
+              submitForApproval &&
+              this.resource.approved === 'Unapproved'
+            ) {
+              this.resource.approved = 'Requested';
+            }
 
-          // If the resource is being added, check that
-          // the user's email address is in the owner field
-          if (this.createNew && (fieldName === 'owner')) {
-            const email = this.user.email.toLowerCase();
-            const oldOwner = this.fields[fieldName].formControl.value.toLowerCase();
+            const fnName = this.createNew ? 'addResource' : 'updateResource';
 
-            if (oldOwner.includes(email)) {
-              this.resource.owner = oldOwner;
+            if (this.hasAttachments()) {
+              const numAttachments = this.fields.attachments.attachments.size;
+              let numDone = 0;
+
+              this.api[fnName](this.resource)
+                .pipe(
+                  map(r => (this.resource = r)),
+                  switchMap(() => this.updateCategories()),
+                  switchMap(() => this.updateAvailabilities()),
+                  switchMap(() => this.updateAttachments()),
+                  map(ras => {
+                    ras.subscribe(resourceAttachment => {
+                      numDone++;
+
+                      if (numDone === numAttachments) {
+                        if (submitForApproval) {
+                          this.api
+                            .sendApprovalRequestEmail(this.user, this.resource)
+                            .subscribe(result => (this.isDataLoaded = true));
+                        } else {
+                          this.close();
+                        }
+                      }
+                    });
+                  })
+                )
+                .subscribe(result => console.log('result', result));
             } else {
-              this.resource.owner = `${email}, ${oldOwner}`;
+              this.api[fnName](this.resource)
+                .pipe(
+                  map(r => (this.resource = r)),
+                  switchMap(() => this.updateCategories()),
+                  switchMap(() => this.updateAvailabilities())
+                )
+                .subscribe(
+                  result => console.log('result', result),
+                  error => console.error(error),
+                  () => {
+                    if (submitForApproval) {
+                      this.api
+                        .sendApprovalRequestEmail(this.user, this.resource)
+                        .subscribe(result => (this.isDataLoaded = true));
+                    } else {
+                      this.close();
+                    }
+                  }
+                );
             }
           } else {
-            this.resource[fieldName] = this.fields[fieldName].formControl.value;
-          }
-        }
-      }
+            const messages: string[] = [];
+            const controls = this.resourceForm.controls;
+            for (const fieldName in controls) {
+              if (controls.hasOwnProperty(fieldName)) {
+                const errors = controls[fieldName].errors;
+                const label = this.fields[fieldName].placeholder;
 
-      if (!this.resource.approved) {
-        this.resource.approved = submitForApproval ? 'Requested' : 'Unapproved';
-      } else if (submitForApproval && (this.resource.approved === 'Unapproved')) {
-        this.resource.approved = 'Requested';
-      }
-
-      const fnName = this.createNew ? 'addResource' : 'updateResource';
-
-      if (this.hasAttachments()) {
-        const numAttachments = this.fields.attachments.attachments.size;
-        let numDone = 0;
-
-        this.api[fnName](this.resource)
-          .pipe(
-            map(r => this.resource = r),
-            switchMap(() => this.updateCategories()),
-            switchMap(() => this.updateAvailabilities()),
-            switchMap(() => this.updateAttachments()),
-            map(ras => {
-              ras.subscribe(resourceAttachment => {
-                numDone++;
-
-                if (numDone === numAttachments) {
-                  if (submitForApproval) {
-                    this.api
-                      .sendApprovalRequestEmail(this.user, this.resource)
-                      .subscribe(result => this.isDataLoaded = true);
-                  } else {
-                    this.close();
+                for (const errorName in errors) {
+                  if (errors.hasOwnProperty(errorName)) {
+                    switch (errorName) {
+                      case 'email':
+                        messages.push(`${label} is not a valid email address.`);
+                        break;
+                      case 'maxlength':
+                        messages.push(`${label} is not long enough.`);
+                        break;
+                      case 'minlength':
+                        messages.push(`${label} is too short.`);
+                        break;
+                      case 'required':
+                        messages.push(`${label} is empty.`);
+                        break;
+                      case 'url':
+                        messages.push(`${label} is not a valid URL.`);
+                        break;
+                      default:
+                        messages.push(`${label} has an error.`);
+                        break;
+                    }
                   }
                 }
-              });
-            })
-          ).subscribe(result => console.log('result', result));
-      } else {
-        this.api[fnName](this.resource)
-          .pipe(
-            map(r => this.resource = r),
-            switchMap(() => this.updateCategories()),
-            switchMap(() => this.updateAvailabilities()),
-          )
-          .subscribe(
-            result => console.log('result', result),
-            error => console.error(error),
-            () => {
-              if (submitForApproval) {
-                this.api
-                  .sendApprovalRequestEmail(this.user, this.resource)
-                  .subscribe(result => this.isDataLoaded = true);
-              } else {
-                this.close();
               }
             }
-          );
-      }
-    } else {
-      const messages: string[] = [];
-      const controls = this.resourceForm.controls;
-      for (const fieldName in controls) {
-        if (controls.hasOwnProperty(fieldName)) {
-          const errors = controls[fieldName].errors;
-          const label = this.fields[fieldName].placeholder;
-
-          for (const errorName in errors) {
-            if (errors.hasOwnProperty(errorName)) {
-              switch (errorName) {
-                case 'email':
-                  messages.push(`${label} is not a valid email address.`);
-                  break;
-                case 'maxlength':
-                  messages.push(`${label} is not long enough.`);
-                  break;
-                case 'minlength':
-                  messages.push(`${label} is too short.`);
-                  break;
-                case 'required':
-                  messages.push(`${label} is empty.`);
-                  break;
-                case 'url':
-                  messages.push(`${label} is not a valid URL.`);
-                  break;
-                default:
-                  messages.push(`${label} has an error.`);
-                  break;
-              }
-            }
+            const action = '';
+            const message = `Please double-check the following fields: ${messages.join(
+              ' '
+            )}`;
+            this.snackBar.open(message, action, {
+              duration: 2000,
+              panelClass: 'snackbar-warning'
+            });
           }
         }
-      }
-
-      const action = '';
-      const message = `Please double-check the following fields: ${messages.join(' ')}`;
-      this.snackBar.open(message, action, {
-        duration: 2000, panelClass: 'snackbar-warning'
       });
-    }
+    });
   }
 
   updateCategories() {
@@ -578,7 +654,10 @@ export class ResourceFormComponent implements OnInit {
 
     for (const key in controls) {
       if (controls.hasOwnProperty(key) && controls[key].value) {
-        selectedCategories.push({ resource_id: this.resource.id, category_id: parseInt(key, 10) });
+        selectedCategories.push({
+          resource_id: this.resource.id,
+          category_id: parseInt(key, 10)
+        });
       }
     }
     return this.api.updateResourceCategories(this.resource, selectedCategories);
@@ -586,8 +665,13 @@ export class ResourceFormComponent implements OnInit {
 
   updateAvailabilities() {
     const availabilities: Availability[] = [];
-    for (const value of this.fields['availabilities.institution_id'].formControl.value || []) {
-      availabilities.push({ resource_id: this.resource.id, institution_id: value, available: true });
+    for (const value of this.fields['availabilities.institution_id'].formControl
+      .value || []) {
+      availabilities.push({
+        resource_id: this.resource.id,
+        institution_id: value,
+        available: true
+      });
     }
     return this.api.updateResourceAvailability(this.resource, availabilities);
   }
@@ -630,10 +714,11 @@ export class ResourceFormComponent implements OnInit {
   }
 
   onDelete() {
-    this.api.deleteResource(this.resource).subscribe(r => {
-      this.close();
-    },
-      error => this.error = error
+    this.api.deleteResource(this.resource).subscribe(
+      r => {
+        this.close();
+      },
+      error => (this.error = error)
     );
   }
 
@@ -645,7 +730,6 @@ export class ResourceFormComponent implements OnInit {
       this.route.params.subscribe(params => {
         const resourceId = params['resource'];
         const categoryId = params['category'];
-
         if (resourceId) {
           this.router.navigate(['resource', resourceId]);
         } else if (categoryId) {
@@ -667,7 +751,7 @@ export class ResourceFormComponent implements OnInit {
     return (
       this.fields.attachments &&
       this.fields.attachments.attachments &&
-      (this.fields.attachments.attachments.size > 0)
+      this.fields.attachments.attachments.size > 0
     );
   }
 
@@ -677,7 +761,7 @@ export class ResourceFormComponent implements OnInit {
       this.user.email &&
       this.resource &&
       this.resource.owners &&
-      (this.resource.owners.length > 0)
+      this.resource.owners.length > 0
     ) {
       for (const owner of this.resource.owners) {
         if (owner.toLowerCase() === this.user.email.toLowerCase()) {

@@ -1,0 +1,66 @@
+<div
+  *ngIf="events && (events.length > 0)"
+  class="resource-list"
+  fxLayout="row wrap"
+  fxLayout.xs="column"
+  fxLayoutAlign="start stretch"
+  fxLayoutAlign.xs="start start"
+  fxLayoutGap="20px grid"
+  [ngClass]="{
+    'resource-list': true,
+    'resource-list-narrow': sidenavExpanded,
+    'resource-list-xl': breakpoint === 'xl',
+    'resource-list-lg': breakpoint === 'lg',
+    'resource-list-md': breakpoint === 'md',
+    'resource-list-sm': breakpoint === 'sm',
+    'resource-list-xs': breakpoint === 'xs'
+  }"
+>
+  <div
+    *ngIf="user && user.role === 'Admin'"
+    fxFlex="100%"
+    fxFlexFill
+    fxLayout="row"
+    fxLayoutAlign="end end"
+  >
+    <div *ngIf="!csvDataReady">
+      <button
+        mat-raised-button
+        (click)="getCsvData()"
+        *ngIf="!preparingCsvData"
+      >
+        <mat-icon>save_alt</mat-icon>
+        Download this list as a CSV file
+      </button>
+      <button
+        *ngIf="preparingCsvData"
+        mat-raised-button
+        disabled
+        class="preparingCsvData"
+      >
+        <mat-spinner [diameter]="24"></mat-spinner>
+        Generating CSV file...
+      </button>
+    </div>
+    <div *ngIf="csvDataReady">
+      <app-csv-export-button
+        [data]="csvData"
+        [filename]="getCsvFilename()"
+        [options]="getCsvOptions()"
+      ></app-csv-export-button>
+    </div>
+  </div>
+  <app-resource-tile
+    *ngFor="let event of events"
+    class="resource-tile-container"
+    [fxFlex.xl]="sidenavExpanded ? '1 1 25%' : '1 1 20%'"
+    [fxFlex.lg]="sidenavExpanded ? '1 1 33%' : '1 1 25%'"
+    [fxFlex.md]="sidenavExpanded ? '1 1 50%' : '1 1 33%'"
+    [fxFlex.sm]="sidenavExpanded ? '1 1 100%' : '1 1 50%'"
+    [fxFlex.xs]="sidenavExpanded ? '1 1 100%' : '1 1 100%'"
+    fxFlexFill
+    [resource]="event"
+    [user]="user"
+    id="resource-tile-{{event.id}}"
+  ></app-resource-tile>
+</div>

@@ -6,7 +6,7 @@
 >
   <div fxFlex="75%">
     <form
-      [ngClass]="{'search-box': true, 'hidden-results': hideResults}"
+      [ngClass]="{ 'search-box': true, 'hidden-results': hideResults }"
       [formGroup]="searchForm"
     >
       <mat-form-field appearance="outline">
@@ -16,9 +16,9 @@
           type="search"
           [formControl]="searchBox"
           placeholder="Search"
-          value="{{resourceQuery.query}}"
+          value="{{ resourceQuery.query }}"
           autofocus
-        >
+        />
         <mat-icon matSuffix>search</mat-icon>
       </mat-form-field>
     </form>
@@ -30,17 +30,11 @@
   class="mat-typography"
   [hasBackdrop]="false"
 >
-  <mat-sidenav
-    #sidenav
-    class="sidenav"
-  >
+  <mat-sidenav #sidenav class="sidenav">
     <h2>
       <span>Filters</span>
       <div class="spacer"></div>
-      <button
-        mat-icon-button
-        (click)="sidenav.close()"
-      >
+      <button mat-icon-button (click)="sidenav.close()">
         <mat-icon>close</mat-icon>
       </button>
     </h2>
@@ -49,7 +43,7 @@
       <mat-expansion-panel *ngFor="let facet of resourceQuery.facets">
         <mat-expansion-panel-header>
           <mat-panel-title>
-            {{facet.field}}
+            {{ getFacetFieldTitle(facet.field) }}
           </mat-panel-title>
         </mat-expansion-panel-header>
         <mat-list>
@@ -57,9 +51,9 @@
             *ngFor="let count of facet.facetCounts"
             (click)="addFilter(facet.field, count.category)"
           >
-            {{count.category}}
+            {{ count.category }}
             <div class="spacer"></div>
-            {{count.hit_count}}
+            {{ count.hit_count }}
           </mat-list-item>
         </mat-list>
       </mat-expansion-panel>
@@ -80,38 +74,28 @@
           </mat-list-item>
         </mat-list>
       </mat-expansion-panel>
-
     </mat-accordion>
   </mat-sidenav>
   <mat-sidenav-content>
     <ul class="applied-filters">
       <li *ngIf="!sidenav.opened">
-        <button
-          mat-icon-button
-          (click)="sidenav.open()"
-        >
+        <button mat-icon-button (click)="sidenav.open()">
           <i class="material-icons">add_circle_outline</i>
         </button>
         Add a filter
       </li>
       <li *ngIf="resourceQuery.query">
-        <button
-          mat-icon-button
-          (click)="updateQuery()"
-        >
+        <button mat-icon-button (click)="updateQuery()">
           <i class="material-icons">remove_circle_outline</i>
         </button>
-        Search: {{resourceQuery.query}}
+        Search: {{ resourceQuery.query }}
       </li>
 
       <li *ngFor="let filter of resourceQuery.filters">
-        <button
-          mat-icon-button
-          (click)="removeFilter(filter)"
-        >
+        <button mat-icon-button (click)="removeFilter(filter)">
           <i class="material-icons">remove_circle_outline</i>
         </button>
-        {{filter.field}} : {{filter.value}}
+        {{ getFacetFieldTitle(filter.field) }} : {{ filter.value }}
       </li>
     </ul>
 
@@ -125,12 +109,11 @@
       ></app-resource-list>
     </div>
 
-
     <div [hidden]="loading || hideResults">
       <mat-paginator
         [length]="resourceQuery.total"
         [pageSize]="pageSize"
-        [pageSizeOptions]="[pageSize, pageSize*3, pageSize*5]"
+        [pageSizeOptions]="[pageSize, pageSize * 3, pageSize * 5]"
         (page)="updatePage()"
       >
       </mat-paginator>

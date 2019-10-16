@@ -5,6 +5,7 @@ import { NgModule } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { LayoutModule } from '@angular/cdk/layout';
 import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import {
   MatBadgeModule,
   MatButtonModule,
@@ -37,6 +38,11 @@ import {
   MatTooltipModule,
   MatTreeModule
 } from '@angular/material';
+import {
+  OwlDateTimeModule,
+  OwlNativeDateTimeModule,
+  OWL_DATE_TIME_FORMATS
+} from 'ng-pick-datetime';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CovalentTextEditorModule } from '@covalent/text-editor';
@@ -102,7 +108,22 @@ import { LoadingComponent } from './loading/loading.component';
 import { IntervalService } from './shared/interval/interval.service';
 import { TimeLeftPipe } from './shared/filters/time-left.pipe';
 import { UpgradeBrowserComponent } from './upgrade-browser/upgrade-browser.component';
+import { EventListComponent } from './event-list/event-list.component';
 
+export const MY_NATIVE_FORMATS = {
+  fullPickerInput: {
+    year: 'numeric',
+    month: 'numeric',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric'
+  },
+  datePickerInput: { year: 'numeric', month: 'numeric', day: 'numeric' },
+  timePickerInput: { hour: 'numeric', minute: 'numeric' },
+  monthYearLabel: { year: 'numeric', month: 'short' },
+  dateA11yLabel: { year: 'numeric', month: 'long', day: 'numeric' },
+  monthYearA11yLabel: { year: 'numeric', month: 'long' }
+};
 @NgModule({
   declarations: [
     AddCategoryButtonComponent,
@@ -154,7 +175,8 @@ import { UpgradeBrowserComponent } from './upgrade-browser/upgrade-browser.compo
     TimedoutComponent,
     LoadingComponent,
     TimeLeftPipe,
-    UpgradeBrowserComponent
+    UpgradeBrowserComponent,
+    EventListComponent
   ],
   imports: [
     Angular2CsvModule,
@@ -201,22 +223,26 @@ import { UpgradeBrowserComponent } from './upgrade-browser/upgrade-browser.compo
     MatToolbarModule,
     MatTooltipModule,
     MatTreeModule,
-    NgProgressModule.forRoot(),
+    NgProgressModule,
+    OwlDateTimeModule,
+    OwlNativeDateTimeModule,
     ReactiveFormsModule,
     ScrollToModule.forRoot()
   ],
-  entryComponents: [
-    CategoryFormComponent, ResourceFormComponent
-  ],
+  entryComponents: [CategoryFormComponent, ResourceFormComponent],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
       multi: true
     },
+    {
+      provide: OWL_DATE_TIME_FORMATS,
+      useValue: MY_NATIVE_FORMATS
+    },
     ResourceApiService,
     IntervalService
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {}
