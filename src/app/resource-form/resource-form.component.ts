@@ -1,31 +1,31 @@
-import { Component, HostBinding, OnInit, EventEmitter } from "@angular/core";
-import { FormControl, FormGroup, Validators } from "@angular/forms";
-import { MatSnackBar } from "@angular/material";
-import { ActivatedRoute, Router } from "@angular/router";
-import { map, switchMap } from "rxjs/operators";
-import { Availability } from "../availability";
-import { Category } from "../category";
-import { ErrorMatcher } from "../error-matcher";
-import { Fieldset } from "../fieldset";
-import { FormField } from "../form-field";
-import { Resource } from "../resource";
-import { ResourceCategory } from "../resource-category";
-import { fadeTransition } from "../shared/animations";
-import { ResourceApiService } from "../shared/resource-api/resource-api.service";
-import { ValidateUrl } from "../shared/validators/url.validator";
-import { FileAttachment } from "../file-attachment";
-import { NgProgressComponent } from "@ngx-progressbar/core";
-import { User } from "../user";
-import { IntervalService } from "../shared/interval/interval.service";
+import { Component, HostBinding, OnInit, EventEmitter } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatSnackBar } from '@angular/material';
+import { ActivatedRoute, Router } from '@angular/router';
+import { map, switchMap } from 'rxjs/operators';
+import { Availability } from '../availability';
+import { Category } from '../category';
+import { ErrorMatcher } from '../error-matcher';
+import { Fieldset } from '../fieldset';
+import { FormField } from '../form-field';
+import { Resource } from '../resource';
+import { ResourceCategory } from '../resource-category';
+import { fadeTransition } from '../shared/animations';
+import { ResourceApiService } from '../shared/resource-api/resource-api.service';
+import { ValidateUrl } from '../shared/validators/url.validator';
+import { FileAttachment } from '../file-attachment';
+import { NgProgressComponent } from '@ngx-progressbar/core';
+import { User } from '../user';
+import { IntervalService } from '../shared/interval/interval.service';
 
 @Component({
-  selector: "app-resource-form",
-  templateUrl: "./resource-form.component.html",
-  styleUrls: ["./resource-form.component.scss"],
+  selector: 'app-resource-form',
+  templateUrl: './resource-form.component.html',
+  styleUrls: ['./resource-form.component.scss'],
   animations: [fadeTransition()]
 })
 export class ResourceFormComponent implements OnInit {
-  @HostBinding("@fadeTransition")
+  @HostBinding('@fadeTransition')
   allCategories: Category[] = [];
   resourceCategories: ResourceCategory[] = [];
   createNew = false;
@@ -39,7 +39,7 @@ export class ResourceFormComponent implements OnInit {
   savesInAction = 0;
   files = {};
   progress: NgProgressComponent;
-  progressMessage: "";
+  progressMessage: '';
   user: User;
   timeLeftInSession: number;
   resourceType: string;
@@ -74,14 +74,13 @@ export class ResourceFormComponent implements OnInit {
       }
     }, 1000);
   }
-
   ngOnInit() {
     // this.api.getSession().subscribe(user => this.user = user);
     this.checkStatus();
-    if (this.router.url.includes("/event/")) {
-      this.resourceType = "Event";
-    } else if (this.router.url.includes("/resource/")) {
-      this.resourceType = "Resource";
+    if (this.router.url.includes('/event/')) {
+      this.resourceType = 'Event';
+    } else if (this.router.url.includes('/resource/')) {
+      this.resourceType = 'Resource';
     }
     this.api.getSegments().subscribe(segments => {
       segments.forEach(segment => {
@@ -96,14 +95,14 @@ export class ResourceFormComponent implements OnInit {
   // Warn the user if there session has less than 5 minutes remaining.
   toolBarWarningClass() {
     if (this.user && this.timeLeftInSession < 300000) {
-      return "warning";
+      return 'warning';
     } else {
-      return "";
+      return '';
     }
   }
 
   checkStatus() {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem('token');
 
     if (token) {
       this.api.getSessionStatus().subscribe((timestamp: number) => {
@@ -117,7 +116,7 @@ export class ResourceFormComponent implements OnInit {
           this.api.closeSession().subscribe((_: any) => {
             this.intervalService.clearInterval();
             this.user = null;
-            this.router.navigate(["timedout"]);
+            this.router.navigate(['timedout']);
           });
         } else {
           this.api.getSession().subscribe(user => {
@@ -131,8 +130,8 @@ export class ResourceFormComponent implements OnInit {
   loadData() {
     this.isDataLoaded = false;
     this.route.params.subscribe(params => {
-      const resourceId = params["resource"];
-      this.categoryId = params["category"];
+      const resourceId = params['resource'];
+      this.categoryId = params['category'];
 
       if (resourceId) {
         this.createNew = false;
@@ -146,8 +145,8 @@ export class ResourceFormComponent implements OnInit {
         this.createNew = true;
         this.resource = {
           id: null,
-          name: "",
-          description: "",
+          name: '',
+          description: '',
           availabilities: []
         };
         this.loadAllCategories(() => this.loadForm());
@@ -228,8 +227,8 @@ export class ResourceFormComponent implements OnInit {
         required: true,
         maxLength: 140,
         minLength: 1,
-        placeholder: this.resourceType + " Name",
-        type: "text",
+        placeholder: this.resourceType + ' Name',
+        type: 'text',
         helpText: `
         You must be one of the persons responsible for a research resource to add it.
         After saving your resource page, a system administrator must review and approve
@@ -241,8 +240,8 @@ export class ResourceFormComponent implements OnInit {
         required: true,
         maxLength: 140,
         minLength: 1,
-        placeholder: this.resourceType + " Location",
-        type: "text",
+        placeholder: this.resourceType + ' Location',
+        type: 'text',
         helpText: `
         Please provide event location
         `
@@ -252,9 +251,9 @@ export class ResourceFormComponent implements OnInit {
         required: true,
         maxLength: 140,
         minLength: 1,
-        placeholder: "Event Starts ~ End Ends",
-        type: "owldatetime",
-        selectMode: "range",
+        placeholder: 'Event Starts ~ End Ends',
+        type: 'owldatetime',
+        selectMode: 'range',
         helpText: `
         Please provide event datetime
         `
@@ -262,10 +261,10 @@ export class ResourceFormComponent implements OnInit {
       description: new FormField({
         formControl: new FormControl(),
         required: false,
-        placeholder: "Description",
-        type: "richtexteditor",
+        placeholder: 'Description',
+        type: 'richtexteditor',
         options: {
-          status: ["words"]
+          status: ['words']
         },
         helpText: `
         Describe your resource or service and when a researcher or community member
@@ -279,10 +278,10 @@ export class ResourceFormComponent implements OnInit {
         required: false,
         maxLength: 100,
         minLength: 1,
-        placeholder: "Contact Details",
-        type: "text",
-        fieldsetId: "contact_info",
-        fieldsetLabel: "Contact:",
+        placeholder: 'Contact Details',
+        type: 'text',
+        fieldsetId: 'contact_info',
+        fieldsetLabel: 'Contact:',
         helpText: `Contact information is optional, but will be displayed to the users.`
       }),
       contact_email: new FormField({
@@ -290,26 +289,26 @@ export class ResourceFormComponent implements OnInit {
         required: false,
         maxLength: 100,
         minLength: 1,
-        placeholder: "Contact Email",
-        type: "email",
-        fieldsetId: "contact_info"
+        placeholder: 'Contact Email',
+        type: 'email',
+        fieldsetId: 'contact_info'
       }),
       contact_phone: new FormField({
         formControl: new FormControl(),
         required: false,
         maxLength: 100,
         minLength: 1,
-        placeholder: "Contact Phone",
-        type: "text",
-        fieldsetId: "contact_info"
+        placeholder: 'Contact Phone',
+        type: 'text',
+        fieldsetId: 'contact_info'
       }),
       owner: new FormField({
         formControl: new FormControl(),
         required: true,
         maxLength: 1000,
         minLength: 1,
-        placeholder: "Owners",
-        type: "text",
+        placeholder: 'Owners',
+        type: 'text',
         helpText: `
           Enter the **email addresses** of the people who are responsible for this
           resource page and should be able to edit in the future.  The email must be
@@ -321,14 +320,14 @@ export class ResourceFormComponent implements OnInit {
       cost: new FormField({
         formControl: new FormControl(),
         required: false,
-        placeholder: "Cost Type",
-        type: "select",
+        placeholder: 'Cost Type',
+        type: 'select',
         selectOptions: [
-          "N / A",
-          "Variable",
-          "Free Across iTHRIV",
-          "Free to Home Institution",
-          "Cost Recovery"
+          'N / A',
+          'Variable',
+          'Free Across iTHRIV',
+          'Free to Home Institution',
+          'Cost Recovery'
         ],
         helpText: `
         This is an optional field and can be used to generally indicate if there are
@@ -338,35 +337,35 @@ export class ResourceFormComponent implements OnInit {
       type_id: new FormField({
         formControl: new FormControl(),
         required: true,
-        placeholder: "Select Type",
-        type: "select",
-        apiSource: "getTypes"
+        placeholder: 'Select Type',
+        type: 'select',
+        apiSource: 'getTypes'
       }),
       institution_id: new FormField({
         formControl: new FormControl(),
         required: true,
-        placeholder: "Home Institution",
-        type: "select",
-        apiSource: "getInstitutions",
-        fieldsetId: "institution_prefs",
-        fieldsetLabel: "Institutions"
+        placeholder: 'Home Institution',
+        type: 'select',
+        apiSource: 'getInstitutions',
+        fieldsetId: 'institution_prefs',
+        fieldsetLabel: 'Institutions'
       }),
       private: new FormField({
         formControl: new FormControl(),
         required: false,
-        placeholder: "Only visible to Home Institution",
-        type: "checkbox",
-        fieldsetId: "institution_prefs",
+        placeholder: 'Only visible to Home Institution',
+        type: 'checkbox',
+        fieldsetId: 'institution_prefs',
         helpText: `If this box is checked, this resource will only be visible to the Home Institution selected above.`
       }),
-      "availabilities.institution_id": new FormField({
+      'availabilities.institution_id': new FormField({
         formControl: new FormControl(),
         required: true,
-        placeholder: "Which institutions can use this resource?",
-        type: "select",
+        placeholder: 'Which institutions can use this resource?',
+        type: 'select',
         multiSelect: true,
-        apiSource: "getAvailabilityInstitutions",
-        fieldsetId: "institution_prefs",
+        apiSource: 'getAvailabilityInstitutions',
+        fieldsetId: 'institution_prefs',
         helpText: `
         Select the audiences or user groups that have access to this resource or
         service. These user groups will see this in their "resources you have access
@@ -379,8 +378,8 @@ export class ResourceFormComponent implements OnInit {
         required: false,
         maxLength: 200,
         minLength: 7,
-        placeholder: "Website",
-        type: "url",
+        placeholder: 'Website',
+        type: 'url',
         helpText: `
         Provide the primary URL associated with this resource. This is an optional
         field.
@@ -389,22 +388,22 @@ export class ResourceFormComponent implements OnInit {
       categories: new FormField({
         formGroup: new FormGroup({}),
         required: true,
-        placeholder: "Select Categories",
-        type: "tree",
-        apiSource: "getCategories",
+        placeholder: 'Select Categories',
+        type: 'tree',
+        apiSource: 'getCategories',
         multiSelect: true
       }),
       attachments: new FormField({
         formControl: new FormControl(),
         attachments: new Map<number | string, FileAttachment>(),
         required: false,
-        placeholder: "Attachments",
-        type: "files"
+        placeholder: 'Attachments',
+        type: 'files'
       })
     };
-    if (this.resourceType !== "Event") {
-      delete this.fields["location"];
-      delete this.fields["event_date"];
+    if (this.resourceType !== 'Event') {
+      delete this.fields['location'];
+      delete this.fields['event_date'];
     }
   }
 
@@ -428,19 +427,19 @@ export class ResourceFormComponent implements OnInit {
           validators.push(Validators.maxLength(field.maxLength));
         }
 
-        if (field.type === "email") {
+        if (field.type === 'email') {
           validators.push(Validators.email);
         }
 
-        if (field.type === "url") {
+        if (field.type === 'url') {
           validators.push(ValidateUrl);
         }
 
-        if (fieldName === "attachments") {
+        if (fieldName === 'attachments') {
           this.loadResourceFiles();
         }
 
-        if (fieldName === "categories") {
+        if (fieldName === 'categories') {
           const selectedCatIds = this.resourceCategories.map(
             rc => rc.category.id
           );
@@ -472,9 +471,9 @@ export class ResourceFormComponent implements OnInit {
           if (field.formControl) {
             field.formControl.setValidators(validators);
 
-            if (fieldName === "owner" && !this.resource[fieldName]) {
+            if (fieldName === 'owner' && !this.resource[fieldName]) {
               field.formControl.patchValue(this.user.email.toLowerCase());
-            } else if (fieldName === "availabilities.institution_id") {
+            } else if (fieldName === 'availabilities.institution_id') {
               const selectedInstitutions = this.resource.availabilities.filter(
                 av => av.available
               );
@@ -504,130 +503,149 @@ export class ResourceFormComponent implements OnInit {
   onSubmit($event, submitForApproval = false) {
     $event.preventDefault();
     this.validate();
-    if (this.resourceForm.valid) {
-      this.isDataLoaded = false;
-      const fieldNames = Object.keys(this.fields);
-      for (const fieldName of fieldNames) {
-        if (this.fields[fieldName].formControl) {
-          // If the resource is being added, check that
-          // the user's email address is in the owner field
-          if (this.createNew && fieldName === "owner") {
-            const email = this.user.email.toLowerCase();
-            const oldOwner = this.fields[
-              fieldName
-            ].formControl.value.toLowerCase();
+    if (this.router.url.includes('/event/')) {
+      this.resourceType = 'Event';
+    } else if (this.router.url.includes('/resource/')) {
+      this.resourceType = 'Resource';
+    }
+    this.api.getSegments().subscribe(segments => {
+      segments.forEach(segment => {
+        if (segment.name === this.resourceType) {
+          this.resource.segment_id = segment.id;
+          this.resource.segment = segment;
+          if (this.resourceForm.valid) {
+            this.isDataLoaded = false;
+            const fieldNames = Object.keys(this.fields);
+            for (const fieldName of fieldNames) {
+              if (this.fields[fieldName].formControl) {
+                // If the resource is being added, check that
+                // the user's email address is in the owner field
+                if (this.createNew && fieldName === 'owner') {
+                  const email = this.user.email.toLowerCase();
+                  const oldOwner = this.fields[
+                    fieldName
+                  ].formControl.value.toLowerCase();
 
-            if (oldOwner.includes(email)) {
-              this.resource.owner = oldOwner;
+                  if (oldOwner.includes(email)) {
+                    this.resource.owner = oldOwner;
+                  } else {
+                    this.resource.owner = `${email}, ${oldOwner}`;
+                  }
+                } else {
+                  this.resource[fieldName] = this.fields[
+                    fieldName
+                  ].formControl.value;
+                }
+              }
+            }
+
+            if (!this.resource.approved) {
+              this.resource.approved = submitForApproval
+                ? 'Requested'
+                : 'Unapproved';
+            } else if (
+              submitForApproval &&
+              this.resource.approved === 'Unapproved'
+            ) {
+              this.resource.approved = 'Requested';
+            }
+
+            const fnName = this.createNew ? 'addResource' : 'updateResource';
+
+            if (this.hasAttachments()) {
+              const numAttachments = this.fields.attachments.attachments.size;
+              let numDone = 0;
+
+              this.api[fnName](this.resource)
+                .pipe(
+                  map(r => (this.resource = r)),
+                  switchMap(() => this.updateCategories()),
+                  switchMap(() => this.updateAvailabilities()),
+                  switchMap(() => this.updateAttachments()),
+                  map(ras => {
+                    ras.subscribe(resourceAttachment => {
+                      numDone++;
+
+                      if (numDone === numAttachments) {
+                        if (submitForApproval) {
+                          this.api
+                            .sendApprovalRequestEmail(this.user, this.resource)
+                            .subscribe(result => (this.isDataLoaded = true));
+                        } else {
+                          this.close();
+                        }
+                      }
+                    });
+                  })
+                )
+                .subscribe(result => console.log('result', result));
             } else {
-              this.resource.owner = `${email}, ${oldOwner}`;
+              this.api[fnName](this.resource)
+                .pipe(
+                  map(r => (this.resource = r)),
+                  switchMap(() => this.updateCategories()),
+                  switchMap(() => this.updateAvailabilities())
+                )
+                .subscribe(
+                  result => console.log('result', result),
+                  error => console.error(error),
+                  () => {
+                    if (submitForApproval) {
+                      this.api
+                        .sendApprovalRequestEmail(this.user, this.resource)
+                        .subscribe(result => (this.isDataLoaded = true));
+                    } else {
+                      this.close();
+                    }
+                  }
+                );
             }
           } else {
-            this.resource[fieldName] = this.fields[fieldName].formControl.value;
-          }
-        }
-      }
+            const messages: string[] = [];
+            const controls = this.resourceForm.controls;
+            for (const fieldName in controls) {
+              if (controls.hasOwnProperty(fieldName)) {
+                const errors = controls[fieldName].errors;
+                const label = this.fields[fieldName].placeholder;
 
-      if (!this.resource.approved) {
-        this.resource.approved = submitForApproval ? "Requested" : "Unapproved";
-      } else if (submitForApproval && this.resource.approved === "Unapproved") {
-        this.resource.approved = "Requested";
-      }
-
-      const fnName = this.createNew ? "addResource" : "updateResource";
-
-      if (this.hasAttachments()) {
-        const numAttachments = this.fields.attachments.attachments.size;
-        let numDone = 0;
-
-        this.api[fnName](this.resource)
-          .pipe(
-            map(r => (this.resource = r)),
-            switchMap(() => this.updateCategories()),
-            switchMap(() => this.updateAvailabilities()),
-            switchMap(() => this.updateAttachments()),
-            map(ras => {
-              ras.subscribe(resourceAttachment => {
-                numDone++;
-
-                if (numDone === numAttachments) {
-                  if (submitForApproval) {
-                    this.api
-                      .sendApprovalRequestEmail(this.user, this.resource)
-                      .subscribe(result => (this.isDataLoaded = true));
-                  } else {
-                    this.close();
+                for (const errorName in errors) {
+                  if (errors.hasOwnProperty(errorName)) {
+                    switch (errorName) {
+                      case 'email':
+                        messages.push(`${label} is not a valid email address.`);
+                        break;
+                      case 'maxlength':
+                        messages.push(`${label} is not long enough.`);
+                        break;
+                      case 'minlength':
+                        messages.push(`${label} is too short.`);
+                        break;
+                      case 'required':
+                        messages.push(`${label} is empty.`);
+                        break;
+                      case 'url':
+                        messages.push(`${label} is not a valid URL.`);
+                        break;
+                      default:
+                        messages.push(`${label} has an error.`);
+                        break;
+                    }
                   }
                 }
-              });
-            })
-          )
-          .subscribe(result => console.log("result", result));
-      } else {
-        this.api[fnName](this.resource)
-          .pipe(
-            map(r => (this.resource = r)),
-            switchMap(() => this.updateCategories()),
-            switchMap(() => this.updateAvailabilities())
-          )
-          .subscribe(
-            result => console.log("result", result),
-            error => console.error(error),
-            () => {
-              if (submitForApproval) {
-                this.api
-                  .sendApprovalRequestEmail(this.user, this.resource)
-                  .subscribe(result => (this.isDataLoaded = true));
-              } else {
-                this.close();
               }
             }
-          );
-      }
-    } else {
-      const messages: string[] = [];
-      const controls = this.resourceForm.controls;
-      for (const fieldName in controls) {
-        if (controls.hasOwnProperty(fieldName)) {
-          const errors = controls[fieldName].errors;
-          const label = this.fields[fieldName].placeholder;
-
-          for (const errorName in errors) {
-            if (errors.hasOwnProperty(errorName)) {
-              switch (errorName) {
-                case "email":
-                  messages.push(`${label} is not a valid email address.`);
-                  break;
-                case "maxlength":
-                  messages.push(`${label} is not long enough.`);
-                  break;
-                case "minlength":
-                  messages.push(`${label} is too short.`);
-                  break;
-                case "required":
-                  messages.push(`${label} is empty.`);
-                  break;
-                case "url":
-                  messages.push(`${label} is not a valid URL.`);
-                  break;
-                default:
-                  messages.push(`${label} has an error.`);
-                  break;
-              }
-            }
+            const action = '';
+            const message = `Please double-check the following fields: ${messages.join(
+              ' '
+            )}`;
+            this.snackBar.open(message, action, {
+              duration: 2000,
+              panelClass: 'snackbar-warning'
+            });
           }
         }
-      }
-
-      const action = "";
-      const message = `Please double-check the following fields: ${messages.join(
-        " "
-      )}`;
-      this.snackBar.open(message, action, {
-        duration: 2000,
-        panelClass: "snackbar-warning"
       });
-    }
+    });
   }
 
   updateCategories() {
@@ -647,7 +665,7 @@ export class ResourceFormComponent implements OnInit {
 
   updateAvailabilities() {
     const availabilities: Availability[] = [];
-    for (const value of this.fields["availabilities.institution_id"].formControl
+    for (const value of this.fields['availabilities.institution_id'].formControl
       .value || []) {
       availabilities.push({
         resource_id: this.resource.id,
@@ -707,15 +725,15 @@ export class ResourceFormComponent implements OnInit {
   // Go to resource screen
   close() {
     if (this.resource && this.resource.id) {
-      this.router.navigate(["resource", this.resource.id]);
+      this.router.navigate(['resource', this.resource.id]);
     } else {
       this.route.params.subscribe(params => {
-        const resourceId = params["resource"];
-        const categoryId = params["category"];
+        const resourceId = params['resource'];
+        const categoryId = params['category'];
         if (resourceId) {
-          this.router.navigate(["resource", resourceId]);
+          this.router.navigate(['resource', resourceId]);
         } else if (categoryId) {
-          this.router.navigate(["category", categoryId]);
+          this.router.navigate(['category', categoryId]);
         }
       });
     }

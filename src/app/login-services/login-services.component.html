@@ -16,20 +16,22 @@
       mat-stroked-button
       (click)="goLoginService(s)"
       [ngStyle]="{
-            'border-color': s.color
-          }"
+        'border-color': s.color
+      }"
       class="service-logo"
       matTooltip="{{ s.name }}"
-      id="btn-service-{{s.id}}"
+      id="btn-service-{{ s.id }}"
     >
-      <img *ngIf="s.image" [src]="s.image">
-      <span *ngIf="!s.image">{{s.name}}</span>
+      <img *ngIf="s.image" [src]="s.image" />
+      <span *ngIf="!s.image">{{ s.name }}</span>
     </button>
   </div>
-  <div
-    *ngIf="institution"
-    id="institution-login"
-  >
+  <h5>
+    The iTHRIV Research Concierge Portal is supported in part by the National
+    Center For Advancing Translational Sciences of the National Institutes of
+    Health under Award Numbers UL1TR003015 and KL2TR003016.
+  </h5>
+  <div *ngIf="institution" id="institution-login">
     <mat-tab-group
       mat-stretch-tabs
       dynamicHeight
@@ -37,16 +39,21 @@
     >
       <mat-tab label="iTHRIV PORTAL {{ institution.name.toUpperCase() }} VIEW">
         <div class="help">
-          <p>We are working to implement logins that will give you a personalized view of the portal using your
-            {{ institution.name }} login and password. In the meantime, click below to access the portal as a
-            {{ institution.name }} user.</p>
+          <p>
+            We are working to implement logins that will give you a personalized
+            view of the portal using your {{ institution.name }} login and
+            password. In the meantime, click below to access the portal as a
+            {{ institution.name }} user.
+          </p>
           <button
             mat-stroked-button
             (click)="goNetworkBrowse($event)"
-            id="btn-institution-{{institution.id}}"
+            id="btn-institution-{{ institution.id }}"
           >
             <span>
-              <img [src]="'/assets/institutions/' + institution.name + '.png'">
+              <img
+                [src]="'/assets/institutions/' + institution.name + '.png'"
+              />
             </span>
             CONTINUE TO PORTAL {{ institution.name.toUpperCase() }} VIEW
           </button>
