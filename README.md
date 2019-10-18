@@ -1,59 +1,24 @@
-# Frontend
+# Introduction
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.7.4.
- 
-## Development server
+This is the portal interface for iTHRIV, a Translational Medicine service that will provide a searchable, browsable index of resources/events/datasets and many more avaialable to reseachers, clinicians and the public with the intention to improve access and improve health care in our community.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+### Prerequisites
 
-## Code scaffoldings
+Docker Engine
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+### Starting the interface
 
-## Build
-
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `-prod` flag for a production build.
-
-
-## Testing
-
-### Unit testing
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-### End-to-end (e2e) testing
-
-## Run the app
-
-### Start PostgreSQL
 ```BASH
-$ brew services start postgresql
-```
-or
-```BASH
-$ pg_ctl -D /usr/local/var/postgres start
+docker-compose build
+docker-compose start
 ```
 
-### Start ElasticSearch
+### Stopping the Service
+
 ```BASH
-$ elasticsearch
+docker-compose stop
 ```
 
-### Start the backend app
-In the `backend` directory, execute the following command:
-```BASH
-$ flask run
-```
+### Security / Authentication
 
-### Start the frontend app
-In the `frontend` directory, execute the following commands:
-```BASH
-$ npm install
-$ ng serve
-```
-
-### Run the e2e tests
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+At present the system handles single sign on (SSO) authentication through Shibboleth.
