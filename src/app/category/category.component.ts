@@ -1,24 +1,24 @@
-import { Component, OnInit } from "@angular/core";
-import { Title } from "@angular/platform-browser";
-import { ActivatedRoute, Router } from "@angular/router";
-import { Category } from "../category";
-import { CategoryResource } from "../category-resource";
-import { zoomTransition } from "../shared/animations";
-import { hexColorToRGBA } from "../shared/color";
-import { ResourceApiService } from "../shared/resource-api/resource-api.service";
-import { User } from "../user";
+import { Component, OnInit } from '@angular/core';
+import { Title } from '@angular/platform-browser';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Category } from '../category';
+import { CategoryResource } from '../category-resource';
+import { zoomTransition } from '../shared/animations';
+import { hexColorToRGBA } from '../shared/color';
+import { ResourceApiService } from '../shared/resource-api/resource-api.service';
+import { User } from '../user';
 
 @Component({
-  selector: "app-category",
-  templateUrl: "./category.component.html",
-  styleUrls: ["./category.component.scss"],
+  selector: 'app-category',
+  templateUrl: './category.component.html',
+  styleUrls: ['./category.component.scss'],
   animations: [zoomTransition()]
 })
 export class CategoryComponent implements OnInit {
   categoryId: number;
   category: Category;
-  categoryResources: CategoryResource[];
-  transitionClass = "";
+  categoryResources: Array<CategoryResource> = [];
+  transitionClass = '';
   isDataLoaded = false;
   publicId: number;
   user: User;
@@ -30,7 +30,7 @@ export class CategoryComponent implements OnInit {
     private titleService: Title
   ) {
     this.route.params.subscribe(params => {
-      this.categoryId = params["category"];
+      this.categoryId = params['category'];
       this.loadCategory(this.categoryId);
     });
     this.publicId = 87;
@@ -52,8 +52,23 @@ export class CategoryComponent implements OnInit {
     this.api
       .getCategoryResources(this.category)
       .subscribe(categoryResources => {
-        this.categoryResources = categoryResources;
-        this.transitionClass = "zoom-in-enter";
+        categoryResources.forEach(cr => {
+          if (cr.resource.segment.name === 'Event') {
+            this.categoryResources.push(cr);
+          }
+        });
+        this.categoryResources.sort(function(a, b) {
+          return (
+            new Date(a.resource.starts).getTime() -
+            new Date(b.resource.starts).getTime()
+          );
+        });
+        categoryResources.forEach(cr => {
+          if (cr.resource.segment.name === 'Resource') {
+            this.categoryResources.push(cr);
+          }
+        });
+        this.transitionClass = 'zoom-in-enter';
         this.isDataLoaded = true;
       });
   }
@@ -84,6 +99,12 @@ export class CategoryComponent implements OnInit {
           );
         }
       })
+      .filter(cr => {
+        if (cr.resource.segment.name === 'Event') {
+          return new Date(cr.resource.ends).getTime() >= new Date().getTime();
+        }
+        return true;
+      })
       .map(cr => cr.resource);
   }
 
@@ -91,6 +112,12 @@ export class CategoryComponent implements OnInit {
     return this.categoryResources
       .filter(cr => {
         return this.user ? true : cr.resource.approved;
+      })
+      .filter(cr => {
+        if (cr.resource.segment.name === 'Event') {
+          return new Date(cr.resource.ends).getTime() >= new Date().getTime();
+        }
+        return true;
       })
       .map(cr => cr.resource);
   }
@@ -100,10 +127,10 @@ export class CategoryComponent implements OnInit {
   getUserName() {
     if (this.user) {
       return this.user.display_name;
-    } else if (sessionStorage.getItem("institution_name")) {
-      return sessionStorage.getItem("institution_name");
+    } else if (sessionStorage.getItem('institution_name')) {
+      return sessionStorage.getItem('institution_name');
     } else {
-      return "the public";
+      return 'the public';
     }
   }
 
@@ -112,8 +139,8 @@ export class CategoryComponent implements OnInit {
   getInstitutionId() {
     if (this.user) {
       return this.user.institution_id;
-    } else if (sessionStorage.getItem("institution_id")) {
-      return parseInt(sessionStorage.getItem("institution_id"), 10);
+    } else if (sessionStorage.getItem('institution_id')) {
+      return parseInt(sessionStorage.getItem('institution_id'), 10);
     } else {
       return this.publicId;
     }
@@ -123,19 +150,19 @@ export class CategoryComponent implements OnInit {
 
   goCategory($event, category: Category) {
     $event.preventDefault();
-    this.transitionClass = "zoom-out-exit";
+    this.transitionClass = 'zoom-out-exit';
 
     if (category.level === 2) {
-      this.router.navigate(["category", category.id], {
+      this.router.navigate(['category', category.id], {
         queryParams: { from: this.category.level }
       });
     } else if (this.api.getViewPreferences().isNetworkView) {
-      this.router.navigate(["network", category.id]);
+      this.router.navigate(['network', category.id]);
     } else {
       const id = category.level === 1 ? category.parent.id : category.id;
       const scrollTo = category.level === 1 ? category.id : undefined;
       const queryParams = { from: this.category.level, scrollTo: scrollTo };
-      this.router.navigate(["browse", id], { queryParams: queryParams });
+      this.router.navigate(['browse', id], { queryParams: queryParams });
     }
   }
 
@@ -144,8 +171,8 @@ export class CategoryComponent implements OnInit {
       this.category && this.category.parent && this.category.parent.parent;
     if (rootCat) {
       return `url('/assets/browse/${rootCat.image.replace(
-        ".png",
-        ""
+        '.png',
+        ''
       )}-tile.png')`;
     }
   }
