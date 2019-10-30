@@ -54,7 +54,7 @@
             <ul>
               <li *ngFor="let level0 of categories">
                 <h2 mat-subheader>
-                  <a class="level0" href="/browse/{{ level0.id }}">{{
+                  <a class="level0" href="/#/browse/{{ level0.id }}">{{
                     level0.name
                   }}</a>
                 </h2>
@@ -63,8 +63,8 @@
                     <h3 mat-subheader>
                       <a
                         class="level1"
-                        href="/browse/{{ level0.id }}?scrollTo={{
-                          level1.name
+                        href="/#/browse/{{ level0.id }}?scrollTo={{
+                          level1.id
                         }}"
                         >{{ level1.name }}</a
                       >
