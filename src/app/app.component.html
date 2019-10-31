@@ -8,15 +8,12 @@
     >
       <mat-nav-list>
         <mat-list-item>
-          <button
-            mat-button
-            (click)="closeSidenav(); goHome($event)"
-          >
+          <button mat-button (click)="closeSidenav(); goHome($event)">
             <mat-icon>home</mat-icon>
             Home
           </button>
         </mat-list-item>
-        <mat-list-item *ngIf="session && (session.role === 'Admin')">
+        <mat-list-item *ngIf="session && session.role === 'Admin'">
           <button
             mat-button
             (click)="closeSidenav(); goUserAdmin($event)"
@@ -37,12 +34,9 @@
           </button>
         </mat-list-item>
         <mat-list-item *ngIf="session">
-          <button
-            mat-button
-            (click)="closeSidenav(); goHome($event)"
-          >
+          <button mat-button (click)="closeSidenav(); goHome($event)">
             <mat-icon>account_circle</mat-icon>
-            {{session.display_name}} ({{timeLeftInSession | timeLeft }})
+            {{ session.display_name }} ({{ timeLeftInSession | timeLeft }})
           </button>
         </mat-list-item>
         <mat-list-item *ngIf="session">
@@ -58,25 +52,12 @@
       </mat-nav-list>
     </mat-sidenav>
     <mat-sidenav-content>
-      <mat-toolbar
-        *ngIf="!hideHeader"
-        class="mat-toolbar-tools"
-      >
-        <mat-toolbar-row
-          class="menubar menubar-xs"
-          *ngIf="mobileQuery.matches"
-        >
-          <button
-            mat-icon-button
-            (tap)="toggleSidenav()"
-          >
+      <mat-toolbar *ngIf="!hideHeader" class="mat-toolbar-tools">
+        <mat-toolbar-row class="menubar menubar-xs" *ngIf="mobileQuery.matches">
+          <button mat-icon-button (tap)="toggleSidenav()">
             <mat-icon>menu</mat-icon>
           </button>
-          <a
-            mat-button
-            [routerLink]="['/']"
-            aria-label="Go Home"
-          >
+          <a mat-button [routerLink]="['/']" aria-label="Go Home">
             <img
               src="/assets/logo/ithriv-logomark.png"
               alt="iTHRIV"
@@ -107,12 +88,13 @@
               mat-button
               *ngIf="session"
               [routerLink]="['/']"
-              id="user_{{session.id}}"
-              [ngClass]="{'user-name': true}"
+              id="user_{{ session.id }}"
+              [ngClass]="{ 'user-name': true }"
             >
               <mat-icon>account_circle</mat-icon>
-              {{session.display_name}}&nbsp;
-              ({{timeLeftInSession | timeLeft }})
+              {{ session.display_name }}&nbsp; ({{
+                timeLeftInSession | timeLeft
+              }})
             </a>
             <button
               mat-button
@@ -210,12 +192,14 @@
           fxLayoutGap="20px"
           class="secondary-nav"
         >
-          <h1 *ngIf="!mobileQuery.matches">{{pageTitle}}</h1>
+          <h1 *ngIf="!mobileQuery.matches">{{ pageTitle }}</h1>
           <span
             *ngIf="!mobileQuery.matches"
             class="fill-remaining-space"
           ></span>
-          <ng-container *ngIf="isNetworkOrBrowseview() && isGraphViewSupported()">
+          <ng-container
+            *ngIf="isNetworkOrBrowseview() && isGraphViewSupported()"
+          >
             <div>Change View:</div>
             <mat-button-toggle-group #group="matButtonToggleGroup">
               <mat-button-toggle
@@ -241,19 +225,9 @@
         </mat-toolbar-row>
       </mat-toolbar>
 
-      <div
-        class="content"
-        [@fadeTransition]="getState(o)"
-        fxFlexFill
-      >
-        <router-outlet
-          #o="outlet"
-          fxFlexFill
-        ></router-outlet>
+      <div class="content" [@fadeTransition]="getState(o)" fxFlexFill>
+        <router-outlet #o="outlet" fxFlexFill></router-outlet>
       </div>
-
     </mat-sidenav-content>
   </mat-sidenav-container>
-
-
 </div>

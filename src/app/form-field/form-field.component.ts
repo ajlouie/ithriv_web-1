@@ -32,7 +32,8 @@ export class FormFieldComponent implements OnInit {
   public eventFilter = (d: Date): boolean => {
     const day = d.getDay();
     // Prevent Saturday and Sunday from being selected.
-    return day !== 0 && day !== 6;
+    //return day !== 0 && day !== 6;
+    return true;
   };
 
   constructor(private api: ResourceApiService) {}

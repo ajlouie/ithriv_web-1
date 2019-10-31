@@ -13,7 +13,7 @@ docker-compose build
 docker-compose start
 ```
 
-### Stopping the Service
+### Stopping the interface
 
 ```BASH
 docker-compose stop

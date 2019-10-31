@@ -1,7 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import * as articles from './articles.json';
-import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
+import {
+  BreakpointObserver,
+  Breakpoints,
+  BreakpointState
+} from '@angular/cdk/layout';
 import { Category } from '../category.js';
 import { ResourceApiService } from '../shared/resource-api/resource-api.service';
 import { User } from '../user.js';
@@ -17,19 +21,26 @@ export class HelpComponent implements OnInit {
   privateArticles = [];
   publicArticles = [];
   breakpoint: string;
+  isNetworkView: boolean;
 
   constructor(
     private api: ResourceApiService,
     private router: Router,
     public breakpointObserver: BreakpointObserver
   ) {
-    if (articles && articles.default && (articles.default.length > 0)) {
+    if (articles && articles.default && articles.default.length > 0) {
       this.privateArticles = articles.default.filter(a => !a.public);
       this.publicArticles = articles.default.filter(a => a.public);
     }
 
-    this.api.getSession().subscribe(user => this.user = user);
-    this.api.getCategories().subscribe(cats => this.categories = cats);
+    this.api.getSession().subscribe(user => (this.user = user));
+    this.api.getCategories().subscribe(cats => (this.categories = cats));
+
+    const viewPrefs = this.api.getViewPreferences();
+    this.isNetworkView =
+      viewPrefs && viewPrefs.hasOwnProperty('isNetworkView')
+        ? viewPrefs.isNetworkView
+        : true;
   }
 
   ngOnInit() {
@@ -42,11 +53,21 @@ export class HelpComponent implements OnInit {
         Breakpoints.XSmall
       ])
       .subscribe((state: BreakpointState) => {
-        if (state.breakpoints[Breakpoints.XLarge]) { this.breakpoint = 'xl'; }
-        if (state.breakpoints[Breakpoints.Large]) { this.breakpoint = 'lg'; }
-        if (state.breakpoints[Breakpoints.Medium]) { this.breakpoint = 'md'; }
-        if (state.breakpoints[Breakpoints.Small]) { this.breakpoint = 'sm'; }
-        if (state.breakpoints[Breakpoints.XSmall]) { this.breakpoint = 'xs'; }
+        if (state.breakpoints[Breakpoints.XLarge]) {
+          this.breakpoint = 'xl';
+        }
+        if (state.breakpoints[Breakpoints.Large]) {
+          this.breakpoint = 'lg';
+        }
+        if (state.breakpoints[Breakpoints.Medium]) {
+          this.breakpoint = 'md';
+        }
+        if (state.breakpoints[Breakpoints.Small]) {
+          this.breakpoint = 'sm';
+        }
+        if (state.breakpoints[Breakpoints.XSmall]) {
+          this.breakpoint = 'xs';
+        }
       });
   }
 
@@ -54,5 +75,4 @@ export class HelpComponent implements OnInit {
     $event.preventDefault();
     this.router.navigate(['consult_request']);
   }
-
 }
