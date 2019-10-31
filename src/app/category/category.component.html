@@ -26,30 +26,35 @@
       <div
         class="breadcrumb breadcrumb-parent"
         (click)="goCategory($event, category.parent)"
-        [ngStyle]="category.parent.hover ? {'background-color': category.color, 'border-color': category.color, 'color': 'white'} : {'color': category.color, 'border-color': category.color}"
-        (mouseover)="category.parent.hover=true"
-        (mouseleave)="category.parent.hover=false"
+        [ngStyle]="
+          category.parent.hover
+            ? {
+                'background-color': category.color,
+                'border-color': category.color,
+                color: 'white'
+              }
+            : { color: category.color, 'border-color': category.color }
+        "
+        (mouseover)="category.parent.hover = true"
+        (mouseleave)="category.parent.hover = false"
         matTooltip="
-          {{category.parent.name}}:
-          {{category.parent.brief_description || category.parent.description}}
+          {{ category.parent.name }}:
+          {{ category.parent.brief_description || category.parent.description }}
         "
       >
-        <a
-          href="#"
-          (click)="goCategory($event, category.parent)"
-        >
+        <a href="#" (click)="goCategory($event, category.parent)">
           <mat-icon
-            svgIcon="ithriv_{{category.parent.icon_id}}"
-            [ngStyle]="{'color': category.color}"
+            svgIcon="ithriv_{{ category.parent.icon_id }}"
+            [ngStyle]="{ color: category.color }"
           ></mat-icon>
         </a>
       </div>
       <div
         class="breadcrumb breadcrumb-self"
-        [ngStyle]="{'border-color': category.color}"
+        [ngStyle]="{ 'border-color': category.color }"
       >
         <div class="breadcrumb-self-name">
-          {{category.name}}
+          {{ category.name }}
         </div>
       </div>
     </div>
@@ -60,13 +65,10 @@
       fxFlex.lt-md="calc(100% - 40px)"
     >
       <div fxLayout="column">
-        <h1
-          class="mat-display-2"
-          [ngStyle]="{'color': category.color}"
-        >
-          {{category.name}}
+        <h1 class="mat-display-2" [ngStyle]="{ color: category.color }">
+          {{ category.name }}
         </h1>
-        <markdown>{{category.description}}</markdown>
+        <markdown>{{ category.description }}</markdown>
         <p>
           <app-add-resource-button
             [category]="category"
@@ -74,19 +76,18 @@
           ></app-add-resource-button>
         </p>
       </div>
-      <div
-        *ngIf="getResources()"
-        class="resources"
-      >
+      <div *ngIf="getResources()" class="resources">
         <mat-tab-group
           mat-stretch-tabs
           dynamicHeight
-          [ngStyle]="{'background-color': category.color}"
+          [ngStyle]="{ 'background-color': category.color }"
         >
-          <mat-tab label="
-            Resources/Events available to {{getUserName()}}
-            ({{getResources(getInstitutionId()).length}})
-          ">
+          <mat-tab
+            label="
+            Resources/Events available to {{ getUserName() }}
+            ({{ getResources(getInstitutionId()).length }})
+          "
+          >
             <app-resource-list
               *ngIf="getResources(getInstitutionId()).length > 0"
               [resources]="getResources(getInstitutionId())"
@@ -98,27 +99,37 @@
               *ngIf="getResources(getInstitutionId()).length === 0 && user"
               class="please-log-in"
             >
-              <h2>There are no resources available to your home institution.</h2>
+              <h2>
+                There are no resources available to your home institution.
+              </h2>
             </div>
             <div
-              *ngIf="getResources(getInstitutionId()).length === 0 && !user && getInstitutionId() != publicId"
+              *ngIf="
+                getResources(getInstitutionId()).length === 0 &&
+                !user &&
+                getInstitutionId() != publicId
+              "
               class="please-log-in"
             >
-              <h2>There are no resources available to {{getUserName()}}.</h2>
+              <h2>There are no resources available to {{ getUserName() }}.</h2>
             </div>
             <div
-              *ngIf="getResources(getInstitutionId()).length === 0 && !user && getInstitutionId() === publicId"
+              *ngIf="
+                getResources(getInstitutionId()).length === 0 &&
+                !user &&
+                getInstitutionId() === publicId
+              "
               class="please-log-in"
             >
               <app-login-services></app-login-services>
               <p>
-                Select your institution to view resources in this category that you have direct access to. To view all
-                resources listed across
+                Select your institution to view resources in this category that
+                you have direct access to. To view all resources listed across
                 iTHRIV institutions, select the "View all in category" tab.
               </p>
             </div>
           </mat-tab>
-          <mat-tab label="View all in category ({{getAllResources().length}})">
+          <mat-tab label="All Resource/Events ({{ getAllResources().length }})">
             <app-resource-list
               [resources]="getAllResources()"
               [user]="user"
