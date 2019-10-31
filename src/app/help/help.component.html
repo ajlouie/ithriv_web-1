@@ -53,14 +53,19 @@
             </p>
             <ul>
               <li *ngFor="let level0 of categories">
-                <h2 mat-subheader>
+                <h2 *ngIf="!isNetworkView" mat-subheader>
                   <a class="level0" href="/#/browse/{{ level0.id }}">{{
+                    level0.name
+                  }}</a>
+                </h2>
+                <h2 *ngIf="isNetworkView" mat-subheader>
+                  <a class="level0" href="/#/network/{{ level0.id }}">{{
                     level0.name
                   }}</a>
                 </h2>
                 <ul>
                   <li *ngFor="let level1 of level0.children">
-                    <h3 mat-subheader>
+                    <h3 *ngIf="!isNetworkView" mat-subheader>
                       <a
                         class="level1"
                         href="/#/browse/{{ level0.id }}?scrollTo={{
@@ -68,6 +73,11 @@
                         }}"
                         >{{ level1.name }}</a
                       >
+                    </h3>
+                    <h3 *ngIf="isNetworkView" mat-subheader>
+                      <a class="level1" href="/#/network/{{ level1.id }}">{{
+                        level1.name
+                      }}</a>
                     </h3>
                     <ul>
                       <li *ngFor="let level2 of level1.children">
