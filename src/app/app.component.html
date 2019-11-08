@@ -173,6 +173,15 @@
             <mat-icon>help</mat-icon>
             Help
           </button>
+          <button
+            *ngIf="session"
+            mat-stroked-button
+            (click)="goConsult($event)"
+            color="primary"
+          >
+            <mat-icon>help</mat-icon>
+            Request a consult
+          </button>
           <a
             href="http://www.ithriv.org"
             *ngIf="!mobileQuery.matches"

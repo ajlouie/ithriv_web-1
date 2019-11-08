@@ -219,6 +219,11 @@ export class AppComponent implements OnInit, OnDestroy {
     this.router.navigate(['help']);
   }
 
+  goConsult($event) {
+    $event.preventDefault();
+    this.router.navigate(['consult_request']);
+  }
+
   goUserAdmin($event) {
     $event.preventDefault();
     this.router.navigate(['admin/users']);

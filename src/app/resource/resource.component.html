@@ -135,11 +135,39 @@
           </mat-list-item>
           <mat-list-item *ngIf="resource.segment.name === 'Event'">
             <h4 mat-line>Event Starts:</h4>
-            <p mat-line>{{ resource.starts | date: "MMM d, y h:mm a" }}</p>
+            <p mat-line>{{ resource.starts | date: 'MMM d, y h:mm a' }}</p>
           </mat-list-item>
           <mat-list-item *ngIf="resource.segment.name === 'Event'">
             <h4 mat-line>Event Ends:</h4>
-            <p mat-line>{{ resource.ends | date: "MMM d, y h:mm a" }}</p>
+            <p mat-line>{{ resource.ends | date: 'MMM d, y h:mm a' }}</p>
+          </mat-list-item>
+          <mat-list-item *ngIf="resource.segment.name === 'Event'">
+            <h4 mat-line>Add to Calendar:</h4>
+          </mat-list-item>
+          <mat-list-item *ngIf="resource.segment.name === 'Event'">
+            <button
+              mat-flat-button
+              *ngIf="resource.segment.name === 'Event'"
+              title="Add to Calendar"
+              class="addeventatc"
+              (click)="handleClick($event)"
+              color="white"
+              matTooltip="Click to add to calender"
+            >
+              Click Here
+              <span class="arrow">&nbsp;</span>
+              <span class="start">{{
+                resource.starts | date: 'MM/d/y h:mm a'
+              }}</span>
+              <span class="end">{{
+                resource.ends | date: 'MM/d/y h:mm a'
+              }}</span>
+              <span class="timezone"></span>
+              <span class="title">{{ resource.name }}</span>
+              <span class="description">{{ resource.description }}</span>
+              <span class="location">{{ resource.location }}</span>
+              <span class="alarm_reminder">1440</span>
+            </button>
           </mat-list-item>
           <mat-list-item *ngIf="resource.type">
             <h4 mat-line>Type</h4>
