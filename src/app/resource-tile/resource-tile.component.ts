@@ -4,6 +4,7 @@ import { Institution } from '../institution';
 import { Resource } from '../resource';
 import { ResourceType } from '../resourceType';
 import { User } from '../user';
+declare const addeventatc: any;
 
 @Component({
   selector: 'app-resource-tile',
@@ -14,25 +15,39 @@ export class ResourceTileComponent implements OnInit {
   @Input() resource: Resource;
   @Input() user: User;
 
-  constructor(private router: Router) { }
+  constructor(private router: Router) {}
 
   ngOnInit() {
+    setTimeout(function() {
+      addeventatc.refresh();
+    }, 200);
+  }
+
+  handleClick($event) {
+    console.log('\n\n\n=== handleClick ===\n\n\n');
+
+    $event.preventDefault();
+    $event.stopPropagation();
   }
 
   resourceRoute(resource: Resource) {
-    return (['/resource', resource.id]);
+    return ['/resource', resource.id];
   }
 
-  institutionRoute(institution: Institution) {
-    return (`/search/filter?Institution=${institution.name}`);
+  goInstitution($event, institution: Institution) {
+    $event.preventDefault();
+    this.router.navigateByUrl(`/search/filter?Institution=${institution.name}`);
   }
 
-  typeRoute(type: ResourceType) {
-    return (`/search/filter?Type=${type.name}`);
+  goResourceType($event, type: ResourceType) {
+    $event.preventDefault();
+    this.router.navigateByUrl(`/search/filter?Type=${type.name}`);
   }
 
   typeIconId(resource: Resource) {
-    return resource && resource.type && resource.type.icon && resource.type.icon.id;
+    return (
+      resource && resource.type && resource.type.icon && resource.type.icon.id
+    );
   }
 
   truncateWords(str: string, numWords: number) {
@@ -53,4 +68,3 @@ export class ResourceTileComponent implements OnInit {
     return str;
   }
 }
-

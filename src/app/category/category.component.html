@@ -88,54 +88,61 @@
             ({{ getResources(getInstitutionId()).length }})
           "
           >
-            <app-resource-list
-              *ngIf="getResources(getInstitutionId()).length > 0"
-              [resources]="getResources(getInstitutionId())"
-              [user]="user"
-              [sidenavExpanded]="true"
-              fxFlexFill
-            ></app-resource-list>
-            <div
-              *ngIf="getResources(getInstitutionId()).length === 0 && user"
-              class="please-log-in"
-            >
-              <h2>
-                There are no resources available to your home institution.
-              </h2>
-            </div>
-            <div
-              *ngIf="
-                getResources(getInstitutionId()).length === 0 &&
-                !user &&
-                getInstitutionId() != publicId
-              "
-              class="please-log-in"
-            >
-              <h2>There are no resources available to {{ getUserName() }}.</h2>
-            </div>
-            <div
-              *ngIf="
-                getResources(getInstitutionId()).length === 0 &&
-                !user &&
-                getInstitutionId() === publicId
-              "
-              class="please-log-in"
-            >
-              <app-login-services></app-login-services>
-              <p>
-                Select your institution to view resources in this category that
-                you have direct access to. To view all resources listed across
-                iTHRIV institutions, select the "View all in category" tab.
-              </p>
-            </div>
+            <ng-template matTabContent>
+              <app-resource-list
+                *ngIf="getResources(getInstitutionId()).length > 0"
+                [resources]="getResources(getInstitutionId())"
+                [user]="user"
+                [sidenavExpanded]="true"
+                fxFlexFill
+              ></app-resource-list>
+              <div
+                *ngIf="getResources(getInstitutionId()).length === 0 && user"
+                class="please-log-in"
+              >
+                <h2>
+                  There are no resources available to your home institution.
+                </h2>
+              </div>
+              <div
+                *ngIf="
+                  getResources(getInstitutionId()).length === 0 &&
+                  !user &&
+                  getInstitutionId() != publicId
+                "
+                class="please-log-in"
+              >
+                <h2>
+                  There are no resources available to {{ getUserName() }}.
+                </h2>
+              </div>
+              <div
+                *ngIf="
+                  getResources(getInstitutionId()).length === 0 &&
+                  !user &&
+                  getInstitutionId() === publicId
+                "
+                class="please-log-in"
+              >
+                <app-login-services></app-login-services>
+                <p>
+                  Select your institution to view resources in this category
+                  that you have direct access to. To view all resources listed
+                  across iTHRIV institutions, select the "View all in category"
+                  tab.
+                </p>
+              </div>
+            </ng-template>
           </mat-tab>
           <mat-tab label="All Resource/Events ({{ getAllResources().length }})">
-            <app-resource-list
-              [resources]="getAllResources()"
-              [user]="user"
-              [sidenavExpanded]="true"
-              fxFlexFill
-            ></app-resource-list>
+            <ng-template matTabContent>
+              <app-resource-list
+                [resources]="getAllResources()"
+                [user]="user"
+                [sidenavExpanded]="true"
+                fxFlexFill
+              ></app-resource-list>
+            </ng-template>
           </mat-tab>
         </mat-tab-group>
       </div>
