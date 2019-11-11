@@ -20,7 +20,8 @@
             "assets": ["src/assets", "src/favicon.ico"],
             "styles": ["src/styles.scss", "src/ithriv_material.scss"],
             "scripts": [
-              "node_modules/hammerjs/hammer.min.js"
+              "node_modules/hammerjs/hammer.min.js",
+              "src/assets/js/atc.min.webarchive.js"
             ]
           },
           "configurations": {
