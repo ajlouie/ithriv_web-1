@@ -93,7 +93,8 @@ export class LoginServicesComponent implements OnInit {
         id: null,
         color: 'blue',
         name: 'Inova',
-        image: '/assets/institutions/Inova.png'
+        image: '/assets/institutions/Inova.png',
+        url: this.loginUrl
       },
       { id: null, color: 'green', name: 'Public', image: '' }
     ];
@@ -116,7 +117,14 @@ export class LoginServicesComponent implements OnInit {
           }
         })
       );
-
+      // this.loginServices.push(
+      //   new LoginService({
+      //     id: 45,
+      //     color: 'red',
+      //     name: 'Admin',
+      //     image: ''
+      //   })
+      // );
       this.dataLoaded = this.loginServices.length > 0;
     });
   }
