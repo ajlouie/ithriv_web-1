@@ -35,7 +35,6 @@ import { UserAdminComponent } from '../../user-admin/user-admin.component';
 @Injectable()
 export class ResourceApiService {
   apiRoot = environment.api;
-  apiUVARCRoot = environment.api_uvarc;
 
   // REST endpoints
   endpoints = {
@@ -81,10 +80,6 @@ export class ResourceApiService {
     sso_login: '/api/login',
     static: '/static/<filename>',
     logo: '/api/track/<user_id>/<code>/logo.png'
-  };
-
-  endpointsUVARC = {
-    general_support_request: 'general-support-request/'
   };
 
   private sessionSubject = new BehaviorSubject<User>(null);
@@ -682,13 +677,6 @@ export class ResourceApiService {
   private _apiUrl(key: string) {
     if (this.endpoints.hasOwnProperty(key)) {
       return this.apiRoot + this.endpoints[key];
-    } else {
-    }
-  }
-
-  private _apiUVARCUrl(key: string) {
-    if (this.endpointsUVARC.hasOwnProperty(key)) {
-      return this.apiUVARCRoot + this.endpointsUVARC[key];
     } else {
     }
   }
