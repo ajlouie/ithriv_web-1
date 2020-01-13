@@ -4,68 +4,68 @@
 @include mat-core();
 
 $mat-blue: (
-  50 : #F1F5F7, // Modified, was #e0e6ed
-  100 : #b3c1d3,
-  200 : #8097b6,
-  300 : #4d6d98,
-  400 : #264e82,
-  500 : #002f6c,
-  600 : #002a64,
-  700 : #002359,
-  800 : #001d4f,
-  900 : #00123d,
-  A100 : #738cff,
-  A200 : #4062ff,
-  A400 : #0d38ff,
-  A700 : #002bf2,
+  50: #f1f5f7, // Modified, was #e0e6ed
+  100: #b3c1d3,
+  200: #8097b6,
+  300: #4d6d98,
+  400: #264e82,
+  500: #002f6c,
+  600: #002a64,
+  700: #002359,
+  800: #001d4f,
+  900: #00123d,
+  A100: #738cff,
+  A200: #4062ff,
+  A400: #0d38ff,
+  A700: #002bf2,
   contrast: (
-    50 : #000000,
-    100 : #000000,
-    200 : #000000,
-    300 : #ffffff,
-    400 : #ffffff,
-    500 : #ffffff,
-    600 : #ffffff,
-    700 : #ffffff,
-    800 : #ffffff,
-    900 : #ffffff,
-    A100 : #000000,
-    A200 : #ffffff,
-    A400 : #ffffff,
-    A700 : #ffffff,
+    50: #000000,
+    100: #000000,
+    200: #000000,
+    300: #ffffff,
+    400: #ffffff,
+    500: #ffffff,
+    600: #ffffff,
+    700: #ffffff,
+    800: #ffffff,
+    900: #ffffff,
+    A100: #000000,
+    A200: #ffffff,
+    A400: #ffffff,
+    A700: #ffffff
   )
 );
 
 $mat-orange: (
-  50 : #fceee0,
-  100 : #f7d5b3,
-  200 : #f2b980,
-  300 : #ed9c4d,
-  400 : #e98726,
-  500 : #e57200,
-  600 : #e26a00,
-  700 : #de5f00,
-  800 : #da5500,
-  900 : #d34200,
-  A100 : #fffcfb,
-  A200 : #ffd5c8,
-  A400 : #ffaf95,
-  A700 : #ff9b7b,
+  50: #fceee0,
+  100: #f7d5b3,
+  200: #f2b980,
+  300: #ed9c4d,
+  400: #e98726,
+  500: #e57200,
+  600: #e26a00,
+  700: #de5f00,
+  800: #da5500,
+  900: #d34200,
+  A100: #fffcfb,
+  A200: #ffd5c8,
+  A400: #ffaf95,
+  A700: #ff9b7b,
   contrast: (
-    50 : #000000,
-    100 : #000000,
-    200 : #000000,
-    300 : #000000,
-    400 : #000000,
-    500 : #ffffff,
-    600 : #ffffff,
-    700 : #ffffff,
-    800 : #ffffff,
-    900 : #ffffff,
-    A100 : #000000,
-    A200 : #000000,
-    A400 : #000000,
-    A700 : #000000,
+    50: #000000,
+    100: #000000,
+    200: #000000,
+    300: #000000,
+    400: #000000,
+    500: #ffffff,
+    600: #ffffff,
+    700: #ffffff,
+    800: #ffffff,
+    900: #ffffff,
+    A100: #000000,
+    A200: #000000,
+    A400: #000000,
+    A700: #000000
   )
 );
 
@@ -82,7 +82,7 @@ $mat-green: (
   500: #4caf50,
   600: #43a047,
   700: #388e3c,
-  800: #007A3C, // Modified, was #2e7d32
+  800: #007a3c, // Modified, was #2e7d32
   900: #005424, // Modified, was #1b5e20
   A100: #b9f6ca,
   A200: #69f0ae,
@@ -102,7 +102,7 @@ $mat-green: (
     A100: $dark-primary-text,
     A200: $dark-primary-text,
     A400: $dark-primary-text,
-    A700: $dark-primary-text,
+    A700: $dark-primary-text
   )
 );
 
@@ -131,7 +131,8 @@ $animationDuration: 500ms;
 
   // Use mat-color to extract individual colors from a palette as necessary.
 
-  body, .main {
+  body,
+  .main {
     background-color: mat-color($primary, 50);
     margin: 0px;
     min-height: 100vh;
@@ -140,7 +141,9 @@ $animationDuration: 500ms;
   #browse {
     .header {
       markdown {
-        p, blockquote, li {
+        p,
+        blockquote,
+        li {
           color: white;
         }
       }
@@ -155,7 +158,7 @@ $animationDuration: 500ms;
     font-size: 24px;
 
     &.page-title {
-      color: mat-color($ithriv-primary, 800, 1.0);
+      color: mat-color($ithriv-primary, 800, 1);
       font-size: 32px;
       font-weight: bolder;
       margin-top: 1em;
@@ -174,7 +177,7 @@ $animationDuration: 500ms;
   }
 
   button[disabled] {
-    color : rgba(0, 0, 0, 0.26);
+    color: rgba(0, 0, 0, 0.26);
     background-color: transparent;
   }
 
@@ -184,7 +187,7 @@ $animationDuration: 500ms;
 
   a {
     text-decoration: none;
-    color: mat-color($ithriv-primary, 800, 1.0);
+    color: mat-color($ithriv-primary, 800, 1);
   }
 
   .mat-tab-label {
@@ -195,7 +198,7 @@ $animationDuration: 500ms;
     }
 
     &.mat-tab-label-active {
-    background-color: transparent;
+      background-color: transparent;
 
       .mat-tab-label-content {
         color: white;
@@ -209,16 +212,15 @@ $animationDuration: 500ms;
 
   ::ng-deep .mat-tab-group.mat-primary.mat-background-primary .mat-ink-bar,
   ::ng-deep .mat-tab-nav-bar.mat-primary.mat-background-primary .mat-ink-bar {
-    background-color: mat-color($ithriv-primary, 500, 1.0);
+    background-color: mat-color($ithriv-primary, 500, 1);
   }
-
 
   #fileUpload {
     file-drop {
       .file-upload {
         transition: 750ms ease background-color, 750ms ease border;
-        background-color: #DDDDDD;
-        border: 1px solid #DDDDDD;
+        background-color: #dddddd;
+        border: 1px solid #dddddd;
         border-radius: 50%;
         height: 400px;
         width: 400px;
@@ -245,15 +247,16 @@ $animationDuration: 500ms;
     }
 
     &.hover file-drop .file-upload {
-      background-color: mat-color($ithriv-primary, 800, 1.0);
-      border: 1px solid mat-color($ithriv-primary, 800, 1.0);
+      background-color: mat-color($ithriv-primary, 800, 1);
+      border: 1px solid mat-color($ithriv-primary, 800, 1);
 
       #dropZoneInstructions {
         color: white;
       }
     }
   }
-  ::ng-deep mat-sidenav, ::ng-deep .mat-drawer-content {
+  ::ng-deep mat-sidenav,
+  ::ng-deep .mat-drawer-content {
     overflow-x: visible;
     overflow-y: visible;
   }
@@ -268,7 +271,6 @@ $animationDuration: 500ms;
   }
 
   :host >>> .content {
-    height: -moz-available;          /* WebKit-based browsers will ignore this. */
+    height: -moz-available; /* WebKit-based browsers will ignore this. */
   }
 }
-
