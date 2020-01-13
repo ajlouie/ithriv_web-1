@@ -28,12 +28,14 @@ import { ResourceType } from '../../resourceType';
 import { SegmentType } from '../../segmentType';
 import { User } from '../../user';
 import { UserSearchResults } from '../../user-search-results';
+import { ConsultRequest } from '../../consult-request';
 import { ViewPreferences } from '../../view-preferences';
+import { UserAdminComponent } from '../../user-admin/user-admin.component';
 
 @Injectable()
 export class ResourceApiService {
-
   apiRoot = environment.api;
+  apiUVARCRoot = environment.api_uvarc;
 
   // REST endpoints
   endpoints = {
@@ -73,24 +75,27 @@ export class ResourceApiService {
     login_password: '/api/login_password',
     reset_password: '/api/reset_password',
     consult_request: '/api/consult_request',
+    consult_category_list: '/api/consult_category_list',
+    consult_request_list: '/api/consult_request_list',
     root: '/',
     sso_login: '/api/login',
     static: '/static/<filename>',
-    logo: '/api/track/<user_id>/<code>/logo.png',
+    logo: '/api/track/<user_id>/<code>/logo.png'
+  };
+
+  endpointsUVARC = {
+    general_support_request: 'general-support-request/'
   };
 
   private sessionSubject = new BehaviorSubject<User>(null);
 
-  constructor(
-    private httpClient: HttpClient,
-    private router: Router
-  ) {
-  }
+  constructor(private httpClient: HttpClient, private router: Router) {}
 
   /** getSession */
   public getSession(): Observable<User> {
     if (localStorage.getItem('token')) {
-      return this.httpClient.get<User>(this._apiUrl('session'))
+      return this.httpClient
+        .get<User>(this._apiUrl('session'))
         .pipe(catchError(this.handleError));
     } else {
       return observableOf(null);
@@ -115,7 +120,8 @@ export class ResourceApiService {
   getSessionStatus(): Observable<number> {
     const token: string = localStorage.getItem('token');
     if (token) {
-      return this.httpClient.get<number>(this._apiUrl('sessionstatus'))
+      return this.httpClient
+        .get<number>(this._apiUrl('sessionstatus'))
         .pipe(catchError(this.sessionStatusError));
     } else {
       return observableOf(0);
@@ -131,13 +137,13 @@ export class ResourceApiService {
     return this.handleError(error);
   }
 
-
-    /** login - An alternative to single sign on, allow users to log into the system with a user name and password.
+  /** login - An alternative to single sign on, allow users to log into the system with a user name and password.
    * email_token is not required, only send this if user is logging in for the first time
    * after an email verification link. */
   login(email: string, password: string, email_token = ''): Observable<any> {
     const options = { email, password, email_token };
-    return this.httpClient.post(this._apiUrl('login_password'), options)
+    return this.httpClient
+      .post(this._apiUrl('login_password'), options)
       .pipe(catchError(this.handleError));
   }
 
@@ -154,8 +160,9 @@ export class ResourceApiService {
       // The response body may contain clues as to what went wrong,
       console.error(
         `Backend returned a status code ${error.status}, ` +
-        `Code was: ${JSON.stringify(error.error.code)}, ` +
-        `Message was: ${JSON.stringify(error.error.message)}`);
+          `Code was: ${JSON.stringify(error.error.code)}, ` +
+          `Message was: ${JSON.stringify(error.error.message)}`
+      );
       message = error.error.message;
       // If this was a 401 error, re-verify they have a valid session.
       if (error.error.code === 401) {
@@ -186,158 +193,203 @@ export class ResourceApiService {
 
   /** searchResources */
   searchResources(query: ResourceQuery): Observable<ResourceQuery> {
-    return this.httpClient.post<ResourceQuery>(this._apiUrl('search'), query)
+    return this.httpClient
+      .post<ResourceQuery>(this._apiUrl('search'), query)
       .pipe(catchError(this.handleError));
   }
 
   /** getCategories */
   getCategories(): Observable<Category[]> {
-    return this.httpClient.get<Category[]>(this._apiUrl('categorylist'))
+    return this.httpClient
+      .get<Category[]>(this._apiUrl('categorylist'))
       .pipe(catchError(this.handleError));
   }
 
   /** getRootCategories */
   getRootCategories(): Observable<Category[]> {
-    return this.httpClient.get<Category[]>(this._apiUrl('rootcategorylist'))
+    return this.httpClient
+      .get<Category[]>(this._apiUrl('rootcategorylist'))
       .pipe(catchError(this.handleError));
   }
 
   /** getCategory */
   getCategory(id: Number): Observable<Category> {
-    return this.httpClient.get<Category>(`${this._apiUrl('categorylist')}/${id}`)
+    return this.httpClient
+      .get<Category>(`${this._apiUrl('categorylist')}/${id}`)
       .pipe(catchError(this.handleError));
   }
 
   /** getCategoryResources */
   getCategoryResources(category: Category): Observable<CategoryResource[]> {
-    return this.httpClient.get<CategoryResource[]>(this.apiRoot + category._links.resources)
+    return this.httpClient
+      .get<CategoryResource[]>(this.apiRoot + category._links.resources)
       .pipe(catchError(this.handleError));
   }
 
   /** updateCategory */
   updateCategory(category: Category): Observable<Category> {
-    return this.httpClient.put<Category>(this.apiRoot + category._links.self, category)
+    return this.httpClient
+      .put<Category>(this.apiRoot + category._links.self, category)
       .pipe(catchError(this.handleError));
   }
 
   /** addCategory */
   addCategory(category: Category): Observable<Category> {
-    return this.httpClient.post<Category>(this._apiUrl('categorylist'), category)
+    return this.httpClient
+      .post<Category>(this._apiUrl('categorylist'), category)
       .pipe(catchError(this.handleError));
   }
 
   /** deleteCategory */
   deleteCategory(category: Category): Observable<Category> {
-    return this.httpClient.delete<Category>(this.apiRoot + category._links.self)
+    return this.httpClient
+      .delete<Category>(this.apiRoot + category._links.self)
       .pipe(catchError(this.handleError));
   }
 
   /** getIcons */
   getIcons(): Observable<Icon[]> {
-    return this.httpClient.get<Icon[]>(this._apiUrl('iconlist'))
+    return this.httpClient
+      .get<Icon[]>(this._apiUrl('iconlist'))
       .pipe(catchError(this.handleError));
   }
 
   /** getInstitutions */
   getInstitutions(): Observable<Institution[]> {
-    return this.httpClient.get<Institution[]>(this._apiUrl('institutionlist'))
+    return this.httpClient
+      .get<Institution[]>(this._apiUrl('institutionlist'))
       .pipe(catchError(this.handleError));
   }
 
   /** getAvailabilityInstitutions */
   getAvailabilityInstitutions(): Observable<Institution[]> {
-    return this.httpClient.get<Institution[]>(this._apiUrl('institutionavailabilitylist'))
+    return this.httpClient
+      .get<Institution[]>(this._apiUrl('institutionavailabilitylist'))
       .pipe(catchError(this.handleError));
   }
 
   /** getInstitution */
   getInstitution(id: Number): Observable<Institution> {
-    return this.httpClient.get<Institution>(`${this._apiUrl('institutionlist')}/${id}`)
+    return this.httpClient
+      .get<Institution>(`${this._apiUrl('institutionlist')}/${id}`)
       .pipe(catchError(this.handleError));
   }
 
   /** getTypes */
   getTypes(): Observable<ResourceType[]> {
-    return this.httpClient.get<ResourceType[]>(this._apiUrl('typelist'))
+    return this.httpClient
+      .get<ResourceType[]>(this._apiUrl('typelist'))
       .pipe(catchError(this.handleError));
   }
 
   /** getTypes */
   getSegments(): Observable<ResourceType[]> {
-    return this.httpClient.get<SegmentType[]>(this._apiUrl('segmentlist'))
+    return this.httpClient
+      .get<SegmentType[]>(this._apiUrl('segmentlist'))
       .pipe(catchError(this.handleError));
   }
 
   /** getResource */
   getResource(id: Number): Observable<Resource> {
-    return this.httpClient.get<Resource>(`${this._apiUrl('resourcelist')}/${id}`)
+    return this.httpClient
+      .get<Resource>(`${this._apiUrl('resourcelist')}/${id}`)
       .pipe(catchError(this.handleError));
   }
 
   /** getResources */
   getResources(segment?: String): Observable<Resource[]> {
     if (segment) {
-      return this.httpClient.get<Resource[]>(`${this._apiUrl('resourcelist')}?segment=${segment}`)
+      return this.httpClient
+        .get<Resource[]>(`${this._apiUrl('resourcelist')}?segment=${segment}`)
         .pipe(catchError(this.handleError));
     } else {
-      return this.httpClient.get<Resource[]>(this._apiUrl('resourcelist'))
+      return this.httpClient
+        .get<Resource[]>(this._apiUrl('resourcelist'))
         .pipe(catchError(this.handleError));
     }
   }
 
   /** getResourceCategories */
   getResourceCategories(resource: Resource): Observable<ResourceCategory[]> {
-    const url = this._apiUrl('categorybyresource').replace('<resource_id>', resource.id.toString());
-    return this.httpClient.get<ResourceCategory[]>(url)
+    const url = this._apiUrl('categorybyresource').replace(
+      '<resource_id>',
+      resource.id.toString()
+    );
+    return this.httpClient
+      .get<ResourceCategory[]>(url)
       .pipe(catchError(this.handleError));
   }
 
   /** updateResourceCategories */
-  updateResourceCategories(resource: Resource, categories: CategoryResource[]): Observable<CategoryResource[]> {
-    return this.httpClient.post<CategoryResource[]>(this.apiRoot + resource._links.categories, categories)
+  updateResourceCategories(
+    resource: Resource,
+    categories: CategoryResource[]
+  ): Observable<CategoryResource[]> {
+    return this.httpClient
+      .post<CategoryResource[]>(
+        this.apiRoot + resource._links.categories,
+        categories
+      )
       .pipe(catchError(this.handleError));
   }
 
   /** updateResource */
   updateResource(resource: Resource): Observable<Resource> {
-    return this.httpClient.put<Resource>(this.apiRoot + resource._links.self, resource)
+    return this.httpClient
+      .put<Resource>(this.apiRoot + resource._links.self, resource)
       .pipe(catchError(this.handleError));
   }
 
   /** updateResourceAvailability */
-  updateResourceAvailability(resource: Resource, avails: Availability[]): Observable<Availability> {
-    return this.httpClient.post<Availability>(this.apiRoot + resource._links.availability, avails)
+  updateResourceAvailability(
+    resource: Resource,
+    avails: Availability[]
+  ): Observable<Availability> {
+    return this.httpClient
+      .post<Availability>(this.apiRoot + resource._links.availability, avails)
       .pipe(catchError(this.handleError));
   }
 
   /** addResource */
   addResource(resource: Resource): Observable<Resource> {
-    return this.httpClient.post<Resource>(this._apiUrl('resourcelist'), resource)
+    return this.httpClient
+      .post<Resource>(this._apiUrl('resourcelist'), resource)
       .pipe(catchError(this.handleError));
   }
 
   /** linkResourceAndCategory */
-  linkResourceAndCategory(resource: Resource, category: Category): Observable<ResourceCategory> {
+  linkResourceAndCategory(
+    resource: Resource,
+    category: Category
+  ): Observable<ResourceCategory> {
     const options = { resource_id: resource.id, category_id: category.id };
-    return this.httpClient.post<ResourceCategory>(this._apiUrl('resourcecategorylist'), options)
+    return this.httpClient
+      .post<ResourceCategory>(this._apiUrl('resourcecategorylist'), options)
       .pipe(catchError(this.handleError));
   }
 
   /** unlinkResourceAndCategory */
-  unlinkResourceAndCategory(rc: ResourceCategory): Observable<ResourceCategory> {
-    return this.httpClient.delete<ResourceCategory>(this.apiRoot + rc._links.self)
+  unlinkResourceAndCategory(
+    rc: ResourceCategory
+  ): Observable<ResourceCategory> {
+    return this.httpClient
+      .delete<ResourceCategory>(this.apiRoot + rc._links.self)
       .pipe(catchError(this.handleError));
   }
 
   /** deleteResource */
   deleteResource(resource: Resource): Observable<Resource> {
-    return this.httpClient.delete<Resource>(this.apiRoot + resource._links.self)
+    return this.httpClient
+      .delete<Resource>(this.apiRoot + resource._links.self)
       .pipe(catchError(this.handleError));
   }
 
   /** getAttachmentsByResources */
-  getAttachmentsByResources(resource: Resource): Observable<ResourceAttachment[]> {
-    return this.httpClient.get<ResourceAttachment[]>(this.apiRoot + resource._links.attachments)
+  getAttachmentsByResources(
+    resource: Resource
+  ): Observable<ResourceAttachment[]> {
+    return this.httpClient
+      .get<ResourceAttachment[]>(this.apiRoot + resource._links.attachments)
       .pipe(catchError(this.handleError));
   }
 
@@ -346,7 +398,8 @@ export class ResourceApiService {
     const params = { id: String(id), md5: md5 };
     const url = this._apiUrl('filelist');
 
-    return this.httpClient.get<FileAttachment>(url, { params: params })
+    return this.httpClient
+      .get<FileAttachment>(url, { params: params })
       .pipe(catchError(this.handleError));
   }
 
@@ -362,32 +415,36 @@ export class ResourceApiService {
       size: attachment.size
     };
 
-    return this.httpClient.post<FileAttachment>(url, attachmentMetadata)
+    return this.httpClient
+      .post<FileAttachment>(url, attachmentMetadata)
       .pipe(catchError(this.handleError));
   }
 
   /** addFileAttachmentBlob */
-  addFileAttachmentBlob(attachmentId: number, attachment: FileAttachment, progress: NgProgressComponent): Observable<FileAttachment> {
+  addFileAttachmentBlob(
+    attachmentId: number,
+    attachment: FileAttachment,
+    progress: NgProgressComponent
+  ): Observable<FileAttachment> {
     const url = this._apiUrl('file').replace('<id>', attachmentId.toString());
     const options: {
-      headers?: HttpHeaders,
-      observe: 'events',
-      params?: HttpParams,
-      reportProgress?: boolean,
-      responseType: 'json',
-      withCredentials?: boolean
+      headers?: HttpHeaders;
+      observe: 'events';
+      params?: HttpParams;
+      reportProgress?: boolean;
+      responseType: 'json';
+      withCredentials?: boolean;
     } = {
       observe: 'events',
       reportProgress: true,
       responseType: 'blob' as 'json'
     };
 
-    return this.httpClient.put<File>(url, attachment, options)
-      .pipe(
-        map(event => this.showProgress(event, attachment, progress)),
-        last(), // return last (completed) message to caller
-        catchError(this.handleError)
-      );
+    return this.httpClient.put<File>(url, attachment, options).pipe(
+      map(event => this.showProgress(event, attachment, progress)),
+      last(), // return last (completed) message to caller
+      catchError(this.handleError)
+    );
   }
 
   /** updateFileAttachment */
@@ -395,96 +452,140 @@ export class ResourceApiService {
     const url = this._apiUrl('file').replace('<id>', attachment.id.toString());
     const attachmentMetadata = {
       display_name: attachment.display_name,
-      date_modified: new Date(attachment.lastModified || attachment.date_modified),
+      date_modified: new Date(
+        attachment.lastModified || attachment.date_modified
+      ),
       md5: attachment.md5,
       mime_type: attachment.type || attachment.mime_type,
       size: attachment.size,
       resource_id: attachment.resource_id
     };
 
-    return this.httpClient.put<FileAttachment>(url, attachmentMetadata)
+    return this.httpClient
+      .put<FileAttachment>(url, attachmentMetadata)
       .pipe(catchError(this.handleError));
   }
 
   /** getFileAttachmentBlob*/
   getFileAttachmentBlob(attachment: FileAttachment): Observable<Blob> {
     const options: {
-      headers?: HttpHeaders,
-      observe?: 'body',
-      params?: HttpParams,
-      reportProgress?: boolean,
-      responseType: 'json',
-      withCredentials?: boolean,
+      headers?: HttpHeaders;
+      observe?: 'body';
+      params?: HttpParams;
+      reportProgress?: boolean;
+      responseType: 'json';
+      withCredentials?: boolean;
     } = {
       responseType: 'blob' as 'json'
     };
 
-    return this.httpClient.get<Blob>(attachment.url, options)
+    return this.httpClient
+      .get<Blob>(attachment.url, options)
       .pipe(catchError(this.handleError));
   }
 
   /** deleteFileAttachment */
   deleteFileAttachment(attachment: FileAttachment): Observable<FileAttachment> {
     const url = this._apiUrl('file').replace('<id>', attachment.id.toString());
-    return this.httpClient.delete<FileAttachment>(url)
+    return this.httpClient
+      .delete<FileAttachment>(url)
       .pipe(catchError(this.handleError));
   }
 
   /** getUserResources
    * get resources that the user owns */
   getUserResources(): Observable<Resource[]> {
-    return this.httpClient.get<Resource[]>(this._apiUrl('userresource'))
+    return this.httpClient
+      .get<Resource[]>(this._apiUrl('userresource'))
       .pipe(catchError(this.handleError));
   }
 
   /** addFavorite */
   addFavorite(user: User, resource: Resource): Observable<Favorite> {
     const options = { resource_id: resource.id, user_id: user.id };
-    return this.httpClient.post<Favorite>(this._apiUrl('favoritelist'), options)
+    return this.httpClient
+      .post<Favorite>(this._apiUrl('favoritelist'), options)
       .pipe(catchError(this.handleError));
   }
 
   /** deleteFavorite */
   deleteFavorite(favorite: Favorite): Observable<Favorite> {
-    return this.httpClient.delete<Favorite>(this.apiRoot + favorite._links.self)
+    return this.httpClient
+      .delete<Favorite>(this.apiRoot + favorite._links.self)
       .pipe(catchError(this.handleError));
   }
 
   /** getUserFavorites */
   getUserFavorites(): Observable<Favorite[]> {
-    return this.httpClient.get<Favorite[]>(this._apiUrl('userfavorite'))
+    return this.httpClient
+      .get<Favorite[]>(this._apiUrl('userfavorite'))
       .pipe(catchError(this.handleError));
   }
 
   /** getUser
    * retrieve a user */
   getUser(id: number): Observable<User> {
-    return this.httpClient.get<User>(this._apiUrl('userlist') + '/' + id)
+    return this.httpClient
+      .get<User>(this._apiUrl('userlist') + '/' + id)
+      .pipe(catchError(this.handleError));
+  }
+
+  getConsultCategoryList(): Observable<any> {
+    return this.httpClient
+      .get<any>(this._apiUrl('consult_category_list'))
       .pipe(catchError(this.handleError));
   }
 
   /** updateUser */
   updateUser(user: User): Observable<User> {
-    return this.httpClient.put<User>(this.apiRoot + user._links.self, user)
+    return this.httpClient
+      .put<User>(this.apiRoot + user._links.self, user)
       .pipe(catchError(this.handleError));
   }
 
   /** addUser */
   addUser(user: User): Observable<User> {
-    return this.httpClient.post<User>(this._apiUrl('userlist'), user)
+    return this.httpClient
+      .post<User>(this._apiUrl('userlist'), user)
       .pipe(catchError(this.handleError));
   }
 
   /** deleteUser */
   deleteUser(user: User): Observable<User> {
-    return this.httpClient.delete<User>(this.apiRoot + user._links.self)
+    return this.httpClient
+      .delete<User>(this.apiRoot + user._links.self)
       .pipe(catchError(this.handleError));
   }
 
   /** findUsers */
-  findUsers(filter = '', sort = 'display_name', sortOrder = 'asc', pageNumber = 0, pageSize = 3): Observable<UserSearchResults> {
-    const search_data = { filter: filter, sort: sort, sortOrder: sortOrder, pageNumber: String(pageNumber), pageSize: String(pageSize) };
-    return this.httpClient.get<UserSearchResults>(this._apiUrl('userlist'), { params: search_data })
+  findUsers(
+    filter = '',
+    sort = 'display_name',
+    sortOrder = 'asc',
+    pageNumber = 0,
+    pageSize = 3
+  ): Observable<UserSearchResults> {
+    const search_data = {
+      filter: filter,
+      sort: sort,
+      sortOrder: sortOrder,
+      pageNumber: String(pageNumber),
+      pageSize: String(pageSize)
+    };
+    return this.httpClient
+      .get<UserSearchResults>(this._apiUrl('userlist'), { params: search_data })
+      .pipe(catchError(this.handleError));
+  }
+
+  findUserConsultRequests(user: User): Observable<ConsultRequest[]> {
+    const search_data = {
+      user_id: user.id.toString()
+    };
+
+    return this.httpClient
+      .get<ConsultRequest[]>(this._apiUrl('consult_request_list'), {
+        params: search_data
+      })
       .pipe(catchError(this.handleError));
   }
 
@@ -492,7 +593,8 @@ export class ResourceApiService {
    * Reset password */
   sendResetPasswordEmail(email: String): Observable<any> {
     const email_data = { email: email };
-    return this.httpClient.post<any>(this._apiUrl('forgot_password'), email_data)
+    return this.httpClient
+      .post<any>(this._apiUrl('forgot_password'), email_data)
       .pipe(catchError(this.handleError));
   }
 
@@ -500,15 +602,46 @@ export class ResourceApiService {
    * Reset password */
   resetPassword(newPassword: string, email_token: string): Observable<string> {
     const reset = { password: newPassword, email_token: email_token };
-    return this.httpClient.post<string>(this._apiUrl('reset_password'), reset)
+    return this.httpClient
+      .post<string>(this._apiUrl('reset_password'), reset)
       .pipe(catchError(this.handleError));
   }
 
   /** sendConsultRequestEmail
    * Request a Consult */
-  sendConsultRequestEmail(user: User, request_category: string, request_text: string): Observable<any> {
-    const request_data = { user_id: user.id, request_category: request_category, request_text: request_text };
-    return this.httpClient.post<any>(this._apiUrl('consult_request'), request_data)
+  sendConsultRequestEmail(
+    user: User,
+    request_category: string,
+    request_text: string
+  ): Observable<any> {
+    const request_data = {
+      user_id: user.id,
+      request_category: request_category,
+      request_text: request_text
+    };
+    return this.httpClient
+      .post<any>(this._apiUrl('consult_request'), request_data)
+      .pipe(catchError(this.handleError));
+  }
+
+  /** sendConsultRequestEmail
+   * Request a Consult */
+  sendConsultRequestToJIRA(
+    user: User,
+    request_category: string,
+    request_type: string,
+    request_title: string,
+    request_text: string
+  ): Observable<any> {
+    const request_data = {
+      user_id: user.id,
+      request_category: request_category,
+      request_type: request_type,
+      request_title: request_title,
+      request_text: request_text
+    };
+    return this.httpClient
+      .post<any>(this._apiUrl('consult_request'), request_data)
       .pipe(catchError(this.handleError));
   }
 
@@ -516,22 +649,27 @@ export class ResourceApiService {
    * Request Resource Approval */
   sendApprovalRequestEmail(user: User, resource: Resource): Observable<any> {
     const request_data = { user_id: user.id, resource_id: resource.id };
-    return this.httpClient.post<any>(this._apiUrl('approval_request'), request_data)
+    return this.httpClient
+      .post<any>(this._apiUrl('approval_request'), request_data)
       .pipe(catchError(this.handleError));
   }
 
   /** showProgress
    * Return distinct message for sent, upload progress, & response events */
-  private showProgress(event: HttpEvent<any>, attachment: FileAttachment, progress: NgProgressComponent): FileAttachment {
+  private showProgress(
+    event: HttpEvent<any>,
+    attachment: FileAttachment,
+    progress: NgProgressComponent
+  ): FileAttachment {
     switch (event.type) {
       case HttpEventType.Sent:
         progress.start();
         break;
       case HttpEventType.UploadProgress:
-        progress.set(Math.round(100 * event.loaded / event.total));
+        progress.set(Math.round((100 * event.loaded) / event.total));
         break;
       case HttpEventType.DownloadProgress:
-        progress.set(Math.round(100 * event.loaded / event.total));
+        progress.set(Math.round((100 * event.loaded) / event.total));
         break;
       case HttpEventType.Response:
         progress.complete();
@@ -547,6 +685,11 @@ export class ResourceApiService {
     } else {
     }
   }
+
+  private _apiUVARCUrl(key: string) {
+    if (this.endpointsUVARC.hasOwnProperty(key)) {
+      return this.apiUVARCRoot + this.endpointsUVARC[key];
+    } else {
+    }
+  }
 }
-
-
