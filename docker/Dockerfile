@@ -1,4 +1,4 @@
-FROM node:11 as node
+FROM node:11-alpine as node
 LABEL maintainer="rkc7h@virginia.edu"
 ARG BUILD_ENV
 ENV APP_LOC /ithriv_web
