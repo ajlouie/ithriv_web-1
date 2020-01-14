@@ -97,14 +97,14 @@
           </button>
         </div>
       </mat-card-content>
+      <mat-divider [inset]="true"></mat-divider>
+      <mat-divider [inset]="true"></mat-divider>
+      <br />
+      <h2>My Submitted Requests: {{ dataSource.consultRequests.length }}</h2>
+      <div class="spinner-container" *ngIf="dataSource.loading$ | async">
+        <mat-spinner></mat-spinner>
+      </div>
       <mat-card-content *ngIf="user">
-        <mat-divider [inset]="true"></mat-divider>
-        <mat-divider [inset]="true"></mat-divider>
-        <br />
-        <h2>My Submitted Requests:</h2>
-        <div class="spinner-container" *ngIf="dataSource.loading$ | async">
-          <mat-spinner></mat-spinner>
-        </div>
         <mat-table
           class="users-table mat-elevation-z8"
           [dataSource]="dataSource"
@@ -131,8 +131,17 @@
             <mat-header-cell *matHeaderCellDef>
               REQUEST TYPE
             </mat-header-cell>
-            <mat-cell class="name-cell" *matCellDef="let consultRequest"
-              >{{ consultRequest.request_type }}
+            <mat-cell class="name-cell" *matCellDef="let consultRequest">
+              <div class="row">
+                <img
+                  src="{{ consultRequest.request_type_icon_link }}"
+                  alt="Description"
+                  style="height:30px;"
+                />
+                <h5>
+                  {{ consultRequest.request_type }}
+                </h5>
+              </div>
             </mat-cell>
           </ng-container>
           <ng-container matColumnDef="summary">

@@ -6,4 +6,5 @@ export interface ConsultRequest {
   status: string;
   create_date: string;
   request_link: string;
+  request_type_icon_link: string;
 }

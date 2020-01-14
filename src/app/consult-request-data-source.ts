@@ -15,7 +15,7 @@ export class ConsultRequestDataSource extends DataSource<ConsultRequest> {
 
   public loading$ = this.loadingSubject.asObservable();
   public count$ = this.countSubject.asObservable();
-  private consultRequests = [];
+  public consultRequests = [];
 
   constructor(private api: ResourceApiService) {
     super();
