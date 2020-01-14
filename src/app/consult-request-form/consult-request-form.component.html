@@ -91,8 +91,12 @@
             type="button"
             color="primary"
             mat-raised-button
-            (click)="onCancel()"
+            (click)="showConsultRequestForm()"
           >
+            <mat-icon>help</mat-icon>
+            Request another consult
+          </button>
+          <button type="button" color="primary" mat-button (click)="onCancel()">
             Continue
           </button>
         </div>

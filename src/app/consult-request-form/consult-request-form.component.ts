@@ -155,6 +155,7 @@ export class ConsultRequestFormComponent implements AfterViewInit, OnInit {
       )
       .subscribe(
         e => {
+          this.errorMessage = '';
           this.dataSource.loadConsultRequests(
             this.user,
             this.paginator.pageIndex,
@@ -181,5 +182,10 @@ export class ConsultRequestFormComponent implements AfterViewInit, OnInit {
       this.paginator.pageIndex,
       this.paginator.pageSize
     );
+  }
+
+  showConsultRequestForm() {
+    this.iThrivForm.reset();
+    this.formStatus = 'form';
   }
 }
