@@ -38,25 +38,7 @@ export class ConsultRequestFormComponent implements AfterViewInit, OnInit {
       required: true,
       placeholder: 'Pick the category that best represents your request:',
       type: 'select',
-      selectOptions: [
-        'Research Concierge Services',
-        'Translational Research Ethics Consults (T-RECS)',
-        'Electronic Data Capture',
-        'Medical Record Data Pull',
-        'Informatics Tools',
-        'Community Studios',
-        'Community Seed Grants',
-        'Find Community Research Collaborators',
-        'Find Team Science Research Collaborators',
-        'Team Science Seed Grant',
-        'Researcher Studios',
-        'Biostats, Epidemiology, and Research Design',
-        'General Regulatory Support',
-        'Recruitment Enhancement',
-        'Multi-Center Study Management',
-        'Investigator Initiated Trials',
-        'iTHRIV Scholars'
-      ]
+      selectOptions: []
     }),
     request_type: new FormField({
       formControl: new FormControl(),
@@ -105,7 +87,16 @@ export class ConsultRequestFormComponent implements AfterViewInit, OnInit {
     private api: ResourceApiService,
     private changeDetectorRef: ChangeDetectorRef
   ) {
-    this.iThrivForm.loadForm();
+    this.api.getConsultCategoryList().subscribe(categoryList => {
+      this.fields['request_category'] = new FormField({
+        formControl: new FormControl(),
+        required: true,
+        placeholder: 'Pick the category that best represents your request:',
+        type: 'select',
+        selectOptions: categoryList
+      });
+      this.iThrivForm.loadForm();
+    });
   }
 
   ngOnInit() {
@@ -115,15 +106,6 @@ export class ConsultRequestFormComponent implements AfterViewInit, OnInit {
       this.dataSource.loadConsultRequests(this.user, 0, this.default_page_size);
       this.ngAfterViewInit();
     });
-    // this.api.getConsultCategoryList().subscribe(categoryList => {
-    //   this.fields['request_category'] = new FormField({
-    //     formControl: new FormControl(),
-    //     required: true,
-    //     placeholder: 'Pick the category that best represents your request:',
-    //     type: 'select',
-    //     selectOptions: categoryList
-    //   });
-    // });
   }
 
   ngAfterViewInit() {
