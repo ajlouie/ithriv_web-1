@@ -1,3 +1,29 @@
 .container {
   min-height: 100vh;
 }
+
+.md-tooltip {
+  height: auto;
+}
+.mat-row {
+  position: relative;
+}
+
+.mat-row-link {
+  position: absolute;
+}
+
+.reference-cell {
+  text-decoration: underline;
+}
+
+.gray {
+  background-color: #f5f5f5;
+}
+
+.mat-header-cell {
+  background-color: #4caf50;
+  color: white;
+  text-decoration: underline;
+  font-size: 14px;
+}

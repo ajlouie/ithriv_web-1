@@ -1,8 +1,7 @@
-import {ValidatePasswordsMatch} from './validators/password_match.validator';
-import {FormGroup, Validators} from '@angular/forms';
+import { ValidatePasswordsMatch } from './validators/password_match.validator';
+import { FormGroup, Validators } from '@angular/forms';
 
 export class IThrivForm {
-
   constructor(private fields, private form: FormGroup) {}
 
   getFields() {
@@ -49,14 +48,14 @@ export class IThrivForm {
   }
 
   setObjectToEdit(object: any) {
-    for(const fieldName in this.fields) {
+    for (const fieldName in this.fields) {
       const field = this.fields[fieldName];
       field.formControl.patchValue(object[fieldName]);
     }
   }
 
   updateObject(object: any) {
-    for(const fieldName in this.fields) {
+    for (const fieldName in this.fields) {
       const field = this.fields[fieldName];
       object[fieldName] = field.formControl.value;
     }
@@ -72,4 +71,13 @@ export class IThrivForm {
     }
   }
 
+  reset() {
+    for (const fieldName in this.fields) {
+      if (fieldName != null) {
+        const field = this.fields[fieldName];
+        field.formControl.reset();
+        field.formControl.markAsUntouched();
+      }
+    }
+  }
 }

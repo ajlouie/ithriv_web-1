@@ -6,27 +6,42 @@
   fxLayoutGap="10px"
   fxLayoutAlign="center center"
 >
-  <div fxFlex="50%">
+  <div fxFlex="90%">
     <app-logo></app-logo>
     <mat-card>
       <mat-card-content *ngIf="user">
-        <h1>Request Research Concierge Services Consult</h1>
-        <p>Completing this web form will send a concierge services request which will be routed to the best specialist
-          to address your need. We aim to respond within two business days.</p>
-        <h3>Request Context:</h3>
-        <p *ngIf="user.display_name">{{ user.display_name }}</p>
-        <p *ngIf="user.email">{{ user.email }}</p>
-        <p *ngIf="user.institution && user.institution.name">{{ user.institution.name }}</p>
-        <p *ngIf="user.institutional_role">{{ user.institutional_role }}</p>
-        <p *ngIf="user.division">{{ user.division }}</p>
+        <h1>Request Consult</h1>
+        <p>
+          Completing this web form will send a concierge services request which
+          will be routed to the best specialist to address your need. We aim to
+          respond within two business days.
+        </p>
         <form
           [formGroup]="requestConsultForm"
           (ngSubmit)="onSubmit()"
           *ngIf="formStatus === 'form'"
         >
+          <!--
+          <h3>Request Context:</h3>
+          <p ng-hide="True" *ngIf="user.display_name">
+            {{ user.display_name }}
+          </p>
+          <p ng-hide="True" *ngIf="user.email">{{ user.email }}</p>
+          <p ng-hide="True" *ngIf="user.institution && user.institution.name">
+            {{ user.institution.name }}
+          </p>
+          <p ng-hide="True" *ngIf="user.institutional_role">
+            {{ user.institutional_role }}
+          </p>
+          <p ng-hide="True" *ngIf="user.division">{{ user.division }}</p>
+          -->
           <app-form-field
             *ngFor="let field of getFields()"
-            [errors]="field.formControl ? field.formControl.errors : field.formGroup.errors"
+            [errors]="
+              field.formControl
+                ? field.formControl.errors
+                : field.formGroup.errors
+            "
             [field]="field"
             [formGroup]="requestConsultForm"
             [errorMatcher]="errorMatcher"
@@ -36,8 +51,9 @@
             id="error_message"
             class="display mat-error"
             *ngIf="errorMessage"
-          >{{errorMessage}}</div>
-
+          >
+            {{ errorMessage }}
+          </div>
 
           <footer *ngIf="formStatus === 'form'">
             <button
@@ -45,42 +61,129 @@
               color="primary"
               mat-raised-button
               (click)="onSubmit()"
-            >Next</button>
-            <button
-              type="button"
-              (click)="onCancel()"
-              mat-button
-            >Cancel</button>
+            >
+              Submit
+            </button>
+            <button type="button" (click)="onCancel()" mat-button>
+              Cancel
+            </button>
           </footer>
         </form>
-
         <div
           *ngIf="formStatus === 'submitting'"
           fxLayout="column"
           fxLayoutAlign="space-around center"
         >
           <mat-spinner [diameter]="48"></mat-spinner>
-          <button
-            type="button"
-            (click)="onCancel()"
-            mat-button
-          >
+          <button type="button" (click)="onCancel()" mat-button>
             Cancel
           </button>
         </div>
 
         <div *ngIf="formStatus === 'complete'">
-          <p><b>Thank you for submitting your Consult Request. We aim to respond within two business days. </b></p>
+          <p>
+            <b
+              >Thank you for submitting your Consult Request. We aim to respond
+              within two business days.
+            </b>
+          </p>
           <button
             type="button"
             color="primary"
             mat-raised-button
-            (click)="onCancel()"
-          >Continue</button>
+            (click)="showConsultRequestForm()"
+          >
+            <mat-icon>help</mat-icon>
+            Request another consult
+          </button>
+          <button type="button" color="primary" mat-button (click)="onCancel()">
+            Continue
+          </button>
         </div>
+      </mat-card-content>
+      <mat-divider [inset]="true"></mat-divider>
+      <mat-divider [inset]="true"></mat-divider>
+      <br />
+      <h2>My Submitted Requests: {{ dataSource.consultRequests.length }}</h2>
+      <div class="spinner-container" *ngIf="dataSource.loading$ | async">
+        <mat-spinner></mat-spinner>
+      </div>
+      <mat-card-content *ngIf="user">
+        <mat-table
+          class="users-table mat-elevation-z8"
+          [dataSource]="dataSource"
+        >
+          <ng-container matColumnDef="reference_id">
+            <mat-header-cell *matHeaderCellDef>
+              REQUEST REFERENCE ID
+            </mat-header-cell>
+            <mat-cell
+              class="reference-cell"
+              *matCellDef="let consultRequest"
+              matTooltip="{{ consultRequest.description }}"
+            >
+              <a
+                fxFlexFill
+                href="{{ consultRequest.request_link }}"
+                target="_blank"
+                rel="noopener"
+                >{{ consultRequest.reference_id }}</a
+              >
+            </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="request_type">
+            <mat-header-cell *matHeaderCellDef>
+              REQUEST TYPE
+            </mat-header-cell>
+            <mat-cell class="name-cell" *matCellDef="let consultRequest">
+              <div class="row">
+                <img
+                  src="{{ consultRequest.request_type_icon_link }}"
+                  alt="Description"
+                  style="height:30px;"
+                />
+                <h5>
+                  {{ consultRequest.request_type }}
+                </h5>
+              </div>
+            </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="summary">
+            <mat-header-cell *matHeaderCellDef> SUMMARY </mat-header-cell>
+            <mat-cell class="email-cell" *matCellDef="let consultRequest"
+              >{{ consultRequest.summary }}
+            </mat-cell>
+          </ng-container>
 
+          <ng-container matColumnDef="create_date">
+            <mat-header-cell *matHeaderCellDef> SUBMIT DATE </mat-header-cell>
+            <mat-cell class="role-cell" *matCellDef="let consultRequest">{{
+              consultRequest.create_date | date: 'MM/d/y h:mm a'
+            }}</mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="status">
+            <mat-header-cell *matHeaderCellDef> STATUS </mat-header-cell>
+            <mat-cell class="role-cell" *matCellDef="let consultRequest"
+              >{{ consultRequest.status }}
+            </mat-cell>
+          </ng-container>
+
+          <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+
+          <mat-row
+            *matRowDef="let row; let even = even; columns: displayedColumns"
+            [ngClass]="{ gray: even }"
+          >
+          </mat-row>
+        </mat-table>
+        <mat-paginator
+          [length]="dataSource.count$ | async"
+          [pageSize]="default_page_size"
+          [pageSizeOptions]="[5, 10, 25, 100]"
+        >
+        </mat-paginator>
       </mat-card-content>
     </mat-card>
   </div>
-
 </div>
