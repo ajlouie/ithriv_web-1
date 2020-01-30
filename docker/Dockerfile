@@ -10,6 +10,7 @@ RUN npm config set unsafe-perm true \
     && npm install bootstrap \
     && npm install -g @angular/cli \
     && npm install \
+    && ng --version \
     && npm install source-map-explorer --save-dev --save-exact \
     && npm config set unsafe-perm false
 COPY . .
