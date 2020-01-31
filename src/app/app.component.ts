@@ -38,7 +38,7 @@ export class AppComponent implements OnInit, OnDestroy {
   session: User = null;
   timeLeftInSession: number;
 
-  @ViewChild('sidenav', { static: true }) sidenav: MatSidenav;
+  @ViewChild('sidenav') sidenav: MatSidenav;
   categoryId: string;
 
   @HostBinding('@fadeTransition')
