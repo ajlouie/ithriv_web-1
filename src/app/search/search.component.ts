@@ -40,9 +40,9 @@ export class SearchComponent implements OnInit {
   publicId: number;
   pageSize = 20;
 
-  @ViewChild('sidenav', { static: true }) public sideNav: MatSidenav;
-  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
-  @ViewChild('searchInput', { read: MatInput, static: true }) public searchInput: MatInput;
+  @ViewChild('sidenav') public sideNav: MatSidenav;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild('searchInput', { read: MatInput }) public searchInput: MatInput;
 
   constructor(
     private api: ResourceApiService,
