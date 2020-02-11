@@ -5,18 +5,33 @@ import {
   OnInit,
   ViewChild,
   ElementRef
-} from "@angular/core";
-import { FormGroup, ValidationErrors } from "@angular/forms";
-import { ErrorStateMatcher } from "@angular/material";
-import { FormField } from "../form-field";
-import { FormSelectOption } from "../form-select-option";
-import { ResourceApiService } from "../shared/resource-api/resource-api.service";
-
+} from '@angular/core';
+import { FormGroup, ValidationErrors } from '@angular/forms';
+import { ErrorStateMatcher } from '@angular/material';
+import { FormField } from '../form-field';
+import { FormSelectOption } from '../form-select-option';
+import { ResourceApiService } from '../shared/resource-api/resource-api.service';
+import {
+  ToolbarService,
+  LinkService,
+  ImageService,
+  ResizeService,
+  TableService,
+  HtmlEditorService
+} from '@syncfusion/ej2-angular-richtexteditor';
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: "app-form-field",
-  templateUrl: "./form-field.component.html",
-  styleUrls: ["./form-field.component.scss"]
+  selector: 'app-form-field',
+  templateUrl: './form-field.component.html',
+  styleUrls: ['./form-field.component.scss'],
+  providers: [
+    ToolbarService,
+    LinkService,
+    ImageService,
+    ResizeService,
+    TableService,
+    HtmlEditorService
+  ]
 })
 export class FormFieldComponent implements OnInit {
   @Input() field: FormField;
@@ -24,6 +39,35 @@ export class FormFieldComponent implements OnInit {
   @Input() errorMatcher: ErrorStateMatcher;
   @Input() formGroup: FormGroup;
   @Input() resourceType: String;
+  public tools: object = {
+    items: [
+      'Bold',
+      'Italic',
+      'Underline',
+      '|',
+      'Undo',
+      'Redo',
+      '|',
+      'Alignments',
+      '|',
+      'OrderedList',
+      'UnorderedList',
+      '|',
+      'Indent',
+      'Outdent',
+      '|',
+      'CreateTable',
+      '|',
+      'CreateLink',
+      'Image',
+      '|',
+      'ClearFormat',
+      'Print',
+      'SourceCode',
+      '|',
+      'FullScreen'
+    ]
+  };
 
   options = [];
   dataLoaded = false;
@@ -43,16 +87,16 @@ export class FormFieldComponent implements OnInit {
   }
 
   loadOptions() {
-    if (this.field.type === "select") {
-      if (this.field.hasOwnProperty("selectOptions")) {
+    if (this.field.type === 'select') {
+      if (this.field.hasOwnProperty('selectOptions')) {
         this.options = this.field.selectOptions.map(
           s => new FormSelectOption({ id: s, name: s })
         );
         this.dataLoaded = true;
-      } else if (this.field.hasOwnProperty("apiSource")) {
+      } else if (this.field.hasOwnProperty('apiSource')) {
         const source = this.field.apiSource;
 
-        if (this.api[source] && typeof this.api[source] === "function") {
+        if (this.api[source] && typeof this.api[source] === 'function') {
           this.api[source]().subscribe(results => {
             this.options = results;
             this.field.formControl.updateValueAndValidity();
@@ -78,24 +122,24 @@ export class FormFieldComponent implements OnInit {
   // Replaces underscores with spaces and capitalizes each word in given string
   getLabel(s) {
     return s
-      .split("_")
+      .split('_')
       .map(w => w[0].toUpperCase() + w.substr(1))
-      .join(" ");
+      .join(' ');
   }
 
   isTextField(field: FormField) {
-    return ["text", "url", "email", "password"].indexOf(field.type) > -1;
+    return ['text', 'url', 'email', 'password'].indexOf(field.type) > -1;
   }
 
   isNormalField(field: FormField) {
     return !(
       [
-        "tree",
-        "richtexteditor",
-        "toggle",
-        "files",
-        "checkbox",
-        "owldatetime"
+        'tree',
+        'richtexteditor',
+        'toggle',
+        'files',
+        'checkbox',
+        'owldatetime'
       ].indexOf(field.type) > -1
     );
   }

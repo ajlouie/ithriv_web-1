@@ -11,10 +11,9 @@ export class FormFieldLabelComponent implements OnInit {
   @Input() field: FormField;
   @Input() errors: ValidationErrors;
 
-  constructor() { }
+  constructor() {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   isValid(field: FormField) {
     if (field.formControl) {
@@ -26,4 +25,3 @@ export class FormFieldLabelComponent implements OnInit {
     }
   }
 }
-

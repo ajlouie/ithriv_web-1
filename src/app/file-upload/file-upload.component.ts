@@ -26,7 +26,7 @@ export class FileUploadComponent implements OnInit {
     'actions'
   ];
   dropZoneHover = false;
-  @ViewChild(NgProgressComponent) progress: NgProgressComponent;
+  @ViewChild(NgProgressComponent, { static: false }) progress: NgProgressComponent;
 
   constructor(private api: ResourceApiService) {
   }

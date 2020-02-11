@@ -109,6 +109,9 @@ import { IntervalService } from './shared/interval/interval.service';
 import { TimeLeftPipe } from './shared/filters/time-left.pipe';
 import { UpgradeBrowserComponent } from './upgrade-browser/upgrade-browser.component';
 import { EventListComponent } from './event-list/event-list.component';
+import { RichTextEditorAllModule } from '@syncfusion/ej2-angular-richtexteditor';
+import { ButtonModule } from '@syncfusion/ej2-angular-buttons';
+import { DropDownListComponent } from '@syncfusion/ej2-angular-dropdowns';
 
 export const MY_NATIVE_FORMATS = {
   fullPickerInput: {
@@ -176,16 +179,18 @@ export const MY_NATIVE_FORMATS = {
     LoadingComponent,
     TimeLeftPipe,
     UpgradeBrowserComponent,
-    EventListComponent
+    EventListComponent,
+    DropDownListComponent
   ],
   imports: [
     Angular2CsvModule,
     AppRoutingModule,
     BrowserAnimationsModule,
     BrowserModule,
+    ButtonModule,
     ColorPickerModule,
     CommonModule,
-    CovalentTextEditorModule,
+    // CovalentTextEditorModule,
     DeviceDetectorModule.forRoot(),
     FileDropModule,
     FlexLayoutModule,
@@ -227,6 +232,7 @@ export const MY_NATIVE_FORMATS = {
     OwlDateTimeModule,
     OwlNativeDateTimeModule,
     ReactiveFormsModule,
+    RichTextEditorAllModule,
     ScrollToModule.forRoot()
   ],
   entryComponents: [CategoryFormComponent, ResourceFormComponent],
