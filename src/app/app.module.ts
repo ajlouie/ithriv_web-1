@@ -111,7 +111,7 @@ import { UpgradeBrowserComponent } from './upgrade-browser/upgrade-browser.compo
 import { EventListComponent } from './event-list/event-list.component';
 import { RichTextEditorAllModule } from '@syncfusion/ej2-angular-richtexteditor';
 import { ButtonModule } from '@syncfusion/ej2-angular-buttons';
-import { DropDownListComponent } from '@syncfusion/ej2-angular-dropdowns';
+// import { DropDownListComponent } from '@syncfusion/ej2-angular-dropdowns';
 
 export const MY_NATIVE_FORMATS = {
   fullPickerInput: {
@@ -179,8 +179,8 @@ export const MY_NATIVE_FORMATS = {
     LoadingComponent,
     TimeLeftPipe,
     UpgradeBrowserComponent,
-    EventListComponent,
-    DropDownListComponent
+    EventListComponent
+    // DropDownListComponent
   ],
   imports: [
     Angular2CsvModule,
