@@ -30,6 +30,7 @@ export class HomeComponent implements OnInit {
   categories: Category[];
   user: User;
   institution: Institution;
+  panelOpenState = true;
 
   constructor(
     private api: ResourceApiService,

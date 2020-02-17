@@ -1,19 +1,32 @@
 <div *ngIf="!user && !publicpage" class="please-log-in">
   <app-login-services></app-login-services>
 </div>
-<div
-  id="tiles"
-  fxLayout="row wrap"
-  fxLayoutGap="45px grid"
-  fxLayoutAlign="center"
-  *ngIf="user || publicpage"
->
-  <app-category-tile
-    *ngFor="let category of categories"
-    [category]="category"
-    (click)="goCategory(category)"
-  ></app-category-tile>
-</div>
+
+<mat-accordion>
+  <mat-expansion-panel
+    [expanded]="true"
+    (opened)="panelOpenState = true"
+    (closed)="panelOpenState = false"
+  >
+    <mat-expansion-panel-header>
+      <mat-panel-title> </mat-panel-title>
+      <mat-panel-description> </mat-panel-description>
+    </mat-expansion-panel-header>
+    <div
+      id="tiles"
+      fxLayout="row wrap"
+      fxLayoutGap="45px grid"
+      fxLayoutAlign="center"
+      *ngIf="user || publicpage"
+    >
+      <app-category-tile
+        *ngFor="let category of categories"
+        [category]="category"
+        (click)="goCategory(category)"
+      ></app-category-tile>
+    </div>
+  </mat-expansion-panel>
+</mat-accordion>
 
 <h1 class="mat-h1 page-title" *ngIf="!user && publicpage">Public View</h1>
 <mat-tab-group
