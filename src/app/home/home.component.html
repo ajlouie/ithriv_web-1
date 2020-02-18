@@ -2,7 +2,7 @@
   <app-login-services></app-login-services>
 </div>
 
-<mat-accordion>
+<mat-accordion *ngIf="user || publicpage">
   <mat-expansion-panel
     [expanded]="true"
     (opened)="panelOpenState = true"
