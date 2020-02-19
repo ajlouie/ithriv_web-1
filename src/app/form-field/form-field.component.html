@@ -136,6 +136,11 @@
       {{ field.placeholder }} is
       <strong>required</strong>
     </span>
+    <span *ngIf="field.required && field.formControl.hasError('dateTimeRange')">
+      {{ field.placeholder }} both starts and ends are
+      <strong>required/formatted. </strong>
+      Click to set both From: and To: values
+    </span>
   </mat-error>
 </mat-form-field>
 
@@ -146,7 +151,6 @@
   ></app-form-field-label>
   <app-tree-select [field]="field"></app-tree-select>
 </div>
-
 <div *ngIf="field.type === 'richtexteditor'" class="mat-typography">
   <app-form-field-label
     [field]="field"
@@ -173,12 +177,23 @@
       <strong>{{ currentLength() }}</strong> characters.
     </span>
   </mat-error>
-  <td-text-editor
+  <ejs-richtexteditor
+    [enableRtl]="false"
+    *ngIf="field.formControl"
+    id="defaultRTE"
+    [enableResize]="true"
+    [toolbarSettings]="tools"
+    [formControl]="field.formControl"
+    [value]="field.formControl.value"
+  >
+  </ejs-richtexteditor>
+
+  <!--td-text-editor
     *ngIf="field.formControl"
     [formControl]="field.formControl"
     [value]="field.formControl.value"
     [options]="field.options"
-  ></td-text-editor>
+  ></td-text-editor-->
 </div>
 
 <div *ngIf="field.type === 'toggle'" class="toggle mat-typography">

@@ -13,10 +13,17 @@ import { ResourceCategory } from '../resource-category';
 import { fadeTransition } from '../shared/animations';
 import { ResourceApiService } from '../shared/resource-api/resource-api.service';
 import { ValidateUrl } from '../shared/validators/url.validator';
+import { ValidateDateTimeRange } from '../shared/validators/date_time_range.validator';
 import { FileAttachment } from '../file-attachment';
 import { NgProgressComponent } from '@ngx-progressbar/core';
 import { User } from '../user';
 import { IntervalService } from '../shared/interval/interval.service';
+import {
+  ToolbarService,
+  LinkService,
+  ImageService,
+  HtmlEditorService
+} from '@syncfusion/ej2-angular-richtexteditor';
 
 @Component({
   selector: 'app-resource-form',
@@ -251,7 +258,7 @@ export class ResourceFormComponent implements OnInit {
         required: true,
         maxLength: 140,
         minLength: 1,
-        placeholder: 'Event Starts ~ End Ends',
+        placeholder: 'Event Starts ~ Event Ends',
         type: 'owldatetime',
         selectMode: 'range',
         helpText: `
@@ -425,6 +432,10 @@ export class ResourceFormComponent implements OnInit {
 
         if (field.maxLength) {
           validators.push(Validators.maxLength(field.maxLength));
+        }
+
+        if (field.type === 'owldatetime') {
+          validators.push(ValidateDateTimeRange);
         }
 
         if (field.type === 'email') {
@@ -611,6 +622,11 @@ export class ResourceFormComponent implements OnInit {
                 for (const errorName in errors) {
                   if (errors.hasOwnProperty(errorName)) {
                     switch (errorName) {
+                      case 'dateTimeRange':
+                        messages.push(
+                          `${label} is not a valid event start and end date/time.`
+                        );
+                        break;
                       case 'email':
                         messages.push(`${label} is not a valid email address.`);
                         break;

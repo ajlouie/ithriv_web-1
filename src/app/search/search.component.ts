@@ -40,9 +40,10 @@ export class SearchComponent implements OnInit {
   publicId: number;
   pageSize = 20;
 
-  @ViewChild('sidenav') public sideNav: MatSidenav;
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild('searchInput', { read: MatInput }) public searchInput: MatInput;
+  @ViewChild('sidenav', { static: true }) public sideNav: MatSidenav;
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
+  @ViewChild('searchInput', { read: MatInput, static: true })
+  public searchInput: MatInput;
 
   constructor(
     private api: ResourceApiService,
@@ -205,7 +206,7 @@ export class SearchComponent implements OnInit {
   updatePage() {
     this.resourceQuery.size = this.paginator.pageSize;
     this.resourceQuery.start =
-      this.paginator.pageIndex * this.paginator.pageSize + 1;
+      this.paginator.pageIndex * this.paginator.pageSize;
     this.doSearch();
   }
 }
