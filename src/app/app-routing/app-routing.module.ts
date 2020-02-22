@@ -72,7 +72,7 @@ const routes: Routes = [
   {
     path: 'consult_request',
     component: ConsultRequestFormComponent,
-    data: { title: 'Request a Consult', hideHeader: true }
+    data: { title: 'Request a Consult', hideHeader: false }
   },
   {
     path: 'forgot_password',

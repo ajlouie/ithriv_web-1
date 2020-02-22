@@ -11,10 +11,11 @@ form.search-box {
   padding-bottom: 1em;
   display: flex;
 
-  mat-form-field, mat-hint {
+  mat-form-field,
+  mat-hint {
     flex: 2 0 auto;
   }
-  
+
   mat-icon {
     cursor: pointer;
   }
@@ -61,7 +62,7 @@ mat-list-item {
 }
 
 mat-list-item:hover {
-  background-color: mat-color($uva-primary, 100)
+  background-color: mat-color($uva-primary, 100);
 }
 
 button {
@@ -69,3 +70,6 @@ button {
   border: none;
 }
 
+.mat-expansion-panel:not([class*='mat-elevation-z']) {
+  box-shadow: none;
+}
