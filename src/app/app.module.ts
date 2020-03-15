@@ -111,6 +111,14 @@ import { UpgradeBrowserComponent } from './upgrade-browser/upgrade-browser.compo
 import { EventListComponent } from './event-list/event-list.component';
 import { RichTextEditorAllModule } from '@syncfusion/ej2-angular-richtexteditor';
 import { ButtonModule } from '@syncfusion/ej2-angular-buttons';
+import { CommonsMenuComponent } from './commons-menu/commons-menu.component';
+import { CommonsHomeComponent } from './commons-home/commons-home.component';
+import { CommonsProjectComponent } from './commons-project/commons-project.component';
+import { CommonsProjectListComponent } from './commons-project-list/commons-project-list.component';
+import { CommonsProjectCreateEditComponent } from './commons-project-create-edit/commons-project-create-edit.component';
+import { CommonsDatasetCreateEditComponent } from './commons-dataset-create-edit/commons-dataset-create-edit.component';
+import { CommonsProjectTileComponent } from './commons-project-tile/commons-project-tile.component';
+
 // import { DropDownListComponent } from '@syncfusion/ej2-angular-dropdowns';
 
 export const MY_NATIVE_FORMATS = {
@@ -179,7 +187,14 @@ export const MY_NATIVE_FORMATS = {
     LoadingComponent,
     TimeLeftPipe,
     UpgradeBrowserComponent,
-    EventListComponent
+    EventListComponent,
+    CommonsMenuComponent,
+    CommonsHomeComponent,
+    CommonsProjectComponent,
+    CommonsProjectListComponent,
+    CommonsProjectCreateEditComponent,
+    CommonsDatasetCreateEditComponent,
+    CommonsProjectTileComponent
     // DropDownListComponent
   ],
   imports: [

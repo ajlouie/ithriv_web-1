@@ -1,0 +1,47 @@
+<div
+  class="container mat-typography"
+  fxLayout="row"
+  fxLayout.xs="column"
+  fxLayoutWrap
+  fxLayoutGap="10px"
+  fxLayoutAlign="left left"
+>
+  <div fxFlex="100%">
+    <mat-card>
+      <mat-card-content *ngIf="user">
+        <button mat-raised-button color="primary" (click)="showProject()">
+          Edit Project {{ project.name }}
+        </button>
+      </mat-card-content>
+    </mat-card>
+    <mat-card>
+      <mat-card-content *ngIf="user">
+        <button mat-raised-button color="primary" (click)="showDataset()">
+          <mat-icon>add</mat-icon>
+          ADD DATASET
+        </button>
+      </mat-card-content>
+    </mat-card>
+    <mat-card>
+      <mat-card-content *ngIf="user">
+        <button mat-raised-button color="primary">
+          MANAGE DOCUMENTS
+        </button>
+      </mat-card-content>
+    </mat-card>
+    <mat-card>
+      <mat-card-content *ngIf="user">
+        <button mat-raised-button color="primary">
+          MANAGE PERMISSIONS
+        </button>
+      </mat-card-content>
+    </mat-card>
+    <mat-card>
+      <mat-card-content *ngIf="user">
+        <button mat-raised-button color="primary" (click)="showNext()">
+          COMMONS HOME
+        </button>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

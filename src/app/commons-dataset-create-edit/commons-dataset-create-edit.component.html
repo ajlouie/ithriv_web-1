@@ -1,0 +1,21 @@
+<div
+  class="container mat-typography"
+  fxLayout="row"
+  fxLayout.xs="column"
+  fxLayoutWrap
+  fxLayoutGap="10px"
+  fxLayoutAlign="left left"
+>
+  <div fxFlex="100%">
+    <mat-card>
+      <mat-card-content *ngIf="user">
+        <button mat-raised-button color="primary" (click)="submitDataset()">
+          SUBMIT
+        </button>
+        <button mat-raised-button color="primary" (click)="cancelDataset()">
+          CANCEL
+        </button>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

@@ -1,4 +1,11 @@
-import { Component, Input, OnInit, HostBinding } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnInit,
+  HostBinding,
+  Output,
+  EventEmitter
+} from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Category } from '../category';
@@ -10,6 +17,7 @@ import { ActivatedRoute } from '@angular/router';
 
 import { User } from '../user';
 import { Institution } from '../institution';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-home',
@@ -31,11 +39,14 @@ export class HomeComponent implements OnInit {
   user: User;
   institution: Institution;
   panelOpenState = true;
+  url: string = 'http://localhost:4200/#/commons';
+  urlSafe: SafeResourceUrl;
 
   constructor(
     private api: ResourceApiService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    public sanitizer: DomSanitizer
   ) {
     this.loadUser();
     this.categories = [];
@@ -81,6 +92,19 @@ export class HomeComponent implements OnInit {
         this.publicpage = Boolean(params.get('publicpage'));
       }
     });
+    // const projectstoken = localStorage.getItem('token');
+    // if (!projectstoken) {
+    //  this.api.getProjectsSession().subscribe(user => {
+    //  this.user = user;
+    //  this.getInstitution();
+    //});
+    // this.api.loginProjectsAdapter().subscribe(token => {
+    //   this.api.openProjectsSession(token).subscribe(user => {
+    //     this.user = user;
+    //     this.getInstitution();
+    //   });
+    // });
+    this.urlSafe = this.sanitizer.bypassSecurityTrustResourceUrl(this.url);
   }
 
   loadUser() {
