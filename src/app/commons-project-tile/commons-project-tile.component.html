@@ -2,7 +2,7 @@
   *ngIf="project && project.id"
   (click)="showNext(project)"
   [ngClass]="{ resource: true, private: project.private }"
-  [hidden]="!project.user_may_view"
+  [hidden]="false"
 >
   <div class="category-color" [appCategoryColorBorder]="project"></div>
 
@@ -11,8 +11,8 @@
       <div class="type-icon" *ngIf="typeIconId(project)">
         <mat-icon
           svgIcon="ithriv_{{ typeIconId(project) }}"
-          matTooltip="{{ project.type.name }}"
-          (click)="goProjectType($event, project.type)"
+          matTooltip="Project Folder"
+          (click)="showNext(project)"
         ></mat-icon>
       </div>
       <div
@@ -26,23 +26,18 @@
 
     <div>
       <mat-card-header>
-        <mat-card-title
-          >{{ project.segment.name }}: {{ project.name }}</mat-card-title
-        >
-        <app-approved-badge
+        <mat-card-title>Project: {{ project.name }}</mat-card-title>
+        <!-- <app-approved-badge
           [resource]="project"
           [user]="user"
         ></app-approved-badge>
         <app-favorite-resource-button
           [resource]="project"
           [user]="user"
-        ></app-favorite-resource-button>
+        ></app-favorite-resource-button> -->
       </mat-card-header>
       <mat-card-content>
-        <markdown
-          *ngIf="project.segment.name != 'Event'"
-          [data]="truncateWords(project.description, 20)"
-        ></markdown>
+        <markdown [data]="truncateWords(project.description, 20)"></markdown>
       </mat-card-content>
       <mat-card-footer> </mat-card-footer>
     </div>

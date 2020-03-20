@@ -3,9 +3,8 @@ import {
   Breakpoints,
   BreakpointState
 } from '@angular/cdk/layout';
-import { Resource } from '../resource';
+import { Project } from '../commons-types';
 import { ResourceQuery } from '../resource-query';
-import { ResourceApiService } from '../shared/resource-api/resource-api.service';
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { User } from '../user';
 
@@ -19,10 +18,10 @@ export class CommonsProjectListComponent implements OnInit {
   @Input() currentForm: String;
   @Output() currentFormChange = new EventEmitter();
   @Input() listType: String;
-  @Input() projects: Resource[];
+  @Input() projects: Project[];
   @Input() resourceQuery: ResourceQuery;
   @Input() sidenavExpanded: boolean;
-  currentProject: Resource;
+  currentProject: Project;
   csvDataReady = false;
   preparingCsvData = false;
   csvData = [];
@@ -36,10 +35,7 @@ export class CommonsProjectListComponent implements OnInit {
   ];
   breakpoint: string;
 
-  constructor(
-    private api: ResourceApiService,
-    public breakpointObserver: BreakpointObserver
-  ) {}
+  constructor(public breakpointObserver: BreakpointObserver) {}
 
   ngOnInit() {
     this.breakpointObserver
@@ -69,7 +65,7 @@ export class CommonsProjectListComponent implements OnInit {
       });
   }
 
-  getCsvKeys(projects: Resource[]): string[] {
+  getCsvKeys(projects: Project[]): string[] {
     if (projects && projects.length > 0) {
       return Object.keys(projects[0])
         .filter(k => !this.redactFields.includes(k))
@@ -109,35 +105,35 @@ export class CommonsProjectListComponent implements OnInit {
   getCsvData() {
     this.preparingCsvData = true;
 
-    // If this is the search screen, get all unpaginated data from api.
-    if (this.resourceQuery) {
-      // Clone the search query
-      const csvQuery = new ResourceQuery(this.resourceQuery);
+    // // If this is the search screen, get all unpaginated data from api.
+    // if (this.resourceQuery) {
+    //   // Clone the search query
+    //   const csvQuery = new ResourceQuery(this.resourceQuery);
 
-      // Get all available results
-      csvQuery.start = 0;
-      csvQuery.size = csvQuery.total;
+    //   // Get all available results
+    //   csvQuery.start = 0;
+    //   csvQuery.size = csvQuery.total;
 
-      // Fetch the data from the backend
-      this.api.searchResources(csvQuery).subscribe(query => {
-        const data = this.prepareCsvData(query.resources);
-        this.csvData = data;
-        this.csvDataReady = true;
-        this.preparingCsvData = false;
-      });
-    } else {
-      // Otherwise, just get data from the list resources displayed.
-      const data = this.prepareCsvData(this.projects);
+    //   // Fetch the data from the backend
+    //   this.api.searchResources(csvQuery).subscribe(query => {
+    //     const data = this.prepareCsvData(query.resources);
+    //     this.csvData = data;
+    //     this.csvDataReady = true;
+    //     this.preparingCsvData = false;
+    //   });
+    // } else {
+    //   // Otherwise, just get data from the list resources displayed.
+    //   const data = this.prepareCsvData(this.projects);
 
-      window.setTimeout(() => {
-        this.csvData = data;
-        this.csvDataReady = true;
-        this.preparingCsvData = false;
-      }, 1000);
-    }
+    //   window.setTimeout(() => {
+    //     this.csvData = data;
+    //     this.csvDataReady = true;
+    //     this.preparingCsvData = false;
+    //   }, 1000);
+    // }
   }
 
-  prepareCsvData(projects: Resource[]) {
+  prepareCsvData(projects: Project[]) {
     if (!projects || projects.length === 0) {
       return [];
     }

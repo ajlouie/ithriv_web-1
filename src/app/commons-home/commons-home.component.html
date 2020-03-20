@@ -1,3 +1,16 @@
+<mat-card *ngIf="!user">
+  <mat-card-content *ngIf="!user">
+    <ng-container *ngIf="!user">
+      <app-commons-project-list
+        listType="public"
+        [user]="user"
+        [currentForm]="formStatus"
+        (currentFormChange)="updateStatus($event)"
+        [projects]="projectDataPublic$ | async"
+      ></app-commons-project-list>
+    </ng-container>
+  </mat-card-content>
+</mat-card>
 <mat-card>
   <mat-card-content *ngIf="user">
     <ng-container *ngIf="formStatus === 'commons-projects-list'">
@@ -8,10 +21,10 @@
       ></app-commons-menu>
     </ng-container>
   </mat-card-content>
-  <mat-card-content>
+  <mat-card-content *ngIf="user">
     <ng-container *ngIf="formStatus === 'commons-projects-list'">
       <mat-tab-group mat-stretch-tabs dynamicHeight>
-        <mat-tab label="My Projects" *ngIf="user">
+        <mat-tab label="My Private Projects" *ngIf="user">
           <ng-template matTabContent>
             <ng-container class="example-small-box mat-elevation-z4">
               <app-commons-project-list
@@ -19,12 +32,12 @@
                 [user]="user"
                 [currentForm]="formStatus"
                 (currentFormChange)="updateStatus($event)"
-                [projects]="projects"
+                [projects]="projectDataPrivate$ | async"
               ></app-commons-project-list>
             </ng-container>
           </ng-template>
         </mat-tab>
-        <mat-tab label="All Projects">
+        <mat-tab label="All Public Projects" *ngIf="user">
           <ng-template matTabContent>
             <ng-container class="example-large-box mat-elevation-z4">
               <app-commons-project-list
@@ -32,7 +45,7 @@
                 [user]="user"
                 [currentForm]="formStatus"
                 (currentFormChange)="updateStatus($event)"
-                [projects]="projects"
+                [projects]="projectDataPublic$ | async"
               ></app-commons-project-list>
             </ng-container>
           </ng-template>
@@ -40,27 +53,49 @@
       </mat-tab-group>
     </ng-container>
   </mat-card-content>
+  <mat-card-content *ngIf="user">
+    <ng-container *ngIf="formStatus === 'commons-project-create-edit'">
+      <mat-toolbar class="mat-toolbar-tools">
+        <mat-toolbar-row class="menubar menubar-xs">
+          <h3>CREATE/EDIT PROJECT: Project Details</h3>
+        </mat-toolbar-row>
+      </mat-toolbar>
+      <app-commons-project-create-edit
+        [user]="user"
+        [currentForm]="formStatus"
+        (currentFormChange)="updateStatus($event)"
+        [previousForm]="projectCreateEditPrevForm"
+        [project]="currentProject"
+      ></app-commons-project-create-edit>
+    </ng-container>
+  </mat-card-content>
+  <mat-card-content *ngIf="user">
+    <ng-container *ngIf="user && formStatus === 'commons-dataset-create-edit'">
+      <mat-toolbar class="mat-toolbar-tools">
+        <mat-toolbar-row class="menubar menubar-xs">
+          <h3>Create/Edit Projext Dataset</h3>
+        </mat-toolbar-row>
+      </mat-toolbar>
+      <app-commons-dataset-create-edit
+        [user]="user"
+        [currentForm]="formStatus"
+        (currentFormChange)="updateStatus($event)"
+      ></app-commons-dataset-create-edit>
+    </ng-container>
+  </mat-card-content>
+  <mat-card-content>
+    <ng-container *ngIf="formStatus === 'commons-project'">
+      <mat-toolbar class="mat-toolbar-tools">
+        <mat-toolbar-row class="menubar menubar-xs">
+          <h3>Project: {{ currentProject.name }}</h3>
+        </mat-toolbar-row>
+      </mat-toolbar>
+      <app-commons-project
+        [user]="user"
+        [currentForm]="formStatus"
+        (currentFormChange)="updateStatus($event)"
+        [project]="currentProject"
+      ></app-commons-project>
+    </ng-container>
+  </mat-card-content>
 </mat-card>
-<ng-container *ngIf="formStatus === 'commons-project-create-edit'">
-  <app-commons-project-create-edit
-    [user]="user"
-    [currentForm]="formStatus"
-    (currentFormChange)="updateStatus($event)"
-    [previousForm]="projectCreateEditPrevForm"
-  ></app-commons-project-create-edit>
-</ng-container>
-<ng-container *ngIf="formStatus === 'commons-dataset-create-edit'">
-  <app-commons-dataset-create-edit
-    [user]="user"
-    [currentForm]="formStatus"
-    (currentFormChange)="updateStatus($event)"
-  ></app-commons-dataset-create-edit>
-</ng-container>
-<ng-container *ngIf="formStatus === 'commons-project'">
-  <app-commons-project
-    [user]="user"
-    [currentForm]="formStatus"
-    (currentFormChange)="updateStatus($event)"
-    [project]="currentProject"
-  ></app-commons-project>
-</ng-container>

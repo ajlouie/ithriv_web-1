@@ -1,21 +1,56 @@
-<div
-  class="container mat-typography"
-  fxLayout="row"
-  fxLayout.xs="column"
-  fxLayoutWrap
-  fxLayoutGap="10px"
-  fxLayoutAlign="left left"
+<form
+  *ngIf="formStatus === 'form'"
+  [formGroup]="fg"
+  (ngSubmit)="submitProject()"
 >
-  <div fxFlex="100%">
-    <mat-card>
-      <mat-card-content *ngIf="user">
-        <button mat-raised-button color="primary" (click)="submitProject()">
-          SUBMIT
-        </button>
-        <button mat-raised-button color="primary" (click)="cancelProject()">
-          CANCEL
-        </button>
-      </mat-card-content>
-    </mat-card>
+  <app-form-field
+    *ngFor="let field of getFields()"
+    [errors]="
+      field.formControl ? field.formControl.errors : field.formGroup.errors
+    "
+    [field]="field"
+    [formGroup]="fg"
+    [errorMatcher]="errorMatcher"
+  ></app-form-field>
+
+  <div id="error_message" class="display mat-error" *ngIf="errorMessage">
+    {{ errorMessage }}
   </div>
+
+  <footer *ngIf="formStatus === 'form'">
+    <button
+      type="button"
+      color="primary"
+      mat-raised-button
+      (click)="submitProject()"
+    >
+      Save
+    </button>
+    <button type="button" (click)="cancelProject()" mat-button>
+      Cancel
+    </button>
+  </footer>
+</form>
+<div
+  *ngIf="formStatus === 'submitting'"
+  fxLayout="column"
+  fxLayoutAlign="space-around center"
+>
+  <mat-spinner [diameter]="48"></mat-spinner>
+  <button type="button" (click)="onCancel()" mat-button>
+    Cancel
+  </button>
+</div>
+
+<div *ngIf="formStatus === 'complete'">
+  <p>
+    <b>Commons project {{ project.name }} successfully created. </b>
+  </p>
+  <button type="button" color="primary" mat-raised-button (click)="showForm()">
+    <mat-icon>help</mat-icon>
+    Create another project
+  </button>
+  <button type="button" color="primary" mat-button (click)="cancelProject()">
+    Continue
+  </button>
 </div>

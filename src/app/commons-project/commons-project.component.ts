@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { User } from '../user';
-import { Resource } from '../resource';
+import { Project } from '../commons-types';
 
 @Component({
   selector: 'app-commons-project',
@@ -11,7 +11,7 @@ export class CommonsProjectComponent implements OnInit {
   @Input() user: User;
   @Input() currentForm: String;
   @Output() currentFormChange = new EventEmitter();
-  @Input() project: Resource;
+  @Input() project: Project;
   constructor() {}
 
   ngOnInit() {}
@@ -22,6 +22,7 @@ export class CommonsProjectComponent implements OnInit {
 
   showProject() {
     this.currentFormChange.emit({
+      currentProject: this.project,
       previousForm: 'commons-project',
       displayForm: 'commons-project-create-edit'
     });

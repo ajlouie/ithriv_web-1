@@ -1,7 +1,7 @@
 import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
 import { Institution } from '../institution';
-import { Resource } from '../resource';
+import { Project } from '../commons-types';
 import { ResourceType } from '../resourceType';
 import { User } from '../user';
 declare const addeventatc: any;
@@ -12,7 +12,7 @@ declare const addeventatc: any;
   styleUrls: ['./commons-project-tile.component.scss']
 })
 export class CommonsProjectTileComponent implements OnInit {
-  @Input() project: Resource;
+  @Input() project: Project;
   @Input() user: User;
   @Input() projectChange = new EventEmitter();
 
@@ -48,8 +48,8 @@ export class CommonsProjectTileComponent implements OnInit {
     this.router.navigateByUrl(`/search/filter?Type=${type.name}`);
   }
 
-  typeIconId(project: Resource) {
-    return project && project.type && project.type.icon && project.type.icon.id;
+  typeIconId(project: Project) {
+    return project && project.icon && project.icon.id;
   }
 
   truncateWords(str: string, numWords: number) {
