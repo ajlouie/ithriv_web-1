@@ -50,6 +50,24 @@ export class CommonsApiService {
       .pipe(catchError(this.handleError));
   }
 
+  createDataset(dataset: Dataset): Observable<Dataset> {
+    return this.http
+      .post<Dataset>(
+        'http://localhost:5001/commons_adapter/api/dataset',
+        dataset
+      )
+      .pipe(catchError(this.handleError));
+  }
+
+  updateDataset(dataset: Dataset): Observable<Dataset> {
+    return this.http
+      .put<Dataset>(
+        'http://localhost:5001/commons_adapter/api/dataset',
+        dataset
+      )
+      .pipe(catchError(this.handleError));
+  }
+
   private handleError(error: HttpErrorResponse) {
     let message = 'Something bad happened; please try again lather.';
 

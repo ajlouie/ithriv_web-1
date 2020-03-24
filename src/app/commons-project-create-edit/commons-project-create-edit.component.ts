@@ -305,7 +305,6 @@ export class CommonsProjectCreateEditComponent implements OnInit {
     }
 
     this.formStatus = 'submitting';
-    // this.showNext();
   }
   cancelProject() {
     this.currentFormChange.emit({

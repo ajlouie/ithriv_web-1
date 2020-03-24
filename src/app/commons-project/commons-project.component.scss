@@ -1,0 +1,70 @@
+// Import theming functions
+@import '~@angular/material/theming';
+@import '../../ithriv_material';
+@include ithriv-theme($ithriv-theme);
+
+.project {
+  padding: 2em;
+  position: relative;
+
+  .category-color {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 10px;
+    background-size: 100% 10px;
+    background-repeat: no-repeat;
+  }
+
+  h1 {
+    color: mat-color($ithriv-primary, 800, 1);
+    font-size: 48px;
+    font-weight: bolder;
+    background: transparent;
+
+    &.mat-display-2 {
+      margin-bottom: 0px;
+    }
+  }
+
+  .button-row {
+    margin-bottom: 2em;
+
+    button,
+    a {
+      margin-right: 8px;
+    }
+  }
+}
+
+mat-card {
+  padding-top: 2em;
+}
+
+mat-card-title {
+  color: mat-color($ithriv-primary, 800, 1);
+}
+
+.mat-line.category {
+  mat-icon.mat-icon.category-separator {
+    font-size: 12px;
+    text-align: center;
+
+    ::ng-deep svg {
+      margin-bottom: 0px;
+    }
+  }
+
+  mat-icon.mat-icon.category-icon {
+    ::ng-deep svg {
+      margin-bottom: -6px;
+    }
+  }
+}
+
+table {
+  border-spacing: 10px;
+  font-weight: 400;
+  text-align: left;
+}

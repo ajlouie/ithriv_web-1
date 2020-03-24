@@ -1,46 +1,150 @@
-<div
-  class="container mat-typography"
-  fxLayout="row"
-  fxLayout.xs="column"
-  fxLayoutWrap
-  fxLayoutGap="10px"
-  fxLayoutAlign="left left"
->
-  <div fxFlex="100%">
-    <mat-card>
-      <mat-card-content *ngIf="user && user.email == project.pl_pi">
-        <button mat-raised-button color="primary" (click)="showProject()">
-          Edit Project
-        </button>
-      </mat-card-content>
-    </mat-card>
-    <mat-card>
-      <mat-card-content *ngIf="user">
-        <button mat-raised-button color="primary" (click)="showDataset()">
-          <mat-icon>add</mat-icon>
-          ADD DATASET
-        </button>
-      </mat-card-content>
-    </mat-card>
-    <mat-card>
-      <mat-card-content *ngIf="user && user.email == project.pl_pi">
-        <button mat-raised-button color="primary">
-          MANAGE DOCUMENTS
-        </button>
-      </mat-card-content>
-    </mat-card>
-    <mat-card>
-      <mat-card-content *ngIf="user && user.email == project.pl_pi">
-        <button mat-raised-button color="primary">
-          MANAGE PERMISSIONS
-        </button>
-      </mat-card-content>
-    </mat-card>
-    <mat-card>
-      <mat-card-content *ngIf="user">
-        <button mat-raised-button color="primary" (click)="showNext()">
-          COMMONS HOME
-        </button>
+<div class="mat-typography project">
+  <div
+    *ngIf="project"
+    fxLayout="row"
+    fxLayout.xs="column"
+    fxLayoutWrap
+    fxLayoutGap="1em"
+    fxLayoutAlign="center"
+  >
+    <div
+      fxFlex.xl="75%"
+      fxFlex.lg="75%"
+      fxFlex.md="67%"
+      fxFlex.sm="50%"
+      fxFlex.xs="100%"
+    >
+      <mat-card>
+        <mat-card-content *ngIf="user && user.email == project.pl_pi">
+          <h4>
+            <markdown [data]="project.description"></markdown>
+          </h4>
+          <button
+            mat-flat-button
+            (click)="showProject()"
+            color="accent"
+            id="project-edit"
+          >
+            <mat-icon>edit</mat-icon>
+            Edit Project
+          </button>
+        </mat-card-content>
+      </mat-card>
+      <mat-divider [inset]="true"></mat-divider>
+      <mat-card>
+        <mat-card-content *ngIf="user">
+          <button mat-raised-button color="primary" (click)="showDataset()">
+            <mat-icon>add</mat-icon>
+            ADD DATASET
+          </button>
+        </mat-card-content>
+      </mat-card>
+      <mat-divider [inset]="true"></mat-divider>
+      <mat-card>
+        <mat-card-content *ngIf="user && user.email == project.pl_pi">
+          <button mat-raised-button color="primary">
+            MANAGE DOCUMENTS
+          </button>
+        </mat-card-content>
+      </mat-card>
+      <mat-divider [inset]="true"></mat-divider>
+      <mat-card>
+        <mat-card-content *ngIf="user && user.email == project.pl_pi">
+          <mat-card-title>
+            TEAM
+          </mat-card-title>
+          <mat-list dense>
+            <table>
+              <tr>
+                <td>
+                  {{ project.pl_pi }}
+                </td>
+                <td>OWNER</td>
+              </tr>
+              <tr *ngFor="let collaborator of project.collaborators">
+                <td>
+                  {{ collaborator }}
+                </td>
+                <td>COLLABORATOR</td>
+              </tr>
+            </table>
+          </mat-list>
+          <button mat-raised-button color="primary">
+            MANAGE PERMISSIONS
+          </button>
+        </mat-card-content>
+      </mat-card>
+      <mat-divider [inset]="true"></mat-divider>
+      <mat-card>
+        <mat-card-content *ngIf="user">
+          <button mat-raised-button color="primary" (click)="showNext()">
+            DONE
+          </button>
+        </mat-card-content>
+      </mat-card>
+    </div>
+    <mat-card
+      fxFlex.xl="25%"
+      fxFlex.lg="25%"
+      fxFlex.md="33%"
+      fxFlex.sm="50%"
+      fxFlex.xs="100%"
+    >
+      <mat-card-title>
+        PROJECT DETAILS
+      </mat-card-title>
+      <mat-chip-list *ngIf="user && user.email == project.pl_pi">
+        <mat-chip
+          *ngIf="project.private"
+          matTooltip="This Resource is only visible to PI and collaborators on this project. Click here to change this setting."
+          (click)="togglePrivate(!project.private)"
+          id="button-not-private"
+        >
+          <mat-icon style="margin-right: 8px;">visibility_off</mat-icon>
+          PRIVATE
+        </mat-chip>
+        <mat-chip
+          *ngIf="!project.private"
+          matTooltip="This Resource is visible to all iTHRIV users. Click to restrict it to just project PI and collaborators on this project."
+          (click)="togglePrivate(!project.private)"
+          id="button-private"
+        >
+          <mat-icon style="margin-right: 8px;">visibility</mat-icon>
+          PUBLIC
+        </mat-chip>
+      </mat-chip-list>
+      <mat-card-content>
+        <mat-list dense>
+          <mat-list-item>
+            <h4 mat-line>Principal Investigator(s):</h4>
+            <p mat-line>{{ project.pl_pi }}</p>
+          </mat-list-item>
+          <mat-list-item>
+            <h4 mat-line>Home Institution:</h4>
+            <p mat-line>{{ project.institution.name }}</p>
+          </mat-list-item>
+          <mat-list-item>
+            <h4 mat-line>Partner Ithriv Institutions:</h4>
+            <p mat-line>{{ project.ithriv_partner }}</p>
+          </mat-list-item>
+          <mat-list-item>
+            <h4 mat-line>Other Partner Institutions:</h4>
+            <p mat-line>{{ project.other_partner }}</p>
+          </mat-list-item>
+          <mat-list-item>
+            <h4 mat-line>Funding Source(s):</h4>
+            <p mat-line>{{ project.funding_source }}</p>
+          </mat-list-item>
+          <mat-divider [inset]="true"></mat-divider>
+          <mat-list-item>
+            <h4 mat-line>KEYWORDS:</h4>
+            <mat-chip-list mat-line *ngIf="user && user.email == project.pl_pi">
+              <mat-chip *ngFor="let keyword of keywords()">
+                {{ keyword }}
+              </mat-chip>
+            </mat-chip-list>
+          </mat-list-item>
+        </mat-list>
       </mat-card-content>
     </mat-card>
   </div>

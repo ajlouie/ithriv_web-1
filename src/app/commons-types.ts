@@ -17,3 +17,7 @@ export interface Project {
   institution?: Institution;
   icon?: Icon;
 }
+
+export interface Dataset {
+  id?: string;
+}

@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { User } from '../user';
 import { Project } from '../commons-types';
+import { CommonsApiService } from '../shared/commons-api/commons-api.service';
 
 @Component({
   selector: 'app-commons-project',
@@ -12,7 +13,7 @@ export class CommonsProjectComponent implements OnInit {
   @Input() currentForm: String;
   @Output() currentFormChange = new EventEmitter();
   @Input() project: Project;
-  constructor() {}
+  constructor(private cas: CommonsApiService) {}
 
   ngOnInit() {}
 
@@ -32,5 +33,20 @@ export class CommonsProjectComponent implements OnInit {
     this.currentFormChange.emit({
       displayForm: 'commons-dataset-create-edit'
     });
+  }
+
+  togglePrivate(isPrivate: boolean) {
+    this.project.private = isPrivate;
+    this.cas.updateProject(this.project).subscribe(
+      e => {
+        this.project = e;
+      },
+      error1 => {}
+    );
+  }
+
+  keywords() {
+    const keyswordsArray = this.project.keywords.split(',');
+    return keyswordsArray;
   }
 }
