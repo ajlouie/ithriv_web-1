@@ -30,4 +30,5 @@ export interface Dataset {
   identifiers_hipaa?: string;
   other_sensitive_data?: string;
   url?: string;
+  filename?: string;
 }

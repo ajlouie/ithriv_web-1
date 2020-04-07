@@ -4,19 +4,28 @@ import {
   HttpEvent,
   HttpEventType,
   HttpHeaders,
-  HttpParams
+  HttpParams,
 } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, throwError, of as observableOf } from 'rxjs';
 import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
-import { catchError, last, map, tap, filter, toArray } from 'rxjs/operators';
+import {
+  groupBy,
+  mergeMap,
+  catchError,
+  last,
+  map,
+  tap,
+  filter,
+  toArray,
+} from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { FileAttachment } from '../../file-attachment';
 import { User } from '../../user';
 import { Project } from 'src/app/commons-types';
 import { Dataset } from 'src/app/commons-types';
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CommonsApiService {
   constructor(private http: HttpClient) {}
@@ -24,15 +33,17 @@ export class CommonsApiService {
   loadPrivateProjects(): Observable<Project[]> {
     return this.http
       .get<Project[]>('http://localhost:5001/commons_adapter/api/project_list')
-      .pipe(map(projects => projects.filter(project => project.pl_pi !== '')));
+      .pipe(
+        map((projects) => projects.filter((project) => project.pl_pi !== ''))
+      );
   }
   loadPublicProjects(): Observable<Project[]> {
     return this.http
       .get<Project[]>('http://localhost:5001/commons_adapter/api/project_list')
       .pipe(
-        map(projects =>
+        map((projects) =>
           projects.filter(
-            project => project.private === false && project.pl_pi === ''
+            (project) => project.private === false && project.pl_pi === ''
           )
         )
       );
@@ -62,7 +73,11 @@ export class CommonsApiService {
         `http://localhost:5001/commons_adapter/api/${project_id}/dataset_list`
       )
       .pipe(
-        map(datasets => datasets.filter(dataset => dataset.private === true))
+        map((datasets) =>
+          datasets
+            .filter((dataset) => dataset.private === true)
+            .sort((a, b) => Number(a.last_modified) - Number(b.last_modified))
+        )
       );
   }
 
@@ -72,7 +87,11 @@ export class CommonsApiService {
         `http://localhost:5001/commons_adapter/api/${project_id}/dataset_list`
       )
       .pipe(
-        map(datasets => datasets.filter(dataset => dataset.private === false))
+        map((datasets) =>
+          datasets
+            .filter((dataset) => dataset.private === false)
+            .sort((a, b) => Number(a.last_modified) - Number(b.last_modified))
+        )
       );
   }
 

@@ -32,6 +32,7 @@ export class CommonsProjectComponent implements OnInit {
       last_modified: '',
       private: true,
       url: '',
+      filename: '',
     };
   }
 
@@ -50,7 +51,15 @@ export class CommonsProjectComponent implements OnInit {
   showDataset(dataset) {
     this.currentFormChange.emit({
       currentDataset: dataset,
+      previousForm: 'commons-project',
       displayForm: 'commons-dataset-create-edit',
+    });
+  }
+
+  viewDataset(dataset) {
+    this.currentFormChange.emit({
+      currentDataset: dataset,
+      displayForm: 'commons-dataset',
     });
   }
 

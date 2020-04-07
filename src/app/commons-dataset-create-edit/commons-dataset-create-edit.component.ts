@@ -31,6 +31,7 @@ import { ValidateUrl } from '../shared/validators/url.validator';
 export class CommonsDatasetCreateEditComponent implements OnInit {
   @Input() user: User;
   @Input() currentForm: String;
+  @Input() previousForm: String;
   @Output() currentFormChange = new EventEmitter();
   @Input() dataset: Dataset;
   errorMessage: string;
@@ -81,6 +82,11 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
 
   showNext() {
     this.currentFormChange.emit({ displayForm: 'commons-project' });
+    this.currentFormChange.emit({
+      currentDataset: this.dataset,
+      previousForm: 'commons-dataset-create-edit',
+      displayForm: this.previousForm,
+    });
   }
 
   loadFields() {
@@ -228,6 +234,8 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
   }
 
   onFileComplete(data: any) {
+    this.dataset.url = data.url;
+    this.dataset.filename = data.fileName;
     console.log(data); // We just print out data bubbled up from event emitter.
   }
 

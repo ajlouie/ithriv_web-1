@@ -120,6 +120,7 @@ import { CommonsProjectCreateEditComponent } from './commons-project-create-edit
 import { CommonsDatasetCreateEditComponent } from './commons-dataset-create-edit/commons-dataset-create-edit.component';
 import { CommonsProjectTileComponent } from './commons-project-tile/commons-project-tile.component';
 import { CommonsFileUploadComponent } from './commons-file-upload/commons-file-upload.component';
+import { CommonsDatasetComponent } from './commons-dataset/commons-dataset.component';
 
 // import { DropDownListComponent } from '@syncfusion/ej2-angular-dropdowns';
 
@@ -198,6 +199,7 @@ export const MY_NATIVE_FORMATS = {
     CommonsProjectCreateEditComponent,
     CommonsDatasetCreateEditComponent,
     CommonsProjectTileComponent,
+    CommonsDatasetComponent,
     // DropDownListComponent
   ],
   imports: [

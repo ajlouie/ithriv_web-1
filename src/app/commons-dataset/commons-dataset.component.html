@@ -1,0 +1,12 @@
+<p>{{ dataset.description }}</p>
+
+<button *ngIf="user" mat-raised-button color="primary" (click)="showDataset()">
+  <mat-icon matTooltip="Click here to edit dataset">
+    edit
+  </mat-icon>
+  Edit Dataset
+</button>
+<button mat-raised-button color="primary" (click)="showNext()">
+  <mat-icon>home</mat-icon>
+  Project Home
+</button>

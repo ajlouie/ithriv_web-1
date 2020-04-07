@@ -7,12 +7,13 @@ import { CommonsApiService } from '../shared/commons-api/commons-api.service';
 @Component({
   selector: 'app-commons-home',
   templateUrl: './commons-home.component.html',
-  styleUrls: ['./commons-home.component.scss']
+  styleUrls: ['./commons-home.component.scss'],
 })
 export class CommonsHomeComponent implements OnInit {
   @Input() user: User;
   @Input() formStatus;
   projectCreateEditPrevForm = 'commons-projects-list';
+  datasetCreateEditPrevForm = 'commons-project';
   currentProject: Project;
   currentDataset: Dataset;
   projectDataPrivate$: Observable<Project[]> | undefined;
@@ -46,8 +47,10 @@ export class CommonsHomeComponent implements OnInit {
     }
     if (event.previousForm !== undefined) {
       this.projectCreateEditPrevForm = event.previousForm;
+      this.datasetCreateEditPrevForm = event.previousForm;
     } else {
       this.projectCreateEditPrevForm = 'commons-projects-list';
+      this.datasetCreateEditPrevForm = 'commons-project';
     }
   }
 }

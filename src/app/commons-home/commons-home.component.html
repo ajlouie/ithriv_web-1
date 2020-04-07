@@ -80,6 +80,7 @@
         [user]="user"
         [currentForm]="formStatus"
         (currentFormChange)="updateStatus($event)"
+        [previousForm]="datasetCreateEditPrevForm"
         [dataset]="currentDataset"
       ></app-commons-dataset-create-edit>
     </ng-container>
@@ -99,6 +100,21 @@
         [datasetsPrivate]="datasetDataPrivate$ | async"
         [datasetsPublic]="datasetDataPublic$ | async"
       ></app-commons-project>
+    </ng-container>
+  </mat-card-content>
+  <mat-card-content>
+    <ng-container *ngIf="formStatus === 'commons-dataset'">
+      <mat-toolbar class="mat-toolbar-tools">
+        <mat-toolbar-row class="menubar menubar-xs">
+          <h3>DATASET: {{ currentDataset.name }}</h3>
+        </mat-toolbar-row>
+      </mat-toolbar>
+      <app-commons-dataset
+        [user]="user"
+        [currentForm]="formStatus"
+        (currentFormChange)="updateStatus($event)"
+        [dataset]="currentDataset"
+      ></app-commons-dataset>
     </ng-container>
   </mat-card-content>
 </mat-card>
