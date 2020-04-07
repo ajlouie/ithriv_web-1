@@ -15,7 +15,7 @@
       fxFlex.xs="100%"
     >
       <mat-card>
-        <mat-card-content *ngIf="user && user.email == project.pl_pi">
+        <mat-card-content>
           <h4>
             <markdown [data]="project.description"></markdown>
           </h4>
@@ -24,37 +24,178 @@
             (click)="showProject()"
             color="accent"
             id="project-edit"
+            *ngIf="user && user.email == project.pl_pi"
           >
             <mat-icon>edit</mat-icon>
-            Edit Project
+            EDIT PROJECT DETAILS
           </button>
         </mat-card-content>
       </mat-card>
       <mat-divider [inset]="true"></mat-divider>
       <mat-card>
-        <mat-card-content *ngIf="user">
-          <button mat-raised-button color="primary" (click)="showDataset()">
-            <mat-icon>add</mat-icon>
+        <mat-card-content>
+          <mat-card-title>
+            DATASETS
+          </mat-card-title>
+          <mat-list dense *ngIf="user">
+            <table
+              *ngIf="datasetsPrivate?.length > 0 || datasetsPublic?.length > 0"
+            >
+              <tr>
+                <th>NAME</th>
+                <th>MODIFIED DATE/TIME</th>
+                <th>PERMISSION</th>
+                <th *ngIf="user && user.email == project.pl_pi">EDIT</th>
+                <th *ngIf="user && user.email == project.pl_pi">DOWNLOAD</th>
+              </tr>
+              <ng-container>
+                <tr *ngFor="let dataset of datasetsPrivate">
+                  <td>
+                    <mat-label matTooltip="{{ dataset.description }}">
+                      {{ dataset.name }}
+                    </mat-label>
+                  </td>
+                  <td>{{ dataset.last_modified | date: 'MM/d/y h:mm a' }}</td>
+                  <td>
+                    <mat-chip-list *ngIf="user && user.email == project.pl_pi">
+                      <mat-chip
+                        *ngIf="dataset.private"
+                        matTooltip="This Resource is only visible to PI and collaborators on this dataset. Click here to change this setting."
+                        (click)="
+                          toggleDatasetPrivate(dataset, !dataset.private)
+                        "
+                        id="button-not-private"
+                      >
+                        <mat-icon style="margin-right: 8px;"
+                          >visibility_off</mat-icon
+                        >
+                        PRIVATE
+                      </mat-chip>
+                      <mat-chip
+                        *ngIf="!dataset.private"
+                        matTooltip="This Resource is visible to all iTHRIV users. Click to restrict it to just dataset PI and collaborators on this dataset."
+                        (click)="
+                          toggleDatasetPrivate(dataset, !dataset.private)
+                        "
+                        id="button-private"
+                      >
+                        <mat-icon style="margin-right: 8px;"
+                          >visibility</mat-icon
+                        >
+                        PUBLIC
+                      </mat-chip>
+                    </mat-chip-list>
+                  </td>
+                  <td>
+                    <mat-icon
+                      matTooltip="Click here to edit dataset"
+                      (click)="showDataset(dataset)"
+                      *ngIf="user && user.email == project.pl_pi"
+                    >
+                      edit
+                    </mat-icon>
+                  </td>
+                  <td>
+                    <a *ngIf="dataset.url !== ''" [href]="dataset.url">
+                      <mat-icon
+                        matTooltip="Click here to download dataset"
+                        *ngIf="user && user.email == project.pl_pi"
+                      >
+                        file_download
+                      </mat-icon>
+                    </a>
+                  </td>
+                </tr>
+              </ng-container>
+              <ng-container>
+                <tr *ngFor="let dataset of datasetsPublic">
+                  <td>
+                    <mat-label matTooltip="{{ dataset.description }}">
+                      {{ dataset.name }}
+                    </mat-label>
+                  </td>
+                  <td>{{ dataset.last_modified | date: 'MM/d/y h:mm a' }}</td>
+                  <td>
+                    <mat-chip-list *ngIf="user && user.email == project.pl_pi">
+                      <mat-chip
+                        *ngIf="dataset.private"
+                        matTooltip="This Resource is only visible to PI and collaborators on this dataset. Click here to change this setting."
+                        (click)="toggleDatasetPrivate(!dataset.private)"
+                        id="button-not-private"
+                      >
+                        <mat-icon style="margin-right: 8px;"
+                          >visibility_off</mat-icon
+                        >
+                        PRIVATE
+                      </mat-chip>
+                      <mat-chip
+                        *ngIf="!dataset.private"
+                        matTooltip="This Resource is visible to all iTHRIV users. Click to restrict it to just dataset PI and collaborators on this dataset."
+                        (click)="toggleDatasetPrivate(!dataset.private)"
+                        id="button-private"
+                      >
+                        <mat-icon style="margin-right: 8px;"
+                          >visibility</mat-icon
+                        >
+                        PUBLIC
+                      </mat-chip>
+                    </mat-chip-list>
+                  </td>
+                  <td>
+                    <mat-icon
+                      matTooltip="Click here to edit dataset"
+                      (click)="showDataset(dataset)"
+                      *ngIf="user && user.email == project.pl_pi"
+                    >
+                      edit
+                    </mat-icon>
+                  </td>
+                  <td>
+                    <a *ngIf="dataset.url !== ''" [href]="dataset.url">
+                      <mat-icon
+                        matTooltip="Click here to download dataset"
+                        *ngIf="user && user.email == project.pl_pi"
+                      >
+                        file_download
+                      </mat-icon>
+                    </a>
+                  </td>
+                </tr>
+              </ng-container>
+            </table>
+          </mat-list>
+          <button
+            mat-raised-button
+            color="primary"
+            (click)="showDataset(dataset)"
+            *ngIf="user && user.email == project.pl_pi"
+          >
+            <mat-icon>post_add</mat-icon>
             ADD DATASET
           </button>
         </mat-card-content>
       </mat-card>
       <mat-divider [inset]="true"></mat-divider>
-      <mat-card>
+      <mat-card *ngIf="user && user.email == project.pl_pi">
         <mat-card-content *ngIf="user && user.email == project.pl_pi">
           <button mat-raised-button color="primary">
+            <mat-icon>post_add</mat-icon>
             MANAGE DOCUMENTS
           </button>
         </mat-card-content>
       </mat-card>
       <mat-divider [inset]="true"></mat-divider>
-      <mat-card>
-        <mat-card-content *ngIf="user && user.email == project.pl_pi">
+      <mat-card *ngIf="user && user.email == project.pl_pi">
+        <mat-card-content>
           <mat-card-title>
             TEAM
           </mat-card-title>
           <mat-list dense>
             <table>
+              <tr *ngIf="project && project.collaborators">
+                <th>EMAIL</th>
+                <th>PROJECT ROLE</th>
+              </tr>
               <tr>
                 <td>
                   {{ project.pl_pi }}
@@ -70,18 +211,18 @@
             </table>
           </mat-list>
           <button mat-raised-button color="primary">
+            <mat-icon>security</mat-icon>
             MANAGE PERMISSIONS
           </button>
         </mat-card-content>
       </mat-card>
       <mat-divider [inset]="true"></mat-divider>
-      <mat-card>
-        <mat-card-content *ngIf="user">
-          <button mat-raised-button color="primary" (click)="showNext()">
-            DONE
-          </button>
-        </mat-card-content>
-      </mat-card>
+      <mat-card-footer>
+        <button mat-raised-button color="primary" (click)="showNext()">
+          <mat-icon>home</mat-icon>
+          Home
+        </button>
+      </mat-card-footer>
     </div>
     <mat-card
       fxFlex.xl="25%"
@@ -115,11 +256,11 @@
       </mat-chip-list>
       <mat-card-content>
         <mat-list dense>
-          <mat-list-item>
+          <mat-list-item *ngIf="user && user.email == project.pl_pi">
             <h4 mat-line>Principal Investigator(s):</h4>
             <p mat-line>{{ project.pl_pi }}</p>
           </mat-list-item>
-          <mat-list-item>
+          <mat-list-item *ngIf="user && user.email == project.pl_pi">
             <h4 mat-line>Home Institution:</h4>
             <p mat-line>{{ project.institution.name }}</p>
           </mat-list-item>
@@ -135,10 +276,12 @@
             <h4 mat-line>Funding Source(s):</h4>
             <p mat-line>{{ project.funding_source }}</p>
           </mat-list-item>
-          <mat-divider [inset]="true"></mat-divider>
+          <mat-list-item>
+            <h4 mat-line></h4>
+          </mat-list-item>
           <mat-list-item>
             <h4 mat-line>KEYWORDS:</h4>
-            <mat-chip-list mat-line *ngIf="user && user.email == project.pl_pi">
+            <mat-chip-list mat-line>
               <mat-chip *ngFor="let keyword of keywords()">
                 {{ keyword }}
               </mat-chip>

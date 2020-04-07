@@ -296,7 +296,7 @@ export class CommonsProjectCreateEditComponent implements OnInit {
             this.errorMessage = error1;
           } else {
             this.errorMessage =
-              'Failed to create project, please try again later or contact system admin';
+              'Failed to update project, please try again later or contact system admin';
           }
           this.formStatus = 'form';
           this.changeDetectorRef.detectChanges();

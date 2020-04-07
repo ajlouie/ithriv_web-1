@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { User } from '../user';
-import { Project } from '../commons-types';
+import { Project, Dataset } from '../commons-types';
 import { Observable } from 'rxjs';
 import { CommonsApiService } from '../shared/commons-api/commons-api.service';
 
@@ -14,8 +14,11 @@ export class CommonsHomeComponent implements OnInit {
   @Input() formStatus;
   projectCreateEditPrevForm = 'commons-projects-list';
   currentProject: Project;
+  currentDataset: Dataset;
   projectDataPrivate$: Observable<Project[]> | undefined;
   projectDataPublic$: Observable<Project[]> | undefined;
+  datasetDataPrivate$: Observable<Dataset[]> | undefined;
+  datasetDataPublic$: Observable<Dataset[]> | undefined;
 
   constructor(private cas: CommonsApiService) {}
 
@@ -28,6 +31,18 @@ export class CommonsHomeComponent implements OnInit {
     this.formStatus = event.displayForm;
     if (event.currentProject !== undefined) {
       this.currentProject = event.currentProject;
+    }
+
+    if (this.currentProject !== undefined) {
+      this.datasetDataPrivate$ = this.cas.loadPrivateDatasets(
+        this.currentProject.id
+      );
+      this.datasetDataPublic$ = this.cas.loadPublicDatasets(
+        this.currentProject.id
+      );
+    }
+    if (event.currentDataset !== undefined) {
+      this.currentDataset = event.currentDataset;
     }
     if (event.previousForm !== undefined) {
       this.projectCreateEditPrevForm = event.previousForm;

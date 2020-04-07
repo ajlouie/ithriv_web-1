@@ -18,17 +18,21 @@
   </div>
 
   <footer *ngIf="formStatus === 'form'">
-    <button
-      type="button"
-      color="primary"
-      mat-raised-button
-      (click)="submitProject()"
-    >
-      Save
-    </button>
-    <button type="button" (click)="cancelProject()" mat-button>
-      Cancel
-    </button>
+    <mat-toolbar>
+      <button
+        type="button"
+        color="primary"
+        mat-raised-button
+        (click)="submitProject()"
+      >
+        <mat-icon>save_alt</mat-icon>
+        Save
+      </button>
+      <button type="button" (click)="cancelProject()" mat-button>
+        <mat-icon>cancel</mat-icon>
+        Cancel
+      </button>
+    </mat-toolbar>
   </footer>
 </form>
 <div

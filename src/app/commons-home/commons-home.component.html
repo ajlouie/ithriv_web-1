@@ -1,6 +1,6 @@
 <mat-card *ngIf="!user">
   <mat-card-content *ngIf="!user">
-    <ng-container *ngIf="!user">
+    <ng-container *ngIf="formStatus === 'commons-projects-list'">
       <app-commons-project-list
         listType="public"
         [user]="user"
@@ -80,6 +80,7 @@
         [user]="user"
         [currentForm]="formStatus"
         (currentFormChange)="updateStatus($event)"
+        [dataset]="currentDataset"
       ></app-commons-dataset-create-edit>
     </ng-container>
   </mat-card-content>
@@ -95,6 +96,8 @@
         [currentForm]="formStatus"
         (currentFormChange)="updateStatus($event)"
         [project]="currentProject"
+        [datasetsPrivate]="datasetDataPrivate$ | async"
+        [datasetsPublic]="datasetDataPublic$ | async"
       ></app-commons-project>
     </ng-container>
   </mat-card-content>

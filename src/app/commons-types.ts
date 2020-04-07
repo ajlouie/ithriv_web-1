@@ -20,4 +20,14 @@ export interface Project {
 
 export interface Dataset {
   id?: string;
+  project_id?: string;
+  name?: string;
+  description?: string;
+  keywords?: string;
+  last_modified?: string;
+  private?: boolean;
+  institution?: Institution;
+  identifiers_hipaa?: string;
+  other_sensitive_data?: string;
+  url?: string;
 }

@@ -1,21 +1,78 @@
-<div
-  class="container mat-typography"
-  fxLayout="row"
-  fxLayout.xs="column"
-  fxLayoutWrap
-  fxLayoutGap="10px"
-  fxLayoutAlign="left left"
+<form
+  *ngIf="formStatus === 'form'"
+  [formGroup]="fg"
+  (ngSubmit)="submitDataset()"
 >
-  <div fxFlex="100%">
-    <mat-card>
-      <mat-card-content *ngIf="user">
-        <button mat-raised-button color="primary" (click)="submitDataset()">
-          SUBMIT
-        </button>
-        <button mat-raised-button color="primary" (click)="cancelDataset()">
-          CANCEL
-        </button>
-      </mat-card-content>
-    </mat-card>
-  </div>
+  <app-form-field
+    *ngFor="let field of getFields()"
+    [errors]="
+      field.formControl ? field.formControl.errors : field.formGroup.errors
+    "
+    [field]="field"
+    [formGroup]="fg"
+    [errorMatcher]="errorMatcher"
+  ></app-form-field>
+  <footer *ngIf="formStatus === 'form'">
+    <mat-toolbar>
+      <button
+        type="button"
+        color="primary"
+        mat-raised-button
+        (click)="submitDataset()"
+      >
+        <mat-icon>save_alt</mat-icon>
+        Save
+      </button>
+      <button type="button" (click)="cancelDataset()" mat-button>
+        <mat-icon>cancel</mat-icon>
+        Cancel
+      </button>
+      <button
+        type="button"
+        mat-raised-button
+        (click)="deleteDataset()"
+        color="warn"
+      >
+        <mat-icon>delete</mat-icon>
+        Delete
+      </button>
+      <div id="error_message" class="display mat-error" *ngIf="errorMessage">
+        {{ errorMessage }}
+      </div>
+    </mat-toolbar>
+  </footer>
+</form>
+<a *ngIf="formStatus === 'form' && dataset.url !== ''" [href]="dataset.url">
+  <button type="button" mat-button>
+    <mat-icon>file_download</mat-icon>
+    {{ dataset.name }}
+  </button>
+</a>
+<app-commons-file-upload
+  *ngIf="formStatus === 'form' && dataset.id !== ''"
+  (complete)="onFileComplete($event)"
+  [target]="uploadUrl()"
+></app-commons-file-upload>
+<div
+  *ngIf="formStatus === 'submitting'"
+  fxLayout="column"
+  fxLayoutAlign="space-around center"
+>
+  <mat-spinner [diameter]="48"></mat-spinner>
+  <button type="button" (click)="onCancel()" mat-button>
+    Cancel
+  </button>
+</div>
+
+<div *ngIf="formStatus === 'complete'">
+  <p>
+    <b>Commons dataset {{ dataset.name }} successfully created. </b>
+  </p>
+  <button type="button" color="primary" mat-raised-button (click)="showForm()">
+    <mat-icon>help</mat-icon>
+    Create another dataset
+  </button>
+  <button type="button" color="primary" mat-button (click)="cancelDataset()">
+    Continue
+  </button>
 </div>

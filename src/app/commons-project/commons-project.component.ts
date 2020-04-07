@@ -1,21 +1,39 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { User } from '../user';
-import { Project } from '../commons-types';
+import { Project, Dataset } from '../commons-types';
 import { CommonsApiService } from '../shared/commons-api/commons-api.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-commons-project',
   templateUrl: './commons-project.component.html',
-  styleUrls: ['./commons-project.component.scss']
+  styleUrls: ['./commons-project.component.scss'],
 })
 export class CommonsProjectComponent implements OnInit {
   @Input() user: User;
   @Input() currentForm: String;
   @Output() currentFormChange = new EventEmitter();
   @Input() project: Project;
+  @Input() datasetsPrivate: Dataset[];
+  @Input() datasetsPublic: Dataset[];
+  dataset: Dataset;
+
   constructor(private cas: CommonsApiService) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.dataset = <Dataset>{
+      id: '',
+      project_id: this.project.id,
+      name: '',
+      description: '',
+      keywords: '',
+      identifiers_hipaa: '',
+      other_sensitive_data: '',
+      last_modified: '',
+      private: true,
+      url: '',
+    };
+  }
 
   showNext() {
     this.currentFormChange.emit({ displayForm: 'commons-projects-list' });
@@ -25,23 +43,32 @@ export class CommonsProjectComponent implements OnInit {
     this.currentFormChange.emit({
       currentProject: this.project,
       previousForm: 'commons-project',
-      displayForm: 'commons-project-create-edit'
+      displayForm: 'commons-project-create-edit',
     });
   }
 
-  showDataset() {
+  showDataset(dataset) {
     this.currentFormChange.emit({
-      displayForm: 'commons-dataset-create-edit'
+      currentDataset: dataset,
+      displayForm: 'commons-dataset-create-edit',
     });
   }
 
   togglePrivate(isPrivate: boolean) {
     this.project.private = isPrivate;
     this.cas.updateProject(this.project).subscribe(
-      e => {
+      (e) => {
         this.project = e;
       },
-      error1 => {}
+      (error1) => {}
+    );
+  }
+
+  toggleDatasetPrivate(dataset: Dataset, isPrivate: boolean) {
+    dataset.private = isPrivate;
+    this.cas.updateDataset(dataset).subscribe(
+      (e) => {},
+      (error1) => {}
     );
   }
 

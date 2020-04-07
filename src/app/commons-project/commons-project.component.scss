@@ -3,6 +3,14 @@
 @import '../../ithriv_material';
 @include ithriv-theme($ithriv-theme);
 
+mat-card-footer {
+  position: fixed;
+  bottom: 0em;
+  height: 64px;
+  @include mat-elevation(2);
+  z-index: 7;
+}
+
 .project {
   padding: 2em;
   position: relative;
@@ -61,6 +69,10 @@ mat-card-title {
       margin-bottom: -6px;
     }
   }
+}
+
+mat-icon {
+  cursor: pointer;
 }
 
 table {
