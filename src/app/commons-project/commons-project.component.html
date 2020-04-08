@@ -62,10 +62,7 @@
                     <mat-chip-list>
                       <mat-chip
                         *ngIf="dataset.private"
-                        matTooltip="This Resource is only visible to PI and collaborators on this dataset. Click here to change this setting."
-                        (click)="
-                          toggleDatasetPrivate(dataset, !dataset.private)
-                        "
+                        matTooltip="This Dataset is only visible to PI and collaborators on this dataset."
                         id="button-not-private"
                       >
                         <mat-icon style="margin-right: 8px;"
@@ -75,10 +72,7 @@
                       </mat-chip>
                       <mat-chip
                         *ngIf="!dataset.private"
-                        matTooltip="This Resource is visible to all iTHRIV users. Click to restrict it to just dataset PI and collaborators on this dataset."
-                        (click)="
-                          toggleDatasetPrivate(dataset, !dataset.private)
-                        "
+                        matTooltip="This Dataset is visible to all iTHRIV users."
                         id="button-private"
                       >
                         <mat-icon style="margin-right: 8px;"
@@ -130,10 +124,7 @@
                     <mat-chip-list>
                       <mat-chip
                         *ngIf="dataset.private"
-                        matTooltip="This Resource is only visible to PI and collaborators on this dataset. Click here to change this setting."
-                        (click)="
-                          toggleDatasetPrivate(dataset, !dataset.private)
-                        "
+                        matTooltip="This Dataset is only visible to PI and collaborators on this dataset."
                         id="button-not-private"
                       >
                         <mat-icon style="margin-right: 8px;"
@@ -143,10 +134,7 @@
                       </mat-chip>
                       <mat-chip
                         *ngIf="!dataset.private"
-                        matTooltip="This Resource is visible to all iTHRIV users. Click to restrict it to just dataset PI and collaborators on this dataset."
-                        (click)="
-                          toggleDatasetPrivate(dataset, !dataset.private)
-                        "
+                        matTooltip="This Dataset is visible to all iTHRIV users."
                         id="button-private"
                       >
                         <mat-icon style="margin-right: 8px;"

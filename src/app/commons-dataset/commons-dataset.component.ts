@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { User } from '../user';
 import { Dataset } from '../commons-types';
+import { CommonsApiService } from '../shared/commons-api/commons-api.service';
 
 @Component({
   selector: 'app-commons-dataset',
@@ -13,7 +14,7 @@ export class CommonsDatasetComponent implements OnInit {
   @Output() currentFormChange = new EventEmitter();
   @Input() dataset: Dataset;
 
-  constructor() {}
+  constructor(private cas: CommonsApiService) {}
 
   ngOnInit() {}
 
@@ -27,5 +28,18 @@ export class CommonsDatasetComponent implements OnInit {
       previousForm: 'commons-dataset',
       displayForm: 'commons-dataset-create-edit',
     });
+  }
+
+  toggleDatasetPrivate(dataset: Dataset, isPrivate: boolean) {
+    dataset.private = isPrivate;
+    this.cas.updateDataset(dataset).subscribe(
+      (e) => {},
+      (error1) => {}
+    );
+  }
+
+  keywords() {
+    const keyswordsArray = this.dataset.keywords.split(',');
+    return keyswordsArray;
   }
 }

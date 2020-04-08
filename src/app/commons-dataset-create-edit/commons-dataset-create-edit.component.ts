@@ -267,7 +267,6 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
     this.dataset.keywords = this.fields.keywords.formControl.value;
     this.dataset.identifiers_hipaa = this.fields.identifiers_hipaa.formControl.value;
     this.dataset.other_sensitive_data = this.fields.other_sensitive_data.formControl.value;
-
     if (this.createNew === true) {
       this.cas.createDataset(this.dataset).subscribe(
         (e) => {
@@ -351,6 +350,7 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
   }
 
   uploadUrl() {
+    // Calculate URL by user institution
     return `http://poc.commons.ithriv.org:80/commons/datasets/file/${this.dataset.id}`;
   }
 }

@@ -1,12 +1,138 @@
-<p>{{ dataset.description }}</p>
-
-<button *ngIf="user" mat-raised-button color="primary" (click)="showDataset()">
-  <mat-icon matTooltip="Click here to edit dataset">
-    edit
-  </mat-icon>
-  Edit Dataset
-</button>
-<button mat-raised-button color="primary" (click)="showNext()">
-  <mat-icon>home</mat-icon>
-  Project Home
-</button>
+<div class="mat-typography dataset">
+  <div
+    *ngIf="dataset"
+    fxLayout="row"
+    fxLayout.xs="column"
+    fxLayoutWrap
+    fxLayoutGap="1em"
+    fxLayoutAlign="center"
+  >
+    <div
+      fxFlex.xl="75%"
+      fxFlex.lg="75%"
+      fxFlex.md="67%"
+      fxFlex.sm="50%"
+      fxFlex.xs="100%"
+    >
+      <button
+        *ngIf="user"
+        mat-raised-button
+        color="primary"
+        (click)="showDataset()"
+      >
+        <mat-icon matTooltip="Click here to edit dataset">
+          edit
+        </mat-icon>
+        Edit Dataset
+      </button>
+      <markdown [data]="dataset.description"></markdown>
+      <div
+        class="container"
+        fxLayout="row wrap"
+        fxLayout.xs="column"
+        fxLayoutAlign="center center"
+        fxLayoutGap="10px"
+        fxLayoutGap.xs="0"
+      >
+        <a class="available-institution">
+          <img
+            src="/assets/institutions/{{ dataset.institution.name }}.png"
+            matTooltip="{{ dataset.institution.name }}"
+          />
+        </a>
+      </div>
+      <mat-card-footer>
+        <button mat-raised-button color="primary" (click)="showNext()">
+          <mat-icon>home</mat-icon>
+          Project Home
+        </button>
+      </mat-card-footer>
+    </div>
+    <mat-card
+      fxFlex.xl="25%"
+      fxFlex.lg="25%"
+      fxFlex.md="33%"
+      fxFlex.sm="50%"
+      fxFlex.xs="100%"
+    >
+      <mat-card-title>
+        DATASET DETAILS
+      </mat-card-title>
+      <mat-card-content>
+        <mat-chip-list *ngIf="user">
+          <mat-chip
+            *ngIf="dataset.private"
+            matTooltip="This Resource is only visible to PI and collaborators on this dataset. Click here to change this setting."
+            (click)="toggleDatasetPrivate(dataset, !dataset.private)"
+            id="button-not-private"
+          >
+            <mat-icon style="margin-right: 8px;">visibility_off</mat-icon>
+            PRIVATE
+          </mat-chip>
+          <mat-chip
+            *ngIf="!dataset.private"
+            matTooltip="This Resource is visible to all iTHRIV users. Click to restrict it to just dataset PI and collaborators on this dataset."
+            (click)="toggleDatasetPrivate(dataset, !dataset.private)"
+            id="button-private"
+          >
+            <mat-icon style="margin-right: 8px;">visibility</mat-icon>
+            PUBLIC
+          </mat-chip>
+        </mat-chip-list>
+        <mat-list dense>
+          <mat-list-item>
+            <h4 mat-line>HIPAA Identifier(s):</h4>
+            <p mat-line>{{ dataset.identifiers_hipaa }}</p>
+          </mat-list-item>
+          <mat-list-item>
+            <h4 mat-line>Home Institution:</h4>
+            <p mat-line>{{ dataset.institution.name }}</p>
+          </mat-list-item>
+          <mat-list-item>
+            <h4 mat-line>Other Sensitive Data:</h4>
+            <p mat-line>{{ dataset.other_sensitive_data }}</p>
+          </mat-list-item>
+          <mat-list-item>
+            <h4 mat-line>Modified Date/Time:</h4>
+            <p mat-line>{{ dataset.last_modified | date: 'MM/d/y h:mm a' }}</p>
+          </mat-list-item>
+          <mat-list-item>
+            <h4 mat-line></h4>
+          </mat-list-item>
+          <mat-list-item>
+            <h4 mat-line>Dataset Download:</h4>
+            <a
+              *ngIf="(!dataset.private || user) && dataset.url !== ''"
+              [href]="dataset.url"
+            >
+              <button type="button" mat-button>
+                <mat-icon>file_download</mat-icon>
+                {{ dataset.filename }}
+              </button>
+            </a>
+          </mat-list-item>
+          <mat-list-item>
+            <h4 mat-line>KEYWORDS:</h4>
+            <mat-chip-list mat-line>
+              <mat-chip *ngFor="let keyword of keywords()">
+                {{ keyword }}
+              </mat-chip>
+            </mat-chip-list>
+          </mat-list-item>
+        </mat-list>
+      </mat-card-content>
+      <mat-card-actions>
+        <mat-icon
+          *ngIf="user"
+          matTooltip="Click here to edit dataset"
+          (click)="showDataset()"
+        >
+          edit
+        </mat-icon>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+  <div *ngIf="!dataset">
+    <mat-progress-spinner></mat-progress-spinner>
+  </div>
+</div>
