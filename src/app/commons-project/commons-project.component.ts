@@ -63,6 +63,16 @@ export class CommonsProjectComponent implements OnInit {
     });
   }
 
+  onFileComplete(data: any) {
+    this.cas.updateProject(this.project).subscribe(
+      (e) => {
+        this.project = e;
+      },
+      (error1) => {}
+    );
+    console.log(data);
+  }
+
   togglePrivate(isPrivate: boolean) {
     this.project.private = isPrivate;
     this.cas.updateProject(this.project).subscribe(
@@ -84,5 +94,10 @@ export class CommonsProjectComponent implements OnInit {
   keywords() {
     const keyswordsArray = this.project.keywords.split(',');
     return keyswordsArray;
+  }
+
+  uploadUrl() {
+    // Calculate URL by user institution
+    return `http://poc.commons.ithriv.org:80/commons/projects/file/${this.project.id}`;
   }
 }

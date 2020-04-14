@@ -236,7 +236,7 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
   onFileComplete(data: any) {
     this.dataset.url = data.url;
     this.dataset.filename = data.fileName;
-    console.log(data); // We just print out data bubbled up from event emitter.
+    console.log(data);
   }
 
   validate() {

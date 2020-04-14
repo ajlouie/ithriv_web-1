@@ -25,6 +25,17 @@
         </mat-icon>
         Edit Dataset
       </button>
+      <a
+        *ngIf="(!dataset.private || user) && dataset.url !== ''"
+        [href]="dataset.url"
+      >
+        <button type="button" mat-button>
+          <mat-icon matTooltip="Click here to download dataset"
+            >file_download</mat-icon
+          >
+          {{ dataset.filename }}
+        </button>
+      </a>
       <markdown [data]="dataset.description"></markdown>
       <div
         class="container"
@@ -98,18 +109,6 @@
           </mat-list-item>
           <mat-list-item>
             <h4 mat-line></h4>
-          </mat-list-item>
-          <mat-list-item>
-            <h4 mat-line>Dataset Download:</h4>
-            <a
-              *ngIf="(!dataset.private || user) && dataset.url !== ''"
-              [href]="dataset.url"
-            >
-              <button type="button" mat-button>
-                <mat-icon>file_download</mat-icon>
-                {{ dataset.filename }}
-              </button>
-            </a>
           </mat-list-item>
           <mat-list-item>
             <h4 mat-line>KEYWORDS:</h4>

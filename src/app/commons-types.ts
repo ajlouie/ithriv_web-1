@@ -16,6 +16,7 @@ export interface Project {
   private?: boolean;
   institution?: Institution;
   icon?: Icon;
+  documents: Array<Document>;
 }
 
 export interface Dataset {
@@ -29,6 +30,12 @@ export interface Dataset {
   institution?: Institution;
   identifiers_hipaa?: string;
   other_sensitive_data?: string;
+  url?: string;
+  filename?: string;
+}
+
+export interface Document {
+  last_modified?: string;
   url?: string;
   filename?: string;
 }

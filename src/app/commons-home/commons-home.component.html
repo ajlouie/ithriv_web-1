@@ -73,7 +73,7 @@
     <ng-container *ngIf="user && formStatus === 'commons-dataset-create-edit'">
       <mat-toolbar class="mat-toolbar-tools">
         <mat-toolbar-row class="menubar menubar-xs">
-          <h3>CREATE/EDIT PROJECT DATASET</h3>
+          <h3>CREATE/EDIT DATASET DETAILS</h3>
         </mat-toolbar-row>
       </mat-toolbar>
       <app-commons-dataset-create-edit
@@ -106,7 +106,7 @@
     <ng-container *ngIf="formStatus === 'commons-dataset'">
       <mat-toolbar class="mat-toolbar-tools">
         <mat-toolbar-row class="menubar menubar-xs">
-          <h3>DATASET: {{ currentDataset.name }}</h3>
+          <h3>DATASET DETAILS: {{ currentDataset.name }}</h3>
         </mat-toolbar-row>
       </mat-toolbar>
       <app-commons-dataset

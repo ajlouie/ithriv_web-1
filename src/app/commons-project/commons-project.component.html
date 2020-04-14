@@ -177,17 +177,51 @@
             *ngIf="user && user.email == project.pl_pi"
           >
             <mat-icon>post_add</mat-icon>
-            ADD DATASET
+            ADD DATASET DETAILS
           </button>
         </mat-card-content>
       </mat-card>
       <mat-divider [inset]="true"></mat-divider>
       <mat-card *ngIf="user && user.email == project.pl_pi">
         <mat-card-content *ngIf="user && user.email == project.pl_pi">
-          <button mat-raised-button color="primary">
-            <mat-icon>post_add</mat-icon>
-            ADD DOCUMENT
-          </button>
+          <mat-card-title>
+            DOCUMENTS
+          </mat-card-title>
+          <mat-list dense>
+            <table *ngIf="project.documents.length > 0">
+              <tr>
+                <th>NAME</th>
+                <th>MODIFIED DATE/TIME</th>
+                <th>DOWNLOAD</th>
+              </tr>
+              <ng-container *ngIf="user">
+                <tr *ngFor="let document of project.documents">
+                  <td>
+                    <mat-label>
+                      {{ document.filename }}
+                    </mat-label>
+                  </td>
+                  <td>{{ document.last_modified | date: 'MM/d/y h:mm a' }}</td>
+                  <td>
+                    <a [href]="document.url">
+                      <mat-icon
+                        matTooltip="Click here to download document ({{
+                          document.filename
+                        }})"
+                      >
+                        file_download
+                      </mat-icon>
+                    </a>
+                  </td>
+                </tr>
+              </ng-container>
+            </table>
+          </mat-list>
+          <app-commons-file-upload
+            [color]="primary"
+            (complete)="onFileComplete($event)"
+            [target]="uploadUrl()"
+          ></app-commons-file-upload>
         </mat-card-content>
       </mat-card>
       <mat-divider [inset]="true"></mat-divider>
