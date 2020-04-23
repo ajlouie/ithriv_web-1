@@ -24,6 +24,7 @@ import { FileAttachment } from '../../file-attachment';
 import { User } from '../../user';
 import { Project } from 'src/app/commons-types';
 import { Dataset } from 'src/app/commons-types';
+import { Document } from 'src/app/commons-types';
 @Injectable({
   providedIn: 'root',
 })
@@ -118,6 +119,12 @@ export class CommonsApiService {
       .delete<any>(
         `http://localhost:5001/commons_adapter/api/dataset/${dataset.id}/${dataset.institution.name}`
       )
+      .pipe(catchError(this.handleError));
+  }
+
+  deleteDocument(document: Document): Observable<any> {
+    return this.http
+      .delete<any>(document.url)
       .pipe(catchError(this.handleError));
   }
 

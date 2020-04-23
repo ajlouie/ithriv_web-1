@@ -72,6 +72,12 @@ mat-card-title {
   }
 }
 
+mat-label {
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: green;
+}
+
 mat-icon {
   cursor: pointer;
 }

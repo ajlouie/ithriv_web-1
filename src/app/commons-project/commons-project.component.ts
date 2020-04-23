@@ -100,4 +100,19 @@ export class CommonsProjectComponent implements OnInit {
     // Calculate URL by user institution
     return `http://poc.commons.ithriv.org:80/commons/projects/file/${this.project.id}`;
   }
+
+  deleteDocument(document) {
+    this.cas.deleteDocument(document).subscribe(
+      (e) => {
+        this.cas.updateProject(this.project).subscribe(
+          (e) => {
+            this.project = e;
+          },
+          (error1) => {}
+        );
+      },
+      (error1) => {}
+    );
+    console.log(document);
+  }
 }

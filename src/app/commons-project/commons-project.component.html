@@ -16,9 +16,6 @@
     >
       <mat-card>
         <mat-card-content>
-          <h4>
-            <markdown [data]="project.description"></markdown>
-          </h4>
           <button
             mat-flat-button
             (click)="showProject()"
@@ -29,36 +26,52 @@
             <mat-icon>edit</mat-icon>
             EDIT PROJECT DETAILS
           </button>
+          <h4>
+            <markdown [data]="project.description"></markdown>
+          </h4>
         </mat-card-content>
       </mat-card>
       <mat-divider [inset]="true"></mat-divider>
       <mat-card>
         <mat-card-content>
-          <mat-card-title>
-            DATASETS
-          </mat-card-title>
+          <mat-toolbar>
+            <mat-card-title>
+              DATASETS
+            </mat-card-title>
+          </mat-toolbar>
           <mat-list dense>
             <table
               *ngIf="datasetsPrivate?.length > 0 || datasetsPublic?.length > 0"
             >
               <tr>
                 <th>NAME</th>
-                <th>MODIFIED DATE/TIME</th>
-                <th *ngIf="user && user.email == project.pl_pi">PERMISSION</th>
-                <th *ngIf="user && user.email == project.pl_pi">EDIT</th>
-                <th>DOWNLOAD</th>
+                <th align="center">MODIFIED DATE/TIME</th>
+                <th align="center" *ngIf="user && user.email == project.pl_pi">
+                  PERMISSION
+                </th>
+                <th align="center" *ngIf="user && user.email == project.pl_pi">
+                  EDIT
+                </th>
+                <th align="center">DOWNLOAD</th>
               </tr>
               <ng-container *ngIf="user">
                 <tr *ngFor="let dataset of datasetsPrivate">
                   <td>
-                    <mat-label matTooltip="Click here to view dataset">
-                      <button mat-button (click)="viewDataset(dataset)">
-                        {{ dataset.name }}
-                      </button>
+                    <mat-label
+                      matTooltip="Click here to view dataset details"
+                      mat-button
+                      (click)="viewDataset(dataset)"
+                    >
+                      {{ dataset.name }}
                     </mat-label>
                   </td>
-                  <td>{{ dataset.last_modified | date: 'MM/d/y h:mm a' }}</td>
-                  <td *ngIf="user && user.email == project.pl_pi">
+                  <td align="center">
+                    {{ dataset.last_modified | date: 'MM/d/y h:mm a' }}
+                  </td>
+                  <td
+                    align="center"
+                    *ngIf="user && user.email == project.pl_pi"
+                  >
                     <mat-chip-list>
                       <mat-chip
                         *ngIf="dataset.private"
@@ -83,14 +96,18 @@
                     </mat-chip-list>
                   </td>
                   <td *ngIf="user && user.email == project.pl_pi">
-                    <mat-icon
-                      matTooltip="Click here to edit dataset"
+                    <button
+                      type="button"
                       (click)="showDataset(dataset)"
+                      color="primary"
+                      mat-mini-fab
                     >
-                      edit
-                    </mat-icon>
+                      <mat-icon matTooltip="Click here to edit dataset">
+                        edit
+                      </mat-icon>
+                    </button>
                   </td>
-                  <td>
+                  <td align="center">
                     <a
                       *ngIf="
                         (!dataset.private ||
@@ -99,28 +116,37 @@
                       "
                       [href]="dataset.url"
                     >
-                      <mat-icon
-                        matTooltip="Click here to download dataset ({{
-                          dataset.filename
-                        }})"
-                      >
-                        file_download
-                      </mat-icon>
+                      <button type="button" color="primary" mat-mini-fab>
+                        <mat-icon
+                          matTooltip="Click here to download dataset ({{
+                            dataset.filename
+                          }})"
+                        >
+                          file_download
+                        </mat-icon>
+                      </button>
                     </a>
                   </td>
                 </tr>
               </ng-container>
               <ng-container>
                 <tr *ngFor="let dataset of datasetsPublic">
-                  <td>
-                    <mat-label matTooltip="Click here to view dataset">
-                      <button mat-button (click)="viewDataset(dataset)">
-                        {{ dataset.name }}
-                      </button>
+                  <td align="left">
+                    <mat-label
+                      matTooltip="Click here to view dataset details"
+                      mat-button
+                      (click)="viewDataset(dataset)"
+                    >
+                      {{ dataset.name }}
                     </mat-label>
                   </td>
-                  <td>{{ dataset.last_modified | date: 'MM/d/y h:mm a' }}</td>
-                  <td *ngIf="user && user.email == project.pl_pi">
+                  <td align="center">
+                    {{ dataset.last_modified | date: 'MM/d/y h:mm a' }}
+                  </td>
+                  <td
+                    align="center"
+                    *ngIf="user && user.email == project.pl_pi"
+                  >
                     <mat-chip-list>
                       <mat-chip
                         *ngIf="dataset.private"
@@ -144,15 +170,22 @@
                       </mat-chip>
                     </mat-chip-list>
                   </td>
-                  <td *ngIf="user && user.email == project.pl_pi">
-                    <mat-icon
-                      matTooltip="Click here to edit dataset"
+                  <td
+                    align="center"
+                    *ngIf="user && user.email == project.pl_pi"
+                  >
+                    <button
+                      type="button"
                       (click)="showDataset(dataset)"
+                      color="primary"
+                      mat-mini-fab
                     >
-                      edit
-                    </mat-icon>
+                      <mat-icon matTooltip="Click here to edit dataset">
+                        edit
+                      </mat-icon>
+                    </button>
                   </td>
-                  <td>
+                  <td align="center">
                     <a
                       *ngIf="
                         (!dataset.private ||
@@ -161,9 +194,11 @@
                       "
                       [href]="dataset.url"
                     >
-                      <mat-icon matTooltip="Click here to download dataset">
-                        file_download
-                      </mat-icon>
+                      <button type="button" color="primary" mat-mini-fab>
+                        <mat-icon matTooltip="Click here to download dataset">
+                          file_download
+                        </mat-icon>
+                      </button>
                     </a>
                   </td>
                 </tr>
@@ -184,34 +219,55 @@
       <mat-divider [inset]="true"></mat-divider>
       <mat-card *ngIf="user && user.email == project.pl_pi">
         <mat-card-content *ngIf="user && user.email == project.pl_pi">
-          <mat-card-title>
-            DOCUMENTS
-          </mat-card-title>
+          <mat-toolbar>
+            <mat-card-title>
+              DOCUMENTS
+            </mat-card-title>
+          </mat-toolbar>
           <mat-list dense>
             <table *ngIf="project.documents.length > 0">
               <tr>
                 <th>NAME</th>
                 <th>MODIFIED DATE/TIME</th>
                 <th>DOWNLOAD</th>
+                <th>DELETE</th>
               </tr>
               <ng-container *ngIf="user">
                 <tr *ngFor="let document of project.documents">
                   <td>
-                    <mat-label>
-                      {{ document.filename }}
-                    </mat-label>
+                    {{ document.filename }}
                   </td>
-                  <td>{{ document.last_modified | date: 'MM/d/y h:mm a' }}</td>
-                  <td>
+                  <td align="center">
+                    {{ document.last_modified | date: 'MM/d/y h:mm a' }}
+                  </td>
+                  <td align="center">
                     <a [href]="document.url">
+                      <button type="button" color="primary" mat-mini-fab>
+                        <mat-icon
+                          matTooltip="Click here to download document ({{
+                            document.filename
+                          }})"
+                        >
+                          file_download
+                        </mat-icon>
+                      </button>
+                    </a>
+                  </td>
+                  <td align="center">
+                    <button
+                      type="button"
+                      (click)="deleteDocument(document)"
+                      color="primary"
+                      mat-mini-fab
+                    >
                       <mat-icon
-                        matTooltip="Click here to download document ({{
+                        matTooltip="Click here to delete document ({{
                           document.filename
                         }})"
                       >
-                        file_download
+                        delete
                       </mat-icon>
-                    </a>
+                    </button>
                   </td>
                 </tr>
               </ng-container>
@@ -227,9 +283,11 @@
       <mat-divider [inset]="true"></mat-divider>
       <mat-card *ngIf="user && user.email == project.pl_pi">
         <mat-card-content>
-          <mat-card-title>
-            TEAM
-          </mat-card-title>
+          <mat-toolbar>
+            <mat-card-title>
+              TEAM
+            </mat-card-title>
+          </mat-toolbar>
           <mat-list dense>
             <table>
               <tr *ngIf="project && project.collaborators">

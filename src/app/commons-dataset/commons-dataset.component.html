@@ -14,29 +14,34 @@
       fxFlex.sm="50%"
       fxFlex.xs="100%"
     >
-      <button
-        *ngIf="user"
-        mat-raised-button
-        color="primary"
-        (click)="showDataset()"
-      >
-        <mat-icon matTooltip="Click here to edit dataset">
-          edit
-        </mat-icon>
-        Edit Dataset
-      </button>
-      <a
-        *ngIf="(!dataset.private || user) && dataset.url !== ''"
-        [href]="dataset.url"
-      >
-        <button type="button" mat-button>
-          <mat-icon matTooltip="Click here to download dataset"
-            >file_download</mat-icon
-          >
-          {{ dataset.filename }}
+      <mat-toolbar>
+        <button
+          *ngIf="user"
+          matTooltip="Click here to edit dataset"
+          mat-raised-button
+          color="primary"
+          (click)="showDataset()"
+        >
+          <mat-icon>
+            edit
+          </mat-icon>
+          Edit Dataset
         </button>
-      </a>
-      <markdown [data]="dataset.description"></markdown>
+        <a
+          *ngIf="(!dataset.private || user) && dataset.url !== ''"
+          [href]="dataset.url"
+        >
+          <button type="button" mat-button>
+            <mat-icon matTooltip="Click here to download dataset"
+              >file_download</mat-icon
+            >
+            {{ dataset.filename }}
+          </button>
+        </a>
+      </mat-toolbar>
+      <h4>
+        <markdown [data]="dataset.description"></markdown>
+      </h4>
       <div
         class="container"
         fxLayout="row wrap"
@@ -121,13 +126,16 @@
         </mat-list>
       </mat-card-content>
       <mat-card-actions>
-        <mat-icon
-          *ngIf="user"
-          matTooltip="Click here to edit dataset"
+        <button
+          type="button"
           (click)="showDataset()"
+          color="primary"
+          mat-mini-fab
         >
-          edit
-        </mat-icon>
+          <mat-icon *ngIf="user" matTooltip="Click here to edit dataset">
+            edit
+          </mat-icon>
+        </button>
       </mat-card-actions>
     </mat-card>
   </div>
