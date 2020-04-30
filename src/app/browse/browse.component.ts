@@ -1,8 +1,15 @@
-import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
+import {
+  BreakpointObserver,
+  Breakpoints,
+  BreakpointState,
+} from '@angular/cdk/layout';
 import { Component, HostBinding, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ScrollToConfigOptions, ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
+import {
+  ScrollToConfigOptions,
+  ScrollToService,
+} from '@nicky-lenaers/ngx-scroll-to';
 import { Category } from '../category';
 import { fadeTransition } from '../shared/animations';
 import { ResourceApiService } from '../shared/resource-api/resource-api.service';
@@ -50,22 +57,21 @@ export class BrowseComponent implements OnInit {
     private scrollToService: ScrollToService,
     public breakpointObserver: BreakpointObserver
   ) {
-
-    this.route.params.subscribe(params => {
+    this.route.params.subscribe((params) => {
       if (params && params.hasOwnProperty('category')) {
         this.categoryId = params['category'];
         this.loadCategory(this.categoryId);
       }
-      this.api.getSession().subscribe(user => this.user = user);
+      this.api.getSession().subscribe((user) => (this.user = user));
       this.loadAllCategories();
     });
   }
 
   scrollToRouteCategory() {
-    this.route.queryParams.subscribe(queryParams => {
+    this.route.queryParams.subscribe((queryParams) => {
       if (queryParams && queryParams.hasOwnProperty('scrollTo')) {
         const config: ScrollToConfigOptions = {
-          target: `category_${queryParams['scrollTo']}`
+          target: `category_${queryParams['scrollTo']}`,
         };
 
         this.scrollToService.scrollTo(config).subscribe();
@@ -79,20 +85,18 @@ export class BrowseComponent implements OnInit {
   }
 
   loadCategory(categoryId: Number) {
-    this.api.getCategory(categoryId).subscribe(
-      (category) => {
-        this.category = category;
-        this.isDataLoaded = true;
+    this.api.getCategory(categoryId).subscribe((category) => {
+      this.category = category;
+      this.isDataLoaded = true;
 
-        // Set page title
-        const currentTitle = this.titleService.getTitle();
-        this.titleService.setTitle(`${currentTitle} - ${this.category.name}`);
-      }
-    );
+      // Set page title
+      const currentTitle = this.titleService.getTitle();
+      this.titleService.setTitle(`${currentTitle} - ${this.category.name}`);
+    });
   }
 
   loadAllCategories() {
-    this.api.getCategories().subscribe(cats => {
+    this.api.getCategories().subscribe((cats) => {
       this.allCategories = cats;
       this.isDataLoaded = true;
       this.scrollToRouteCategory();
@@ -105,7 +109,7 @@ export class BrowseComponent implements OnInit {
     } else if (this.api.getViewPreferences().isNetworkView) {
       return ['/network', category.id];
     } else {
-      const id = (category.level === 1) ? category.parent_id : category.id;
+      const id = category.level === 1 ? category.parent_id : category.id;
       return ['/browse', id];
     }
   }
@@ -118,13 +122,13 @@ export class BrowseComponent implements OnInit {
     }
 
     const config: ScrollToConfigOptions = {
-      target: `category_${category.id}`
+      target: `category_${category.id}`,
     };
 
     // Only one scrolling action at a time
     if (!this.scrolling) {
       this.scrolling = true;
-      this.scrollToService.scrollTo(config).subscribe(result => {
+      this.scrollToService.scrollTo(config).subscribe((result) => {
         this.scrolling = false;
       });
     }
@@ -136,7 +140,6 @@ export class BrowseComponent implements OnInit {
     this.loadCategory(this.categoryId);
   }
 
-
   ngOnInit() {
     this.breakpointObserver
       .observe([
@@ -144,14 +147,24 @@ export class BrowseComponent implements OnInit {
         Breakpoints.Large,
         Breakpoints.Medium,
         Breakpoints.Small,
-        Breakpoints.XSmall
+        Breakpoints.XSmall,
       ])
       .subscribe((state: BreakpointState) => {
-        if (state.breakpoints[Breakpoints.XLarge]) { this.breakpoint = 'xl'; }
-        if (state.breakpoints[Breakpoints.Large]) { this.breakpoint = 'lg'; }
-        if (state.breakpoints[Breakpoints.Medium]) { this.breakpoint = 'md'; }
-        if (state.breakpoints[Breakpoints.Small]) { this.breakpoint = 'sm'; }
-        if (state.breakpoints[Breakpoints.XSmall]) { this.breakpoint = 'xs'; }
+        if (state.breakpoints[Breakpoints.XLarge]) {
+          this.breakpoint = 'xl';
+        }
+        if (state.breakpoints[Breakpoints.Large]) {
+          this.breakpoint = 'lg';
+        }
+        if (state.breakpoints[Breakpoints.Medium]) {
+          this.breakpoint = 'md';
+        }
+        if (state.breakpoints[Breakpoints.Small]) {
+          this.breakpoint = 'sm';
+        }
+        if (state.breakpoints[Breakpoints.XSmall]) {
+          this.breakpoint = 'xs';
+        }
       });
   }
 
@@ -172,18 +185,13 @@ export class BrowseComponent implements OnInit {
   gerunding(word: string) {
     return (
       word[0].toUpperCase() +
-      word.slice(1)
-        .toLowerCase()
-        .replace(/e$/, '') + 'ing'
+      word.slice(1).toLowerCase().replace(/e$/, '') +
+      'ing'
     );
   }
 
   hasCategories(): boolean {
-    return (
-      this.category &&
-      this.allCategories &&
-      (this.allCategories.length > 0)
-    );
+    return this.category && this.allCategories && this.allCategories.length > 0;
   }
 
   // Returns all Level 0 categories before the selected category

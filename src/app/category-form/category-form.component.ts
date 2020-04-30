@@ -9,7 +9,7 @@ import { ResourceApiService } from '../shared/resource-api/resource-api.service'
 @Component({
   selector: 'app-category-form',
   templateUrl: './category-form.component.html',
-  styleUrls: ['./category-form.component.scss']
+  styleUrls: ['./category-form.component.scss'],
 })
 export class CategoryFormComponent implements OnInit {
   category: Category;
@@ -28,7 +28,7 @@ export class CategoryFormComponent implements OnInit {
       maxLength: 100,
       minLength: 1,
       placeholder: 'Name',
-      type: 'text'
+      type: 'text',
     }),
     description: new FormField({
       formControl: new FormControl(),
@@ -36,8 +36,8 @@ export class CategoryFormComponent implements OnInit {
       placeholder: 'Description',
       type: 'richtexteditor',
       options: {
-        status: ['words']
-      }
+        status: ['words'],
+      },
     }),
     brief_description: new FormField({
       formControl: new FormControl(),
@@ -45,35 +45,35 @@ export class CategoryFormComponent implements OnInit {
       maxLength: 140,
       minLength: 20,
       placeholder: 'Brief Description',
-      type: 'text'
+      type: 'text',
     }),
     image: new FormField({
       formControl: new FormControl(),
       placeholder: 'Image',
-      type: 'text'
+      type: 'text',
     }),
     icon: new FormField({
       formControl: new FormControl(),
       placeholder: 'Select Icon',
       type: 'select',
       apiSource: 'getIcons',
-      showIcons: true
+      showIcons: true,
     }),
     color: new FormField({
       formControl: new FormControl(),
       placeholder: 'Color',
-      type: 'color'
+      type: 'color',
     }),
   };
 
   constructor(
     private api: ResourceApiService,
     public dialogRef: MatDialogRef<CategoryFormComponent>,
-    @Inject(MAT_DIALOG_DATA) private data: any,
+    @Inject(MAT_DIALOG_DATA) private data: any
   ) {
-    const colWidth = 100 - (1 / 6);
+    const colWidth = 100 - 1 / 6;
     const parent = this.data.parent_category;
-    const level = parent ? (parent.level + 1) : 0;
+    const level = parent ? parent.level + 1 : 0;
     this.dialogRef.updateSize(`${colWidth}vw`);
 
     if (this.data.edit) {
@@ -86,7 +86,7 @@ export class CategoryFormComponent implements OnInit {
         name: '',
         description: '',
         brief_description: '',
-        level: level
+        level: level,
       };
       if (this.data.parent_category) {
         this.category.parent_id = this.data.parent_category.id;
@@ -112,11 +112,15 @@ export class CategoryFormComponent implements OnInit {
         }
 
         if (this.fields[fieldName].minLength) {
-          validators.push(Validators.minLength(this.fields[fieldName].minLength));
+          validators.push(
+            Validators.minLength(this.fields[fieldName].minLength)
+          );
         }
 
         if (this.fields[fieldName].maxLength) {
-          validators.push(Validators.maxLength(this.fields[fieldName].maxLength));
+          validators.push(
+            Validators.maxLength(this.fields[fieldName].maxLength)
+          );
         }
 
         this.fields[fieldName].formControl.patchValue(this.category[fieldName]);
@@ -154,7 +158,10 @@ export class CategoryFormComponent implements OnInit {
       }
 
       if (this.createNew) {
-        this.api.addCategory(this.category).subscribe(c => {
+        if (this.category.icon !== undefined) {
+          this.category.icon_id = String(this.category.icon);
+        }
+        this.api.addCategory(this.category).subscribe((c) => {
           this.category = c;
           if (this.data.parent_category) {
             this.data.parent_category.children.push(this.category);
@@ -163,8 +170,14 @@ export class CategoryFormComponent implements OnInit {
           this.isDataLoaded = true;
         });
       } else {
-        this.api.updateCategory(this.category).subscribe(c => {
+        if (this.category.icon !== undefined) {
+          this.category.icon_id = String(this.category.icon);
+        }
+        this.api.updateCategory(this.category).subscribe((c) => {
           this.category = c;
+          if (this.data.parent_category) {
+            this.data.parent_category.children.push(this.category);
+          }
           this.dialogRef.close(this.category);
           this.isDataLoaded = true;
         });
@@ -190,16 +203,20 @@ export class CategoryFormComponent implements OnInit {
   }
 
   onDelete() {
-    this.api.deleteCategory(this.category).subscribe(c => {
-      if (this.data.parent_category) {
-        const index = this.data.parent_category.children.indexOf(this.category, 0);
-        if (index > -1) {
-          this.data.parent_category.children.splice(index, 1);
+    this.api.deleteCategory(this.category).subscribe(
+      (c) => {
+        if (this.data.parent_category) {
+          const index = this.data.parent_category.children.indexOf(
+            this.category,
+            0
+          );
+          if (index > -1) {
+            this.data.parent_category.children.splice(index, 1);
+          }
         }
-      }
-      this.dialogRef.close(this.category);
-    },
-      error => this.error = error
+        this.dialogRef.close(this.category);
+      },
+      (error) => (this.error = error)
     );
   }
 }
