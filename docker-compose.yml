@@ -2,6 +2,8 @@ version: '3.7'
 networks:
   ithriv_network:
     external: true
+  ithriv_network_private:
+    external: true
 services:
   ithriv_web:
     build:
@@ -52,3 +54,4 @@ services:
       - 80:80
     networks:
       - ithriv_network
+      - ithriv_network_private

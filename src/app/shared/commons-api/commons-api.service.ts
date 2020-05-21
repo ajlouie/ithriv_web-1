@@ -29,18 +29,25 @@ import { Document } from 'src/app/commons-types';
   providedIn: 'root',
 })
 export class CommonsApiService {
+  apiRoot = environment.api_commons_adapter;
+  apiRootPrivate = environment.api_commons_adapter_private;
+
+  // REST endpoints
+  endpoints = {
+    root: '/',
+  };
   constructor(private http: HttpClient) {}
 
   loadPrivateProjects(): Observable<Project[]> {
     return this.http
-      .get<Project[]>('http://localhost:5001/commons_adapter/api/project_list')
+      .get<Project[]>(this.apiRootPrivate + 'project_list')
       .pipe(
         map((projects) => projects.filter((project) => project.pl_pi !== ''))
       );
   }
   loadPublicProjects(): Observable<Project[]> {
     return this.http
-      .get<Project[]>('http://localhost:5001/commons_adapter/api/project_list')
+      .get<Project[]>(this.apiRoot + 'project_list')
       .pipe(
         map((projects) =>
           projects.filter(
@@ -52,27 +59,19 @@ export class CommonsApiService {
 
   createProject(project: Project): Observable<Project> {
     return this.http
-      .post<Project>(
-        'http://localhost:5001/commons_adapter/api/project',
-        project
-      )
+      .post<Project>(this.apiRootPrivate + 'project', project)
       .pipe(catchError(this.handleError));
   }
 
   updateProject(project: Project): Observable<Project> {
     return this.http
-      .put<Project>(
-        'http://localhost:5001/commons_adapter/api/project',
-        project
-      )
+      .put<Project>(this.apiRoot + 'private/project', project)
       .pipe(catchError(this.handleError));
   }
 
   loadPrivateDatasets(project_id: String): Observable<Dataset[]> {
     return this.http
-      .get<Dataset[]>(
-        `http://localhost:5001/commons_adapter/api/${project_id}/dataset_list`
-      )
+      .get<Dataset[]>(this.apiRootPrivate + `${project_id}/dataset_list`)
       .pipe(
         map((datasets) =>
           datasets
@@ -84,9 +83,7 @@ export class CommonsApiService {
 
   loadPublicDatasets(project_id: String): Observable<Dataset[]> {
     return this.http
-      .get<Dataset[]>(
-        `http://localhost:5001/commons_adapter/api/${project_id}/dataset_list`
-      )
+      .get<Dataset[]>(this.apiRoot + `${project_id}/dataset_list`)
       .pipe(
         map((datasets) =>
           datasets
@@ -98,26 +95,21 @@ export class CommonsApiService {
 
   createDataset(dataset: Dataset): Observable<Dataset> {
     return this.http
-      .post<Dataset>(
-        'http://localhost:5001/commons_adapter/api/dataset',
-        dataset
-      )
+      .post<Dataset>(this.apiRootPrivate + 'dataset', dataset)
       .pipe(catchError(this.handleError));
   }
 
   updateDataset(dataset: Dataset): Observable<Dataset> {
     return this.http
-      .put<Dataset>(
-        'http://localhost:5001/commons_adapter/api/dataset',
-        dataset
-      )
+      .put<Dataset>(this.apiRootPrivate + 'dataset', dataset)
       .pipe(catchError(this.handleError));
   }
 
   deleteDataset(dataset: Dataset): Observable<any> {
     return this.http
       .delete<any>(
-        `http://localhost:5001/commons_adapter/api/dataset/${dataset.id}/${dataset.institution.name}`
+        this.apiRootPrivate +
+          `dataset/${dataset.id}/${dataset.institution.name}`
       )
       .pipe(catchError(this.handleError));
   }

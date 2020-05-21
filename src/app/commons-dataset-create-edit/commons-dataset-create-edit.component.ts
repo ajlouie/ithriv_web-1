@@ -22,6 +22,7 @@ import { ResourceApiService } from '../shared/resource-api/resource-api.service'
 import { FormField } from '../form-field';
 import { ValidateDateTimeRange } from '../shared/validators/date_time_range.validator';
 import { ValidateUrl } from '../shared/validators/url.validator';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-commons-dataset-create-edit',
@@ -351,6 +352,14 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
 
   uploadUrl() {
     // Calculate URL by user institution
-    return `http://poc.commons.ithriv.org:80/commons/datasets/file/${this.dataset.id}`;
+    for (const institution_name in environment.landing_service) {
+      if (this.user.institution.name === institution_name) {
+        return (
+          environment.landing_service.url +
+          `/commons/datasets/file/${this.dataset.id}`
+        );
+      }
+    }
+    // return `http://poc.commons.ithriv.org:80/commons/datasets/file/${this.dataset.id}`;
   }
 }

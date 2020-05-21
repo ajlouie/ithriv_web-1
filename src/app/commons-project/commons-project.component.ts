@@ -3,6 +3,7 @@ import { User } from '../user';
 import { Project, Dataset } from '../commons-types';
 import { CommonsApiService } from '../shared/commons-api/commons-api.service';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-commons-project',
@@ -98,7 +99,14 @@ export class CommonsProjectComponent implements OnInit {
 
   uploadUrl() {
     // Calculate URL by user institution
-    return `http://poc.commons.ithriv.org:80/commons/projects/file/${this.project.id}`;
+    for (const institution_name in environment.landing_service) {
+      if (this.user.institution.name === institution_name) {
+        return (
+          environment.landing_service.url +
+          `/commons/projects/file/${this.project.id}`
+        );
+      }
+    }
   }
 
   deleteDocument(document) {

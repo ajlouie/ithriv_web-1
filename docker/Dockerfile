@@ -15,6 +15,8 @@ RUN npm config set unsafe-perm true \
     && ng --version \
     && npm install source-map-explorer --save-dev --save-exact \
     && npm config set unsafe-perm false
+RUN node -v
+RUN ng --version
 COPY . .
 # RUN npm run lint
 RUN npm run "build_$BUILD_ENV"

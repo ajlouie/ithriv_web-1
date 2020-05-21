@@ -1,6 +1,6 @@
 <mat-card
   *ngIf="project && project.id"
-  (click)="showNext(project)"
+  (click)="showNext()"
   [ngClass]="{ resource: true, private: project.private }"
   [hidden]="false"
 >
@@ -12,7 +12,7 @@
         <mat-icon
           svgIcon="ithriv_{{ typeIconId(project) }}"
           matTooltip="Project Folder"
-          (click)="showNext(project)"
+          (click)="showNext()"
         ></mat-icon>
       </div>
       <div
