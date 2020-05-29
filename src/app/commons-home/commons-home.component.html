@@ -33,7 +33,7 @@
   <mat-card-content *ngIf="user">
     <ng-container *ngIf="formStatus === 'commons-projects-list'">
       <mat-tab-group mat-stretch-tabs dynamicHeight>
-        <mat-tab label="My Private Projects" *ngIf="user">
+        <mat-tab label="My Projects" *ngIf="user">
           <ng-template matTabContent>
             <ng-container class="example-small-box mat-elevation-z4">
               <app-commons-project-list

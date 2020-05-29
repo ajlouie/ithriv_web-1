@@ -65,7 +65,7 @@ export class CommonsApiService {
 
   updateProject(project: Project): Observable<Project> {
     return this.http
-      .put<Project>(this.apiRoot + 'private/project', project)
+      .put<Project>(this.apiRootPrivate + 'project', project)
       .pipe(catchError(this.handleError));
   }
 
