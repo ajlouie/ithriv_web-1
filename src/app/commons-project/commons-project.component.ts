@@ -98,11 +98,13 @@ export class CommonsProjectComponent implements OnInit {
   }
 
   uploadUrl() {
-    // Calculate URL by user institution
-    for (const institution_name in environment.landing_service) {
-      if (this.user.institution.name === institution_name) {
+    for (const institution_info in environment.landing_service) {
+      if (
+        this.user.institution.name ===
+        environment.landing_service[institution_info]['name']
+      ) {
         return (
-          environment.landing_service.url +
+          environment.landing_service[institution_info]['url'] +
           `/commons/projects/file/${this.project.id}`
         );
       }

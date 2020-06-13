@@ -46,6 +46,7 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
   isDataLoaded = false;
   createNew = false;
   hipaaOptions = [
+    'NO HIPAA',
     'Name',
     'All geographic subdivisions smaller than a state, including street address, city, county, precinct, zip code, and their equivalent geocodes. NOTE: the initial three digits of the zip code are NOT considered an identifier IF, according to the current publicly available data from the Bureau of the Census: (1) The geographic unit formed by combining all zip codes with the same 3 initial digits contains more than 20,000 people and (2) The initial 3 digits of a zip code for all such geographic units containing 20,000 is changed to 000.',
     'All elements of dates (except year) for dates directly related to an individual, including birth date, admission date, discharge date, date of death; and all ages over 89 and all elements of dates (including year) indicative of such age, except that such ages and elements may be aggregated into a single category of age 90 or older. [This means you may record the year but not record the month or day of any date related to the subject if the subject is under the age of 89. In addition if the subject is over the age of 89 you may not record their age and you may not record the month, day or year of any date indicative of age ( except that you may aggregate them into a category ”Age>90” )',
@@ -352,10 +353,21 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
 
   uploadUrl() {
     // Calculate URL by user institution
-    for (const institution_name in environment.landing_service) {
-      if (this.user.institution.name === institution_name) {
+    // for (const institution_name in environment.landing_service) {
+    //   if (this.user.institution.name === institution_name) {
+    //     return (
+    //       environment.landing_service.url +
+    //       `/commons/datasets/file/${this.dataset.id}`
+    //     );
+    //   }
+    // }
+    for (const institution_info in environment.landing_service) {
+      if (
+        this.user.institution.name ===
+        environment.landing_service[institution_info]['name']
+      ) {
         return (
-          environment.landing_service.url +
+          environment.landing_service[institution_info]['url'] +
           `/commons/datasets/file/${this.dataset.id}`
         );
       }
