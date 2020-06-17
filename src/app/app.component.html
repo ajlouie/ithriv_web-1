@@ -195,7 +195,9 @@
           <a
             href="https://cctr.vcu.edu"
             *ngIf="
-              !mobileQuery.matches && session && institution.name === 'VCU'
+              !mobileQuery.matches &&
+              session &&
+              session.institution.name === 'VCU'
             "
             id="logo-horizontal-link"
           >
