@@ -84,13 +84,6 @@ export class LoginServicesComponent implements OnInit {
       },
       {
         id: null,
-        color: 'black',
-        name: 'VCU',
-        image: '/assets/institutions/VCU.png',
-        url: this.loginUrl,
-      },
-      {
-        id: null,
         color: 'purple',
         name: 'Virginia Tech',
         image: '/assets/institutions/Virginia Tech.png',
@@ -101,6 +94,13 @@ export class LoginServicesComponent implements OnInit {
         color: 'blue',
         name: 'Inova',
         image: '/assets/institutions/Inova.png',
+        url: this.loginUrl,
+      },
+      {
+        id: null,
+        color: 'black',
+        name: 'VCU',
+        image: '/assets/institutions/VCU.png',
         url: this.loginUrl,
       },
       { id: null, color: 'green', name: 'Public', image: '' },
