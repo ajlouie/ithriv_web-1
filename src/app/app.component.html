@@ -192,6 +192,19 @@
               class="logo-horizontal"
             />
           </a>
+          <a
+            href="https://cctr.vcu.edu"
+            *ngIf="
+              !mobileQuery.matches && session && institution.name === 'VCU'
+            "
+            id="logo-horizontal-link"
+          >
+            <img
+              src="/assets/logo/vcu-logo.png"
+              alt="Virginia Commonwealth University"
+              class="logo-horizontal"
+            />
+          </a>
         </mat-toolbar-row>
 
         <mat-toolbar-row
