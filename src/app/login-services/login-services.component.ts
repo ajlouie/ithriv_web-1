@@ -10,7 +10,7 @@ import { ResourceApiService } from '../shared/resource-api/resource-api.service'
   selector: 'app-login-services',
   templateUrl: './login-services.component.html',
   styleUrls: ['./login-services.component.scss'],
-  animations: [fadeTransition()]
+  animations: [fadeTransition()],
 })
 export class LoginServicesComponent implements OnInit {
   loginServices: LoginService[] = [];
@@ -29,10 +29,10 @@ export class LoginServicesComponent implements OnInit {
     this.selectedTabIndex = this.route.routeConfig.path === 'register' ? 1 : 0;
     this.loadServices();
 
-    this.route.queryParams.subscribe(params => {
+    this.route.queryParams.subscribe((params) => {
       if (params.hasOwnProperty('institutionId')) {
         const instituttionId = parseInt(params['institutionId'], 10);
-        this.api.getInstitution(instituttionId).subscribe(institution => {
+        this.api.getInstitution(instituttionId).subscribe((institution) => {
           this.institution = institution;
           sessionStorage.setItem('institution_name', institution.name);
         });
@@ -60,7 +60,7 @@ export class LoginServicesComponent implements OnInit {
     if (sessionStorage.getItem('institution_id')) {
       this.api
         .getInstitution(parseInt(sessionStorage.getItem('institution_id'), 10))
-        .subscribe(inst => {
+        .subscribe((inst) => {
           this.institution = inst;
         });
     }
@@ -73,35 +73,42 @@ export class LoginServicesComponent implements OnInit {
         color: 'orange',
         name: 'UVA',
         image: '/assets/institutions/UVA.png',
-        url: this.loginUrl
+        url: this.loginUrl,
       },
       {
         id: null,
         color: 'navy',
         name: 'Carilion',
         image: '/assets/institutions/Carilion.png',
-        url: this.loginUrl
+        url: this.loginUrl,
       },
       {
         id: null,
         color: 'purple',
         name: 'Virginia Tech',
         image: '/assets/institutions/Virginia Tech.png',
-        url: this.loginUrl
+        url: this.loginUrl,
       },
       {
         id: null,
         color: 'blue',
         name: 'Inova',
         image: '/assets/institutions/Inova.png',
-        url: this.loginUrl
+        url: this.loginUrl,
       },
-      { id: null, color: 'green', name: 'Public', image: '' }
+      {
+        id: null,
+        color: 'black',
+        name: 'VCU',
+        image: '/assets/institutions/VCU.png',
+        url: this.loginUrl,
+      },
+      { id: null, color: 'green', name: 'Public', image: '' },
     ];
 
-    this.api.getInstitutions().subscribe(institutions => {
-      services.forEach(s =>
-        institutions.forEach(i => {
+    this.api.getInstitutions().subscribe((institutions) => {
+      services.forEach((s) =>
+        institutions.forEach((i) => {
           if (i.name === s.name && i.name !== 'Public') {
             s.id = i.id;
             this.loginServices.push(new LoginService(s));
@@ -109,8 +116,8 @@ export class LoginServicesComponent implements OnInit {
         })
       );
 
-      institutions.forEach(i =>
-        services.forEach(s => {
+      institutions.forEach((i) =>
+        services.forEach((s) => {
           if (i.name === s.name && i.name === 'Public') {
             s.id = i.id;
             this.loginServices.push(new LoginService(s));
@@ -139,7 +146,7 @@ export class LoginServicesComponent implements OnInit {
       this.router.navigate(['home'], { queryParams: { publicpage: true } });
     } else {
       this.router.navigate(['login'], {
-        queryParams: { institutionId: institutionId }
+        queryParams: { institutionId: institutionId },
       });
     }
   }
