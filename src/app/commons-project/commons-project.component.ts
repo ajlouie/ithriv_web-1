@@ -58,7 +58,7 @@ export class CommonsProjectComponent implements OnInit {
   ];
 
   constructor(
-    private cas: CommonsApiService,
+    public cas: CommonsApiService,
     private http: HttpClient,
     public dialog: MatDialog,
     private changeDetectorRef: ChangeDetectorRef
