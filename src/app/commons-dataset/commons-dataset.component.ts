@@ -26,7 +26,7 @@ export class CommonsDatasetComponent implements OnInit {
     'download',
   ];
 
-  constructor(private cas: CommonsApiService) {}
+  constructor(public cas: CommonsApiService) {}
 
   ngOnInit() {
     this.loadPermisssions();
