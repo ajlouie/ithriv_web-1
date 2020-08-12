@@ -35,7 +35,7 @@
                 user && dataset.id !== '' && dataset.can_upload_data === true
               "
               (complete)="onFileComplete($event)"
-              [target]="uploadUrl(dataset)"
+              [target]="uploadUrl()"
               [user]="user"
               text="UPLOAD FILE"
               color="primary"
@@ -334,7 +334,7 @@
           color="primary"
           text="UPLOAD NEW VERSION"
           (complete)="onFileComplete($event)"
-          [target]="uploadUrl(dataset)"
+          [target]="uploadUrl()"
           [user]="user"
         ></app-commons-file-upload>
         <app-commons-file-upload
@@ -347,7 +347,7 @@
           color="primary"
           text="UPLOAD FILE"
           (complete)="onFileComplete($event)"
-          [target]="uploadUrl(dataset)"
+          [target]="uploadUrl()"
           [user]="user"
         ></app-commons-file-upload>
       </div>
