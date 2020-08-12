@@ -1,9 +1,28 @@
-import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  EventEmitter,
+  Output,
+  ChangeDetectorRef,
+} from '@angular/core';
 import { User } from '../user';
-import { Project, Dataset } from '../commons-types';
+import {
+  Project,
+  Dataset,
+  ProjectDocumentMap,
+  ProjectDocument,
+  UserPermission,
+} from '../commons-types';
 import { CommonsApiService } from '../shared/commons-api/commons-api.service';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
+import { ResponseContentType } from '@angular/http';
+import { HttpClient } from '@angular/common/http';
+import { MatDialog } from '@angular/material/dialog';
+import fileSaver from 'file-saver';
+import { CommonsProjectDocumentComponent } from '../commons-project-document/commons-project-document.component';
+import { CommonsProjectCreateEditComponent } from '../commons-project-create-edit/commons-project-create-edit.component';
 
 @Component({
   selector: 'app-commons-project',
@@ -18,8 +37,32 @@ export class CommonsProjectComponent implements OnInit {
   @Input() datasetsPrivate: Dataset[];
   @Input() datasetsPublic: Dataset[];
   dataset: Dataset;
+  userPermissions$: Observable<UserPermission[]> | undefined;
+  displayedUserpermColumns: string[] = ['email', 'role'];
+  displayedColumns: string[] = [
+    'name',
+    'last_modified',
+    'private',
+    'can_download_data',
+    'can_upload_data',
+    'can_update_meta',
+  ];
+  displayedDocumentColumns: string[] = [
+    'name',
+    'type',
+    'last_modified',
+    'url',
+    'update',
+    'delete',
+    'restore',
+  ];
 
-  constructor(private cas: CommonsApiService) {}
+  constructor(
+    private cas: CommonsApiService,
+    private http: HttpClient,
+    public dialog: MatDialog,
+    private changeDetectorRef: ChangeDetectorRef
+  ) {}
 
   ngOnInit() {
     this.dataset = <Dataset>{
@@ -32,9 +75,11 @@ export class CommonsProjectComponent implements OnInit {
       other_sensitive_data: '',
       last_modified: '',
       private: true,
+      private_data: true,
       url: '',
       filename: '',
     };
+    this.loadPermisssions();
   }
 
   showNext() {
@@ -64,10 +109,19 @@ export class CommonsProjectComponent implements OnInit {
     });
   }
 
+  getDataSource() {
+    return <Dataset[]>[].concat(this.datasetsPrivate, this.datasetsPublic);
+  }
+
   onFileComplete(data: any) {
     this.cas.updateProject(this.project).subscribe(
       (e) => {
         this.project = e;
+        this.currentFormChange.emit({
+          currentProject: this.project,
+          previousForm: 'commons-project',
+          displayForm: 'commons-project',
+        });
       },
       (error1) => {}
     );
@@ -97,22 +151,119 @@ export class CommonsProjectComponent implements OnInit {
     return keyswordsArray;
   }
 
-  uploadUrl() {
-    for (const institution_info in environment.landing_service) {
+  uploadUrlDataset(dataset: Dataset) {
+    return (
+      this.cas.getLandingServiceUrl(this.user) +
+      `/commons/data/datasets/file/${dataset.id}`
+    );
+  }
+
+  lookupRole(lookupKey: String) {
+    let i;
+    for (
+      i = 0;
+      i < CommonsProjectCreateEditComponent.PROJECT_ROLE_MAP_STATIC.length;
+      i++
+    ) {
       if (
-        this.user.institution.name ===
-        environment.landing_service[institution_info]['name']
+        CommonsProjectCreateEditComponent.PROJECT_ROLE_MAP_STATIC[i]['key'] ===
+        lookupKey.toString()
       ) {
-        return (
-          environment.landing_service[institution_info]['url'] +
-          `/commons/projects/file/${this.project.id}`
-        );
+        return CommonsProjectCreateEditComponent.PROJECT_ROLE_MAP_STATIC[i][
+          'value'
+        ];
       }
     }
   }
 
+  loadPermisssions() {
+    this.userPermissions$ = this.cas.getProjectPermissions(
+      this.user,
+      this.project
+    );
+  }
+
+  addDocument(): void {
+    const dialogRef = this.dialog.open(CommonsProjectDocumentComponent, {
+      width: '300px',
+      data: <ProjectDocumentMap>{
+        user: this.user,
+        project: this.project,
+        document: <ProjectDocument>{
+          last_modified: '',
+          url: '',
+          filename: '',
+          type: '',
+        },
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result: any) => {
+      this.cas.updateProject(this.project).subscribe(
+        (e) => {
+          this.project = e;
+          this.currentFormChange.emit({
+            currentProject: this.project,
+            previousForm: 'commons-project',
+            displayForm: 'commons-project',
+          });
+        },
+        (error1) => {}
+      );
+    });
+  }
+  updateDocument(documentType: string) {
+    const dialogRef = this.dialog.open(CommonsProjectDocumentComponent, {
+      width: '300px',
+      data: <ProjectDocumentMap>{
+        user: this.user,
+        project: this.project,
+        document: <ProjectDocument>{
+          last_modified: '',
+          url: '',
+          filename: '',
+          type: documentType,
+        },
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result: any) => {
+      this.cas.updateProject(this.project).subscribe(
+        (e) => {
+          this.project = e;
+          this.currentFormChange.emit({
+            currentProject: this.project,
+            previousForm: 'commons-project',
+            displayForm: 'commons-project',
+          });
+        },
+        (error1) => {}
+      );
+    });
+  }
+
+  restoreDocument(document) {
+    this.cas.restoreDocument(this.project, document, this.user).subscribe(
+      (e) => {
+        this.cas.updateProject(this.project).subscribe(
+          (e) => {
+            this.project = e;
+            this.currentFormChange.emit({
+              currentProject: this.project,
+              previousForm: 'commons-project',
+              displayForm: 'commons-project',
+            });
+          },
+          (error1) => {}
+        );
+      },
+      (error1) => {}
+    );
+    console.log(document);
+  }
+
   deleteDocument(document) {
-    this.cas.deleteDocument(document).subscribe(
+    this.cas.deleteDocument(document, this.user).subscribe(
       (e) => {
         this.cas.updateProject(this.project).subscribe(
           (e) => {

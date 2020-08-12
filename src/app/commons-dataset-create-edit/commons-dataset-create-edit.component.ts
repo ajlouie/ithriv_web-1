@@ -7,7 +7,7 @@ import {
   ChangeDetectorRef,
 } from '@angular/core';
 import { User } from '../user';
-import { Dataset } from '../commons-types';
+import { Dataset, UserPermission, UserPermissionMap } from '../commons-types';
 import { ErrorMatcher } from '../error-matcher';
 import { Fieldset } from '../fieldset';
 import {
@@ -23,6 +23,10 @@ import { FormField } from '../form-field';
 import { ValidateDateTimeRange } from '../shared/validators/date_time_range.validator';
 import { ValidateUrl } from '../shared/validators/url.validator';
 import { environment } from '../../environments/environment';
+import { MatSnackBar } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { AddPermissionComponent } from '../add-permission/add-permission.component';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-commons-dataset-create-edit',
@@ -30,17 +34,26 @@ import { environment } from '../../environments/environment';
   styleUrls: ['./commons-dataset-create-edit.component.scss'],
 })
 export class CommonsDatasetCreateEditComponent implements OnInit {
+  public static DATASET_ROLE_MAP_STATIC = [
+    { key: '1', value: 'DATASET ADMINISTRATOR' },
+    { key: '2', value: 'DATASET COLLABORATOR' },
+    { key: '3', value: 'DATASET CUSTOMER' },
+  ];
   @Input() user: User;
   @Input() currentForm: String;
   @Input() previousForm: String;
   @Output() currentFormChange = new EventEmitter();
   @Input() dataset: Dataset;
+  error: String;
+  showConfirmDelete = false;
   errorMessage: string;
   errorMatcher = new ErrorMatcher();
+  errorMessagePerm: string;
+  errorMatcherPerm = new ErrorMatcher();
   fields: any = {};
   fieldsets: Fieldset[] = [];
   files = {};
-  fg: FormGroup;
+  fg: FormGroup = new FormGroup({});
   iThrivForm: IThrivForm;
   formStatus = 'form';
   isDataLoaded = false;
@@ -66,15 +79,20 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
     'Full face photographic images and any comparable images  (does not currently include but could eventually include: high resolution MRIs, etc)',
     'Any other unique identifying number, characteristic, code that is derived from or related to information about the individual (e.g. initials, last 4 digits of Social Security #, mother’s maiden name, first 3 letters of last name.)',
   ];
+  userPermission: UserPermission;
+  userPermissions$: Observable<UserPermission[]> | undefined;
+  displayedUserpermColumns: string[] = ['email', 'role', 'edit', 'delete'];
 
   constructor(
     fb: FormBuilder,
     private cas: CommonsApiService,
     private ras: ResourceApiService,
+    public snackBar: MatSnackBar,
+    public dialog: MatDialog,
     private changeDetectorRef: ChangeDetectorRef
   ) {
     this.loadFields();
-    this.fg = fb.group(this.fields);
+    // this.fg = fb.group(this.fields);
     this.iThrivForm = new IThrivForm(this.fields, this.fg);
   }
 
@@ -122,9 +140,10 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
       }),
       identifiers_hipaa: new FormField({
         formControl: new FormControl(),
-        required: false,
+        required: true,
         placeholder: 'HIPAA options:',
         type: 'select',
+        multiSelect: true,
         selectOptions: this.hipaaOptions,
       }),
       other_sensitive_data: new FormField({
@@ -233,6 +252,139 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
     }
 
     this.loadFieldsets();
+    this.loadPermisssions();
+  }
+
+  loadPermisssions() {
+    this.userPermissions$ = this.cas.getDatasetPermissions(
+      this.user,
+      this.dataset
+    );
+  }
+
+  lookupRole(lookupKey: String) {
+    let i;
+    for (
+      i = 0;
+      i < CommonsDatasetCreateEditComponent.DATASET_ROLE_MAP_STATIC.length;
+      i++
+    ) {
+      if (
+        CommonsDatasetCreateEditComponent.DATASET_ROLE_MAP_STATIC[i]['key'] ===
+        lookupKey.toString()
+      ) {
+        return CommonsDatasetCreateEditComponent.DATASET_ROLE_MAP_STATIC[i][
+          'value'
+        ];
+      }
+    }
+  }
+
+  addPermission(): void {
+    const dialogRef = this.dialog.open(AddPermissionComponent, {
+      width: '250px',
+      data: <UserPermissionMap>{
+        userPermission: <UserPermission>{
+          user_email: '',
+          user_role: '',
+        },
+        permissionsMap:
+          CommonsDatasetCreateEditComponent.DATASET_ROLE_MAP_STATIC,
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result: UserPermission) => {
+      console.log('The dialog was closed');
+      if (result !== null) {
+        this.cas
+          .addUserDatasetPermission(this.user, this.dataset, result)
+          .subscribe(
+            (e) => {
+              this.loadPermisssions();
+              this.errorMessagePerm = '';
+            },
+            (error1) => {
+              this.errorMessagePerm = error1;
+            }
+          );
+      }
+    });
+  }
+
+  editPermission(userPermission: UserPermission): void {
+    const userPermissionCurrent = <UserPermission>{
+      user_email: userPermission.user_email,
+      user_role: userPermission.user_role,
+    };
+
+    const dialogRef = this.dialog.open(AddPermissionComponent, {
+      width: '250px',
+      data: <UserPermissionMap>{
+        userPermission: userPermission,
+        permissionsMap:
+          CommonsDatasetCreateEditComponent.DATASET_ROLE_MAP_STATIC,
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result: UserPermission) => {
+      console.log('The dialog was closed');
+      if (result !== null) {
+        this.cas
+          .deleteUserDatasetPermission(
+            this.user,
+            this.dataset,
+            userPermissionCurrent
+          )
+          .subscribe(
+            (e) => {
+              this.cas
+                .addUserDatasetPermission(this.user, this.dataset, result)
+                .subscribe(
+                  (e) => {
+                    this.loadPermisssions();
+                    this.errorMessagePerm = '';
+                  },
+                  (error1) => {
+                    this.cas
+                      .addUserDatasetPermission(
+                        this.user,
+                        this.dataset,
+                        userPermissionCurrent
+                      )
+                      .subscribe(
+                        (e) => {
+                          this.loadPermisssions();
+                        },
+                        (error1) => {
+                          this.errorMessagePerm = error1;
+                        }
+                      );
+                    this.errorMessagePerm = error1;
+                  }
+                );
+            },
+            (error1) => {
+              this.errorMessagePerm = error1;
+            }
+          );
+      } else {
+        this.loadPermisssions();
+      }
+    });
+  }
+
+  deletePermission(userPermission: UserPermission) {
+    this.cas
+      .deleteUserDatasetPermission(this.user, this.dataset, userPermission)
+      .subscribe(
+        (e) => {
+          this.loadPermisssions();
+          this.errorMessagePerm = '';
+        },
+        (error1) => {
+          this.errorMessagePerm = error1;
+        }
+      );
   }
 
   onFileComplete(data: any) {
@@ -249,6 +401,7 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
         control.updateValueAndValidity();
       }
     }
+    return this.fg.valid;
   }
 
   togglePrivate(isPrivate: boolean) {
@@ -259,57 +412,104 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
     );
   }
 
-  submitDataset() {
+  submitDataset($event) {
+    $event.preventDefault();
     this.validate();
-    if (!this.fg.valid) {
-      return;
-    }
-    this.dataset.name = this.fields.name.formControl.value;
-    this.dataset.description = this.fields.description.formControl.value;
-    this.dataset.keywords = this.fields.keywords.formControl.value;
-    this.dataset.identifiers_hipaa = this.fields.identifiers_hipaa.formControl.value;
-    this.dataset.other_sensitive_data = this.fields.other_sensitive_data.formControl.value;
-    if (this.createNew === true) {
-      this.cas.createDataset(this.dataset).subscribe(
-        (e) => {
-          this.errorMessage = '';
-          this.formStatus = 'complete';
-          this.dataset = e;
-          this.showNext();
-        },
-        (error1) => {
-          if (error1) {
-            this.errorMessage = error1;
-          } else {
-            this.errorMessage =
-              'Failed to create dataset, please try again later or contact system admin';
+    if (this.validate()) {
+      this.dataset.name = this.fields.name.formControl.value;
+      this.dataset.description = this.fields.description.formControl.value;
+      this.dataset.keywords = this.fields.keywords.formControl.value;
+      this.dataset.identifiers_hipaa = this.fields.identifiers_hipaa.formControl.value;
+      this.dataset.other_sensitive_data = this.fields.other_sensitive_data.formControl.value;
+      if (this.createNew === true) {
+        this.cas.createDataset(this.dataset).subscribe(
+          (e) => {
+            this.errorMessage = '';
+            this.formStatus = 'complete';
+            this.dataset = e;
+            this.showNext();
+          },
+          (error1) => {
+            if (error1) {
+              this.errorMessage = error1;
+            } else {
+              this.errorMessage =
+                'Failed to create dataset, please try again later or contact system admin';
+            }
+            this.formStatus = 'form';
+            this.changeDetectorRef.detectChanges();
           }
-          this.formStatus = 'form';
-          this.changeDetectorRef.detectChanges();
-        }
-      );
-    } else {
-      this.cas.updateDataset(this.dataset).subscribe(
-        (e) => {
-          this.errorMessage = '';
-          this.formStatus = 'complete';
-          this.dataset = e;
-          this.showNext();
-        },
-        (error1) => {
-          if (error1) {
-            this.errorMessage = error1;
-          } else {
-            this.errorMessage =
-              'Failed to update dataset, please try again later or contact system admin';
+        );
+      } else {
+        this.cas.updateDataset(this.dataset).subscribe(
+          (e) => {
+            this.errorMessage = '';
+            this.formStatus = 'complete';
+            this.dataset = e;
+            this.showNext();
+          },
+          (error1) => {
+            if (error1) {
+              this.errorMessage = error1;
+            } else {
+              this.errorMessage =
+                'Failed to update dataset, please try again later or contact system admin';
+            }
+            this.formStatus = 'form';
+            this.changeDetectorRef.detectChanges();
           }
-          this.formStatus = 'form';
-          this.changeDetectorRef.detectChanges();
-        }
-      );
-    }
+        );
+      }
 
-    this.formStatus = 'submitting';
+      this.formStatus = 'submitting';
+    } else {
+      const messages: string[] = [];
+      const controls = this.fg.controls;
+      for (const fieldName in controls) {
+        if (controls.hasOwnProperty(fieldName)) {
+          const errors = controls[fieldName].errors;
+          const label = this.fields[fieldName].placeholder;
+
+          for (const errorName in errors) {
+            if (errors.hasOwnProperty(errorName)) {
+              switch (errorName) {
+                case 'dateTimeRange':
+                  messages.push(
+                    `${label} is not a valid event start and end date/time.`
+                  );
+                  break;
+                case 'email':
+                  messages.push(`${label} is not a valid email address.`);
+                  break;
+                case 'maxlength':
+                  messages.push(`${label} is not long enough.`);
+                  break;
+                case 'minlength':
+                  messages.push(`${label} is too short.`);
+                  break;
+                case 'required':
+                  messages.push(`${label} is empty.`);
+                  break;
+                case 'url':
+                  messages.push(`${label} is not a valid URL.`);
+                  break;
+                default:
+                  messages.push(`${label} has an error.`);
+                  break;
+              }
+            }
+          }
+        }
+      }
+      const action = '';
+      const message = `Please double-check the following fields: ${messages.join(
+        ' '
+      )}`;
+      this.snackBar.open(message, action, {
+        duration: 5000,
+        panelClass: 'snackbar-warning',
+      });
+    }
   }
 
   cancelDataset() {
@@ -319,13 +519,13 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
   deleteDataset() {
     this.cas.deleteDataset(this.dataset).subscribe(
       (e) => {
-        this.errorMessage = '';
+        this.error = '';
         this.formStatus = 'complete';
-        this.showNext();
+        this.currentFormChange.emit({ displayForm: 'commons-project' });
       },
       (error1) => {
         if (error1) {
-          this.errorMessage = error1;
+          this.error = error1;
         } else {
           this.errorMessage =
             'Failed to delete dataset, please try again later or contact system admin';
@@ -351,27 +551,14 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
     this.formStatus = 'form';
   }
 
+  showDelete() {
+    this.showConfirmDelete = true;
+  }
+
   uploadUrl() {
-    // Calculate URL by user institution
-    // for (const institution_name in environment.landing_service) {
-    //   if (this.user.institution.name === institution_name) {
-    //     return (
-    //       environment.landing_service.url +
-    //       `/commons/datasets/file/${this.dataset.id}`
-    //     );
-    //   }
-    // }
-    for (const institution_info in environment.landing_service) {
-      if (
-        this.user.institution.name ===
-        environment.landing_service[institution_info]['name']
-      ) {
-        return (
-          environment.landing_service[institution_info]['url'] +
-          `/commons/datasets/file/${this.dataset.id}`
-        );
-      }
-    }
-    // return `http://poc.commons.ithriv.org:80/commons/datasets/file/${this.dataset.id}`;
+    return (
+      this.cas.getLandingServiceUrl(this.user) +
+      `/commons/data/datasets/file/${this.dataset.id}`
+    );
   }
 }

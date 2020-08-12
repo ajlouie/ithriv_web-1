@@ -37,6 +37,7 @@ import {
   MatToolbarModule,
   MatTooltipModule,
   MatTreeModule,
+  MAT_FORM_FIELD_DEFAULT_OPTIONS,
 } from '@angular/material';
 import {
   OwlDateTimeModule,
@@ -121,6 +122,8 @@ import { CommonsDatasetCreateEditComponent } from './commons-dataset-create-edit
 import { CommonsProjectTileComponent } from './commons-project-tile/commons-project-tile.component';
 import { CommonsFileUploadComponent } from './commons-file-upload/commons-file-upload.component';
 import { CommonsDatasetComponent } from './commons-dataset/commons-dataset.component';
+import { AddPermissionComponent } from './add-permission/add-permission.component';
+import { CommonsProjectDocumentComponent } from './commons-project-document/commons-project-document.component';
 
 // import { DropDownListComponent } from '@syncfusion/ej2-angular-dropdowns';
 
@@ -138,6 +141,7 @@ export const MY_NATIVE_FORMATS = {
   dateA11yLabel: { year: 'numeric', month: 'long', day: 'numeric' },
   monthYearA11yLabel: { year: 'numeric', month: 'long' },
 };
+
 @NgModule({
   declarations: [
     AddCategoryButtonComponent,
@@ -200,6 +204,8 @@ export const MY_NATIVE_FORMATS = {
     CommonsDatasetCreateEditComponent,
     CommonsProjectTileComponent,
     CommonsDatasetComponent,
+    AddPermissionComponent,
+    CommonsProjectDocumentComponent,
     // DropDownListComponent
   ],
   imports: [
@@ -214,6 +220,7 @@ export const MY_NATIVE_FORMATS = {
     DeviceDetectorModule.forRoot(),
     FileDropModule,
     FlexLayoutModule,
+    FormsModule,
     HttpClientModule,
     InlineSVGModule.forRoot(),
     LayoutModule,
@@ -256,7 +263,12 @@ export const MY_NATIVE_FORMATS = {
     RichTextEditorAllModule,
     ScrollToModule.forRoot(),
   ],
-  entryComponents: [CategoryFormComponent, ResourceFormComponent],
+  entryComponents: [
+    CategoryFormComponent,
+    ResourceFormComponent,
+    AddPermissionComponent,
+    CommonsProjectDocumentComponent,
+  ],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,

@@ -53,8 +53,7 @@ export class CommonsMenuComponent implements OnInit {
       description: '',
       keywords: '',
       funding_source: '',
-      ithriv_partner: '',
-      other_partner: '',
+      partners: '',
     };
     // this.loadFields();
     // this.fg = fb.group(this.fields);

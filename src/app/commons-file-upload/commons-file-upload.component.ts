@@ -14,9 +14,10 @@ import {
   HttpErrorResponse,
   HttpHeaders,
 } from '@angular/common/http';
-import { Subscription } from 'rxjs';
 import { of } from 'rxjs';
 import { catchError, last, map, tap } from 'rxjs/operators';
+import { User } from '../user';
+import { FileUploadModel } from '../commons-types';
 
 @Component({
   selector: 'app-commons-file-upload',
@@ -31,15 +32,17 @@ import { catchError, last, map, tap } from 'rxjs/operators';
 })
 export class CommonsFileUploadComponent implements OnInit {
   /** Link text */
-  @Input() text = 'Upload Dataset';
+  @Input() text = '';
   /** Name used in form which will be sent in HTTP request. */
   @Input() param = 'file';
   /** Target URL for file uploading. */
   @Input() target = 'https://file.io';
+  @Input() user: User;
   /** File extension that accepted, same as 'accept' of <input type="file" />.
           By the default, it's set to 'image/*'. */
   @Input() accept = '*/*';
   @Input() color = 'warn';
+  @Input() buttonType = 'mat-raised-button';
   /** Allow you to add handler after its completion. Bubble up response text from remote. */
   @Output() complete = new EventEmitter<string>();
 
@@ -83,8 +86,7 @@ export class CommonsFileUploadComponent implements OnInit {
   private uploadFile(file: FileUploadModel) {
     const fd = new FormData();
     fd.append(this.param, file.data);
-    const headers = new HttpHeaders();
-    headers.append('Content-Type', 'application/x-www-form-urlencoded');
+    const headers = new HttpHeaders({ REMOTE_USER: this.user.eppn });
     const req = new HttpRequest('POST', this.target, fd, {
       headers: headers,
       reportProgress: true,
@@ -136,14 +138,4 @@ export class CommonsFileUploadComponent implements OnInit {
       this.files.splice(index, 1);
     }
   }
-}
-
-export class FileUploadModel {
-  data: File;
-  state: string;
-  inProgress: boolean;
-  progress: number;
-  canRetry: boolean;
-  canCancel: boolean;
-  sub?: Subscription;
 }

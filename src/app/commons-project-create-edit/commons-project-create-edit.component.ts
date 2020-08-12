@@ -4,13 +4,13 @@ import {
   Input,
   Output,
   EventEmitter,
-  ChangeDetectorRef
+  ChangeDetectorRef,
 } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
   FormControl,
-  Validators
+  Validators,
 } from '@angular/forms';
 import { ErrorMatcher } from '../error-matcher';
 import { FormField } from '../form-field';
@@ -18,17 +18,26 @@ import { IThrivForm } from '../shared/IThrivForm';
 import { User } from '../user';
 import { ResourceApiService } from '../shared/resource-api/resource-api.service';
 import { CommonsApiService } from '../shared/commons-api/commons-api.service';
-import { Project } from '../commons-types';
+import { Project, UserPermission, UserPermissionMap } from '../commons-types';
 import { filter } from 'rxjs/operators';
 import { Fieldset } from '../fieldset';
 import { ValidateDateTimeRange } from '../shared/validators/date_time_range.validator';
+import { MatSnackBar } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { Observable } from 'rxjs';
+import { AddPermissionComponent } from '../add-permission/add-permission.component';
 
 @Component({
   selector: 'app-commons-project-create-edit',
   templateUrl: './commons-project-create-edit.component.html',
-  styleUrls: ['./commons-project-create-edit.component.scss']
+  styleUrls: ['./commons-project-create-edit.component.scss'],
 })
 export class CommonsProjectCreateEditComponent implements OnInit {
+  public static PROJECT_ROLE_MAP_STATIC = [
+    { key: '1', value: 'PROJECT OWNER' },
+    { key: '2', value: 'PROJECT COLLABORATOR' },
+    { key: '3', value: 'PRINCIPLE INVESTIGATOR' },
+  ];
   @Input() user: User;
   @Input() currentForm: String;
   @Input() previousForm: String;
@@ -36,23 +45,32 @@ export class CommonsProjectCreateEditComponent implements OnInit {
   @Input() project: Project;
   errorMessage: string;
   errorMatcher = new ErrorMatcher();
+  errorMessagePerm: string;
+  errorMatcherPerm = new ErrorMatcher();
   fields: any = {};
   fieldsets: Fieldset[] = [];
-  fg: FormGroup;
+  fg: FormGroup = new FormGroup({});
   iThrivForm: IThrivForm;
   formStatus = 'form';
   isDataLoaded = false;
   createNew = false;
   institutionOptions = ['Virginia Tech', 'Carilion', 'Inova', 'UVA'];
+  error: String;
+  showConfirmDelete = false;
+  userPermission: UserPermission;
+  userPermissions$: Observable<UserPermission[]> | undefined;
+  displayedUserpermColumns: string[] = ['email', 'role', 'edit', 'delete'];
 
   constructor(
     fb: FormBuilder,
     private cas: CommonsApiService,
     private ras: ResourceApiService,
+    public dialog: MatDialog,
+    public snackBar: MatSnackBar,
     private changeDetectorRef: ChangeDetectorRef
   ) {
     this.loadFields();
-    this.fg = fb.group(this.fields);
+    // this.fg = fb.group(this.fields);
     this.iThrivForm = new IThrivForm(this.fields, this.fg);
   }
 
@@ -68,8 +86,8 @@ export class CommonsProjectCreateEditComponent implements OnInit {
         placeholder: 'Project Full Title:',
         type: 'text',
         options: {
-          status: ['words']
-        }
+          status: ['words'],
+        },
       }),
       name_alts: new FormField({
         formControl: new FormControl(),
@@ -77,8 +95,8 @@ export class CommonsProjectCreateEditComponent implements OnInit {
         placeholder: 'Alternate Project Name(s):',
         type: 'text',
         options: {
-          status: ['words']
-        }
+          status: ['words'],
+        },
       }),
       pl_pi: new FormField({
         formControl: new FormControl(),
@@ -86,8 +104,8 @@ export class CommonsProjectCreateEditComponent implements OnInit {
         placeholder: 'Project Lead / Principal Investigator(s):',
         type: 'email',
         options: {
-          status: ['words']
-        }
+          status: ['words'],
+        },
       }),
       description: new FormField({
         formControl: new FormControl(),
@@ -95,8 +113,8 @@ export class CommonsProjectCreateEditComponent implements OnInit {
         placeholder: 'Brief Description:',
         type: 'textarea',
         options: {
-          status: ['words']
-        }
+          status: ['words'],
+        },
       }),
       keywords: new FormField({
         formControl: new FormControl(),
@@ -104,24 +122,24 @@ export class CommonsProjectCreateEditComponent implements OnInit {
         placeholder: 'Key Words:',
         type: 'text',
         options: {
-          status: ['words']
-        }
+          status: ['words'],
+        },
       }),
-      ithriv_partner: new FormField({
+      // ithriv_partner: new FormField({
+      //   formControl: new FormControl(),
+      //   required: false,
+      //   placeholder: 'Partner iTHRIV Institutions:',
+      //   type: 'select',
+      //   selectOptions: this.institutionOptions,
+      // }),
+      partners: new FormField({
         formControl: new FormControl(),
         required: false,
-        placeholder: 'Partner iTHRIV Institutions:',
-        type: 'select',
-        selectOptions: this.institutionOptions
-      }),
-      other_partner: new FormField({
-        formControl: new FormControl(),
-        required: false,
-        placeholder: 'Other Partner Institutions:',
+        placeholder: 'Partner Institutions:',
         type: 'text',
         options: {
-          status: ['words']
-        }
+          status: ['words'],
+        },
       }),
       funding_source: new FormField({
         formControl: new FormControl(),
@@ -129,9 +147,9 @@ export class CommonsProjectCreateEditComponent implements OnInit {
         placeholder: 'Funding Source(s):',
         type: 'text',
         options: {
-          status: ['words']
-        }
-      })
+          status: ['words'],
+        },
+      }),
     };
   }
 
@@ -152,7 +170,7 @@ export class CommonsProjectCreateEditComponent implements OnInit {
             new Fieldset({
               id: field.fieldsetId || Math.random().toString(),
               label: field.fieldsetLabel || null,
-              fields: []
+              fields: [],
             })
           );
         }
@@ -180,8 +198,7 @@ export class CommonsProjectCreateEditComponent implements OnInit {
         description: this.fields.description.formControl.value,
         keywords: this.fields.keywords.formControl.value,
         funding_source: this.fields.funding_source.formControl.value,
-        ithriv_partner: this.fields.ithriv_partner.formControl.value,
-        other_partner: this.fields.other_partner.formControl.value
+        partners: this.fields.partners.formControl.value,
       };
     } else {
       this.createNew = false;
@@ -238,6 +255,140 @@ export class CommonsProjectCreateEditComponent implements OnInit {
     }
 
     this.loadFieldsets();
+    this.loadPermisssions();
+  }
+
+  loadPermisssions() {
+    this.userPermissions$ = this.cas.getProjectPermissions(
+      this.user,
+      this.project
+    );
+  }
+
+  lookupRole(lookupKey: String) {
+    let i;
+    for (
+      i = 0;
+      i < CommonsProjectCreateEditComponent.PROJECT_ROLE_MAP_STATIC.length;
+      i++
+    ) {
+      if (
+        CommonsProjectCreateEditComponent.PROJECT_ROLE_MAP_STATIC[i]['key'] ===
+        lookupKey.toString()
+      ) {
+        return CommonsProjectCreateEditComponent.PROJECT_ROLE_MAP_STATIC[i][
+          'value'
+        ];
+      }
+    }
+  }
+
+  addPermission(): void {
+    const dialogRef = this.dialog.open(AddPermissionComponent, {
+      width: '250px',
+      data: <UserPermissionMap>{
+        userPermission: <UserPermission>{
+          user_email: '',
+          user_role: '',
+        },
+        permissionsMap:
+          CommonsProjectCreateEditComponent.PROJECT_ROLE_MAP_STATIC,
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result: UserPermission) => {
+      console.log('The dialog was closed');
+      console.log(result);
+      if (result !== null) {
+        this.cas
+          .addUserProjectPermission(this.user, this.project, result)
+          .subscribe(
+            (e) => {
+              this.loadPermisssions();
+              this.errorMessagePerm = '';
+            },
+            (error1) => {
+              this.errorMessagePerm = error1;
+            }
+          );
+      }
+    });
+  }
+
+  editPermission(userPermission: UserPermission): void {
+    const userPermissionCurrent = <UserPermission>{
+      user_email: userPermission.user_email,
+      user_role: userPermission.user_role,
+    };
+
+    const dialogRef = this.dialog.open(AddPermissionComponent, {
+      width: '250px',
+      data: <UserPermissionMap>{
+        userPermission: userPermission,
+        permissionsMap:
+          CommonsProjectCreateEditComponent.PROJECT_ROLE_MAP_STATIC,
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result: UserPermission) => {
+      console.log('The dialog was closed');
+      if (result !== null) {
+        this.cas
+          .deleteUserProjectPermission(
+            this.user,
+            this.project,
+            userPermissionCurrent
+          )
+          .subscribe(
+            (e) => {
+              this.cas
+                .addUserProjectPermission(this.user, this.project, result)
+                .subscribe(
+                  (e) => {
+                    this.loadPermisssions();
+                    this.errorMessagePerm = '';
+                  },
+                  (error1) => {
+                    this.cas
+                      .addUserProjectPermission(
+                        this.user,
+                        this.project,
+                        userPermissionCurrent
+                      )
+                      .subscribe(
+                        (e) => {
+                          this.loadPermisssions();
+                        },
+                        (error1) => {
+                          this.errorMessagePerm = error1;
+                        }
+                      );
+                    this.errorMessagePerm = error1;
+                  }
+                );
+            },
+            (error1) => {
+              this.errorMessagePerm = error1;
+            }
+          );
+      } else {
+        this.loadPermisssions();
+      }
+    });
+  }
+
+  deletePermission(userPermission: UserPermission) {
+    this.cas
+      .deleteUserProjectPermission(this.user, this.project, userPermission)
+      .subscribe(
+        (e) => {
+          this.loadPermisssions();
+          this.errorMessagePerm = '';
+        },
+        (error1) => {
+          this.errorMessagePerm = error1;
+        }
+      );
   }
 
   validate() {
@@ -248,75 +399,141 @@ export class CommonsProjectCreateEditComponent implements OnInit {
         control.updateValueAndValidity();
       }
     }
+    return this.fg.valid;
   }
 
-  submitProject() {
-    this.validate();
-    if (!this.fg.valid) {
-      return;
-    }
-    this.project.name = this.fields.name.formControl.value;
-    this.project.name_alts = this.fields.name_alts.formControl.value;
-    this.project.pl_pi = this.fields.pl_pi.formControl.value;
-    this.project.description = this.fields.description.formControl.value;
-    this.project.keywords = this.fields.keywords.formControl.value;
-    this.project.funding_source = this.fields.funding_source.formControl.value;
-    this.project.ithriv_partner = this.fields.ithriv_partner.formControl.value;
-    this.project.other_partner = this.fields.other_partner.formControl.value;
+  submitProject($event) {
+    $event.preventDefault();
+    if (this.validate()) {
+      this.project.name = this.fields.name.formControl.value;
+      this.project.name_alts = this.fields.name_alts.formControl.value;
+      this.project.pl_pi = this.fields.pl_pi.formControl.value;
+      this.project.description = this.fields.description.formControl.value;
+      this.project.keywords = this.fields.keywords.formControl.value;
+      this.project.funding_source = this.fields.funding_source.formControl.value;
+      this.project.partners = this.fields.partners.formControl.value;
 
-    if (this.createNew === true) {
-      this.cas.createProject(this.project).subscribe(
-        e => {
-          this.errorMessage = '';
-          this.formStatus = 'complete';
-          this.project = e;
-          this.showNext();
-        },
-        error1 => {
-          if (error1) {
-            this.errorMessage = error1;
-          } else {
-            this.errorMessage =
-              'Failed to create project, please try again later or contact system admin';
+      if (this.createNew === true) {
+        this.cas.createProject(this.project).subscribe(
+          (e) => {
+            this.errorMessage = '';
+            this.formStatus = 'complete';
+            this.project = e;
+            this.showNext();
+          },
+          (error1) => {
+            if (error1) {
+              this.errorMessage = error1;
+            } else {
+              this.errorMessage =
+                'Failed to create project, please try again later or contact system admin';
+            }
+            this.formStatus = 'form';
+            this.changeDetectorRef.detectChanges();
           }
-          this.formStatus = 'form';
-          this.changeDetectorRef.detectChanges();
-        }
-      );
+        );
+      } else {
+        this.cas.updateProject(this.project).subscribe(
+          (e) => {
+            this.errorMessage = '';
+            this.formStatus = 'complete';
+            this.project = e;
+            this.showNext();
+          },
+          (error1) => {
+            if (error1) {
+              this.errorMessage = error1;
+            } else {
+              this.errorMessage =
+                'Failed to update project, please try again later or contact system admin';
+            }
+            this.formStatus = 'form';
+            this.changeDetectorRef.detectChanges();
+          }
+        );
+      }
+
+      this.formStatus = 'submitting';
     } else {
-      this.cas.updateProject(this.project).subscribe(
-        e => {
-          this.errorMessage = '';
-          this.formStatus = 'complete';
-          this.project = e;
-          this.showNext();
-        },
-        error1 => {
-          if (error1) {
-            this.errorMessage = error1;
-          } else {
-            this.errorMessage =
-              'Failed to update project, please try again later or contact system admin';
-          }
-          this.formStatus = 'form';
-          this.changeDetectorRef.detectChanges();
-        }
-      );
-    }
+      const messages: string[] = [];
+      const controls = this.fg.controls;
+      for (const fieldName in controls) {
+        if (controls.hasOwnProperty(fieldName)) {
+          const errors = controls[fieldName].errors;
+          const label = this.fields[fieldName].placeholder;
 
-    this.formStatus = 'submitting';
+          for (const errorName in errors) {
+            if (errors.hasOwnProperty(errorName)) {
+              switch (errorName) {
+                case 'dateTimeRange':
+                  messages.push(
+                    `${label} is not a valid event start and end date/time.`
+                  );
+                  break;
+                case 'email':
+                  messages.push(`${label} is not a valid email address.`);
+                  break;
+                case 'maxlength':
+                  messages.push(`${label} is not long enough.`);
+                  break;
+                case 'minlength':
+                  messages.push(`${label} is too short.`);
+                  break;
+                case 'required':
+                  messages.push(`${label} is empty.`);
+                  break;
+                case 'url':
+                  messages.push(`${label} is not a valid URL.`);
+                  break;
+                default:
+                  messages.push(`${label} has an error.`);
+                  break;
+              }
+            }
+          }
+        }
+      }
+      const action = '';
+      const message = `Please double-check the following fields: ${messages.join(
+        ' '
+      )}`;
+      this.snackBar.open(message, action, {
+        duration: 5000,
+        panelClass: 'snackbar-warning',
+      });
+    }
   }
+
   cancelProject() {
     this.currentFormChange.emit({
-      displayForm: this.previousForm
+      displayForm: this.previousForm,
     });
+  }
+
+  showDelete() {
+    this.showConfirmDelete = true;
+  }
+
+  deleteProject() {
+    this.cas.deleteProject(this.project).subscribe(
+      (e) => {
+        this.currentFormChange.emit({
+          currentProject: this.project,
+          previousForm: 'commons-projects-list',
+          displayForm: 'commons-projects-list',
+        });
+      },
+      (error1) => {
+        this.error = error1;
+      }
+    );
   }
 
   showNext() {
     this.currentFormChange.emit({
       currentProject: this.project,
       previousForm: 'commons-project-create-edit',
-      displayForm: 'commons-project'
+      displayForm: 'commons-project',
     });
   }
 

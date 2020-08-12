@@ -1,0 +1,54 @@
+<h1 mat-dialog-title>USER</h1>
+<div mat-dialog-content>
+  <mat-form-field>
+    <mat-label>Email</mat-label>
+    <input
+      matInput
+      [value]="data.userPermission.user_email"
+      (input)="data.userPermission.user_email = $event.target.value"
+      placeholder="User Email"
+      [formControl]="emailControl"
+      required
+    />
+    <mat-error *ngIf="emailControl.hasError('required')"
+      >User Email is empty</mat-error
+    >
+    <mat-error *ngIf="emailControl.hasError('email')"
+      >User Email is invalid</mat-error
+    >
+    <mat-hint>Dataset user login email</mat-hint>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Role</mat-label>
+    <mat-select
+      [(ngModel)]="data.userPermission.user_role"
+      [formControl]="permissionControl"
+      required
+    >
+      <mat-option
+        *ngFor="let datasetRole of data.permissionsMap"
+        [value]="datasetRole.key"
+        >{{ datasetRole.value }}</mat-option
+      >
+    </mat-select>
+    <mat-error *ngIf="permissionControl.hasError('required')"
+      >User role not selected</mat-error
+    >
+    <mat-hint>Dataset user permission</mat-hint>
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button
+    mat-button
+    color="primary"
+    (click)="submit()"
+    cdkFocusInitial
+    mat-raised-button
+  >
+    <mat-icon>person</mat-icon>
+    Save
+  </button>
+  <button mat-button (click)="onNoClick()">
+    <mat-icon>cancel</mat-icon>Cancel
+  </button>
+</div>

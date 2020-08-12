@@ -3,6 +3,9 @@
 @import '../../ithriv_material';
 @include ithriv-theme($ithriv-theme);
 
+.ithriv-spacer {
+  flex: 1 2 auto;
+}
 mat-card-footer {
   position: fixed;
   bottom: 0em;
@@ -76,8 +79,38 @@ mat-icon {
   cursor: pointer;
 }
 
-table {
-  border-spacing: 10px;
+table.datasetperms {
   font-weight: 400;
-  text-align: left;
+  text-align: center;
+  width: 50%;
+}
+
+table.datasetversions {
+  font-weight: 400;
+  text-align: center;
+  width: 100%;
+}
+
+.mat-row {
+  position: relative;
+}
+
+.mat-row-link {
+  position: absolute;
+}
+
+.reference-cell {
+  text-decoration: underline;
+}
+
+.gray {
+  background-color: #f5f5f5;
+}
+
+.mat-header-cell {
+  background-color: #4caf50;
+  color: white;
+  text-decoration: underline;
+  font-size: 14px;
+  text-align: center;
 }

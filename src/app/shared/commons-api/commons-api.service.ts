@@ -19,12 +19,17 @@ import {
   filter,
   toArray,
 } from 'rxjs/operators';
+import fileSaver from 'file-saver';
 import { environment } from '../../../environments/environment';
 import { FileAttachment } from '../../file-attachment';
 import { User } from '../../user';
-import { Project } from 'src/app/commons-types';
+import {
+  Project,
+  UserPermission,
+  DatasetFileVersion,
+} from 'src/app/commons-types';
 import { Dataset } from 'src/app/commons-types';
-import { Document } from 'src/app/commons-types';
+import { ProjectDocument } from 'src/app/commons-types';
 @Injectable({
   providedIn: 'root',
 })
@@ -37,6 +42,17 @@ export class CommonsApiService {
     root: '/',
   };
   constructor(private http: HttpClient) {}
+
+  getLandingServiceUrl(user: User) {
+    for (const institution_info in environment.landing_service) {
+      if (
+        user.institution.name ===
+        environment.landing_service[institution_info]['name']
+      ) {
+        return environment.landing_service[institution_info]['url'];
+      }
+    }
+  }
 
   loadPrivateProjects(): Observable<Project[]> {
     return this.http
@@ -66,6 +82,15 @@ export class CommonsApiService {
   updateProject(project: Project): Observable<Project> {
     return this.http
       .put<Project>(this.apiRootPrivate + 'project', project)
+      .pipe(catchError(this.handleError));
+  }
+
+  deleteProject(project: Project): Observable<any> {
+    return this.http
+      .delete<any>(
+        this.apiRootPrivate +
+          `project/${project.id}/${project.institution.name}`
+      )
       .pipe(catchError(this.handleError));
   }
 
@@ -114,9 +139,224 @@ export class CommonsApiService {
       .pipe(catchError(this.handleError));
   }
 
-  deleteDocument(document: Document): Observable<any> {
+  restoreDocument(
+    project: Project,
+    document: ProjectDocument,
+    user: User
+  ): Observable<any> {
     return this.http
-      .delete<any>(document.url)
+      .put<any>(
+        this.getLandingServiceUrl(user) +
+          `/commons/meta/projects/file/` +
+          project.id +
+          `/` +
+          document.type +
+          `/restore`,
+        {
+          headers: { REMOTE_USER: user.eppn },
+        }
+      )
+      .pipe(catchError(this.handleError));
+  }
+  deleteDocument(document: ProjectDocument, user: User): Observable<any> {
+    return this.http
+      .delete<any>(document.url, {
+        headers: { REMOTE_USER: user.eppn },
+      })
+      .pipe(catchError(this.handleError));
+  }
+
+  downloadFile(url, filename, user: User) {
+    this.http
+      .get(url, {
+        headers: { REMOTE_USER: user.eppn },
+        responseType: 'blob',
+      })
+      .subscribe((blob) => {
+        fileSaver.saveAs(blob, filename);
+      });
+  }
+
+  deleteUserProjectPermission(
+    user: User,
+    project: Project,
+    userPermission: UserPermission
+  ): Observable<any> {
+    return this.http
+      .delete<any>(
+        this.getLandingServiceUrl(user) +
+          `/commons/permissions/projects/users/` +
+          project.id +
+          `/` +
+          userPermission.user_role +
+          `/` +
+          userPermission.user_email,
+        {
+          headers: { REMOTE_USER: user.eppn },
+          responseType: 'json',
+        }
+      )
+      .pipe(catchError(this.handleError));
+  }
+
+  addUserProjectPermission(
+    user: User,
+    project: Project,
+    userPermission: UserPermission
+  ): Observable<any> {
+    return this.http
+      .post<any>(
+        this.getLandingServiceUrl(user) +
+          `/commons/permissions/projects/users/` +
+          project.id,
+        {
+          user_role: Number(userPermission.user_role),
+          user_email: userPermission.user_email,
+        },
+        {
+          headers: { REMOTE_USER: user.eppn },
+          responseType: 'json',
+        }
+      )
+      .pipe(catchError(this.handleError));
+  }
+
+  getProjectPermissions(
+    user: User,
+    project: Project
+  ): Observable<UserPermission[]> {
+    return this.http
+      .get<UserPermission[]>(
+        this.getLandingServiceUrl(user) +
+          `/commons/permissions/projects/users/` +
+          project.id,
+        {
+          headers: { REMOTE_USER: user.eppn },
+          responseType: 'json',
+        }
+      )
+      .pipe(catchError(this.handleError));
+  }
+
+  deleteUserDatasetPermission(
+    user: User,
+    dataset: Dataset,
+    userPermission: UserPermission
+  ): Observable<any> {
+    return this.http
+      .delete<any>(
+        this.getLandingServiceUrl(user) +
+          `/commons/permissions/datasets/users/` +
+          dataset.id +
+          `/` +
+          userPermission.user_role +
+          `/` +
+          userPermission.user_email,
+        {
+          headers: { REMOTE_USER: user.eppn },
+          responseType: 'json',
+        }
+      )
+      .pipe(catchError(this.handleError));
+  }
+
+  addUserDatasetPermission(
+    user: User,
+    dataset: Dataset,
+    userPermission: UserPermission
+  ): Observable<any> {
+    return this.http
+      .post<any>(
+        this.getLandingServiceUrl(user) +
+          `/commons/permissions/datasets/users/` +
+          dataset.id,
+        userPermission,
+        {
+          headers: { REMOTE_USER: user.eppn },
+          responseType: 'json',
+        }
+      )
+      .pipe(catchError(this.handleError));
+  }
+
+  getDatasetPermissions(
+    user: User,
+    dataset: Dataset
+  ): Observable<UserPermission[]> {
+    return this.http
+      .get<UserPermission[]>(
+        this.getLandingServiceUrl(user) +
+          `/commons/permissions/datasets/users/` +
+          dataset.id,
+        {
+          headers: { REMOTE_USER: user.eppn },
+          responseType: 'json',
+        }
+      )
+      .pipe(catchError(this.handleError));
+  }
+
+  getDatasetPermissionsTeam(
+    user: User,
+    dataset: Dataset
+  ): Observable<UserPermission[]> {
+    return this.http
+      .get<UserPermission[]>(
+        this.getLandingServiceUrl(user) +
+          `/commons/permissions/datasets/users/` +
+          dataset.id,
+        {
+          headers: { REMOTE_USER: user.eppn },
+          responseType: 'json',
+        }
+      )
+      .pipe(
+        map((permissions) =>
+          permissions.filter(
+            (permission) => permission.user_role.toString() !== '3'
+          )
+        )
+      );
+  }
+
+  getDatasetPermissionsCustomer(
+    user: User,
+    dataset: Dataset
+  ): Observable<UserPermission[]> {
+    return this.http
+      .get<UserPermission[]>(
+        this.getLandingServiceUrl(user) +
+          `/commons/permissions/datasets/users/` +
+          dataset.id,
+        {
+          headers: { REMOTE_USER: user.eppn },
+          responseType: 'json',
+        }
+      )
+      .pipe(
+        map((permissions) =>
+          permissions.filter(
+            (permission) => permission.user_role.toString() === '3'
+          )
+        )
+      );
+  }
+
+  getDatasetFileVersions(
+    user: User,
+    dataset: Dataset
+  ): Observable<DatasetFileVersion[]> {
+    return this.http
+      .get<DatasetFileVersion[]>(
+        this.getLandingServiceUrl(user) +
+          `/commons/data/datasets/file/` +
+          dataset.id +
+          `/versions`,
+        {
+          headers: { REMOTE_USER: user.eppn },
+          responseType: 'json',
+        }
+      )
       .pipe(catchError(this.handleError));
   }
 

@@ -12,19 +12,28 @@
     </span>
   </li>
 </ul>
-<button *ngIf="color === 'warn'" mat-button color="warn" (click)="onClick()">
-  <mat-icon>file_upload</mat-icon>
-  {{ text }}
-</button>
-<button
-  *ngIf="color !== 'warn'"
-  mat-raised-button
-  color="primary"
-  (click)="onClick()"
->
-  <mat-icon>file_upload</mat-icon>
-  UPLOAD DOCUMENTS
-</button>
+<ng-container *ngIf="!text">
+  <button
+    *ngIf="color === 'warn'"
+    mat-button
+    color="warn"
+    (click)="onClick()"
+    mat-mini-fab
+  >
+    <mat-icon>file_upload</mat-icon>
+  </button>
+</ng-container>
+<ng-container *ngIf="text">
+  <button
+    *ngIf="color !== 'warn'"
+    mat-raised-button
+    color="warn"
+    (click)="onClick()"
+  >
+    <mat-icon>file_upload</mat-icon>
+    {{ text }}
+  </button>
+</ng-container>
 <br />
 <input
   type="file"
