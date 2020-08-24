@@ -26,9 +26,12 @@
 
     <div>
       <mat-card-header [routerLink]="resourceRoute(resource)">
-        <mat-card-title
+        <mat-card-title *ngIf="resource.segment.name === 'Event'"
           >{{ resource.segment.name }}: {{ resource.name }}</mat-card-title
         >
+        <mat-card-title *ngIf="resource.segment.name !== 'Event'">{{
+          resource.name
+        }}</mat-card-title>
         <app-approved-badge
           [resource]="resource"
           [user]="user"
