@@ -14,7 +14,7 @@ import { ResourceApiService } from '../shared/resource-api/resource-api.service'
 })
 export class LoginServicesComponent implements OnInit {
   loginServices: LoginService[] = [];
-  loginUrl = environment.api + '/api/login';
+  loginUrl = environment.api.includes('localhost') ? environment.api + '/api/login' : environment.api + '/Shibboleth.sso/Login?target=' + environment.api + '/api/login&entityID=';
   institution: Institution;
   selectedTabIndex = 0;
 
@@ -73,35 +73,35 @@ export class LoginServicesComponent implements OnInit {
         color: 'orange',
         name: 'UVA',
         image: '/assets/institutions/UVA.png',
-        url: this.loginUrl,
+        url: environment.api.includes('localhost') ? this.loginUrl : this.loginUrl + 'urn:mace:incommon:virginia.edu',
       },
       {
         id: null,
         color: 'navy',
         name: 'Carilion',
         image: '/assets/institutions/Carilion.png',
-        url: this.loginUrl,
+        url: environment.api.includes('localhost') ? this.loginUrl : this.loginUrl + 'http://fs.carilionclinic.org/adfs/services/trust',
       },
       {
         id: null,
         color: 'purple',
         name: 'Virginia Tech',
         image: '/assets/institutions/Virginia Tech.png',
-        url: this.loginUrl,
+        url: environment.api.includes('localhost') ? this.loginUrl  : this.loginUrl + 'urn:mace:incommon:vt.edu',
       },
       {
         id: null,
         color: 'blue',
         name: 'Inova',
         image: '/assets/institutions/Inova.png',
-        url: this.loginUrl,
+        url: environment.api.includes('localhost') ? this.loginUrl : this.loginUrl + 'http://Fuchsia.inova.org/adfs/services/trust',
       },
       {
         id: null,
         color: 'black',
         name: 'VCU',
         image: '/assets/institutions/VCU.png',
-        url: this.loginUrl,
+        url: environment.api.includes('localhost') ? this.loginUrl : this.loginUrl + 'https://shibboleth.vcu.edu/idp/shibboleth',
       },
       { id: null, color: 'green', name: 'Public', image: '' },
     ];
