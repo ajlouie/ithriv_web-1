@@ -1,3 +1,4 @@
+import { Input } from '@angular/core';
 import { Component, HostBinding, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { environment } from '../../environments/environment';
@@ -13,6 +14,7 @@ import { ResourceApiService } from '../shared/resource-api/resource-api.service'
   animations: [fadeTransition()],
 })
 export class LoginServicesComponent implements OnInit {
+  @Input() hidePublic: Boolean;
   loginServices: LoginService[] = [];
   loginUrl = environment.api.includes('localhost') ? environment.api + '/api/login' : environment.api + '/Shibboleth.sso/Login?target=' + environment.api + '/api/login&entityID=';
   institution: Institution;
@@ -103,8 +105,11 @@ export class LoginServicesComponent implements OnInit {
         image: '/assets/institutions/VCU.png',
         url: environment.api.includes('localhost') ? this.loginUrl : this.loginUrl + 'https://shibboleth.vcu.edu/idp/shibboleth',
       },
-      { id: null, color: 'green', name: 'Public', image: '' },
     ];
+
+    if (this.hidePublic === undefined || this.hidePublic === false) {
+      services.push({ id: null, color: 'green', name: 'Public', image: '', url: ''});
+    }
 
     this.api.getInstitutions().subscribe((institutions) => {
       services.forEach((s) =>
