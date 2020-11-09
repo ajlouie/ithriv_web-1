@@ -1,11 +1,20 @@
-<h1
+<div
   *ngIf="isDataLoaded && !resource.user_may_view"
   [hidden]="resource.user_may_view"
-  class="mat-h1"
   color="warn"
 >
-  You do not have permission to view this Resource.
-</h1>
+  <div *ngIf="!user" class="please-log-in">
+    <h1>
+      The page you are trying to view is not open to the public.  If applicable, please log in through your institution to apply your personal permissions
+    </h1>
+    <app-login-services hidePublic = "true"></app-login-services>
+  </div>
+  <div *ngIf="user" class="please-log-in">
+    <h1>
+      You do not have permission to see this page.  If you have questions about your portal permissions, you may send an inquiry to ResearchConcierge@hscmail.mcc.virginia.edu
+    </h1>
+  </div>
+</div>
 <div
   *ngIf="isDataLoaded"
   [ngClass]="{
