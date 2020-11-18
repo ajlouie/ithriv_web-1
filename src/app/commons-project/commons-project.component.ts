@@ -268,6 +268,11 @@ export class CommonsProjectComponent implements OnInit {
         this.cas.updateProject(this.project).subscribe(
           (e) => {
             this.project = e;
+            this.currentFormChange.emit({
+              currentProject: this.project,
+              previousForm: 'commons-project',
+              displayForm: 'commons-project',
+            });
           },
           (error1) => {}
         );

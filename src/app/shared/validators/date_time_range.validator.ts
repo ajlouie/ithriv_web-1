@@ -7,9 +7,15 @@ export function ValidateDateTimeRange(
     '.* .* .* .... .*:.*:.* .*,.* .* .* .... .*:.*:.* .*',
     'g'
   );
+  const regEx2 = new RegExp('.*-.*-.*:.*:.*,.*-.*-.*:.*:.*', 'g');
 
-  if (control.value && control.value !== '' && !regEx.test(control.value)) {
-    // alert(control.value);
+  console.log(control.value);
+  if (
+    control.value &&
+    control.value !== '' &&
+    !regEx.test(control.value) &&
+    !regEx2.test(control.value)
+  ) {
     const error: ValidationErrors = { dateTimeRange: true };
     return error;
   }

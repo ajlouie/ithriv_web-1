@@ -5,9 +5,10 @@ import {
   Output,
   EventEmitter,
   ChangeDetectorRef,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { User } from '../user';
-import { Dataset, UserPermission, UserPermissionMap } from '../commons-types';
+import { Dataset, Project, ProjectDocument, UserPermission, UserPermissionMap } from '../commons-types';
 import { ErrorMatcher } from '../error-matcher';
 import { Fieldset } from '../fieldset';
 import {
@@ -27,11 +28,13 @@ import { MatSnackBar } from '@angular/material';
 import { MatDialog } from '@angular/material/dialog';
 import { AddPermissionComponent } from '../add-permission/add-permission.component';
 import { Observable } from 'rxjs';
+import { FormSelectOption } from '../form-select-option';
 
 @Component({
   selector: 'app-commons-dataset-create-edit',
   templateUrl: './commons-dataset-create-edit.component.html',
   styleUrls: ['./commons-dataset-create-edit.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CommonsDatasetCreateEditComponent implements OnInit {
   public static DATASET_ROLE_MAP_STATIC = [
@@ -43,6 +46,7 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
   @Input() currentForm: String;
   @Input() previousForm: String;
   @Output() currentFormChange = new EventEmitter();
+  @Input() project: Project;
   @Input() dataset: Dataset;
   error: String;
   showConfirmDelete = false;
@@ -82,6 +86,7 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
   userPermission: UserPermission;
   userPermissions$: Observable<UserPermission[]> | undefined;
   displayedUserpermColumns: string[] = ['email', 'role', 'edit', 'delete'];
+  dateTimeRange: Date[];
 
   constructor(
     fb: FormBuilder,
@@ -91,12 +96,12 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
     public dialog: MatDialog,
     private changeDetectorRef: ChangeDetectorRef
   ) {
-    this.loadFields();
-    // this.fg = fb.group(this.fields);
-    this.iThrivForm = new IThrivForm(this.fields, this.fg);
   }
 
   ngOnInit() {
+    this.loadFields();
+    // this.fg = fb.group(this.fields);
+    this.iThrivForm = new IThrivForm(this.fields, this.fg);
     this.loadData();
   }
 
@@ -110,6 +115,19 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
   }
 
   loadFields() {
+    const irbDocumentOptions = [];
+    this.project.documents.filter(
+      document => (document.type === 'IRB_Approval' ||  document.type === 'IRB Approval') && document.url !== ''
+    ).forEach((document) => {
+      irbDocumentOptions.push(new FormSelectOption({ id: document.url, name: document.filename }));
+    });
+    const contractDocumentOptions = [];
+    this.project.documents.filter(
+      document => document.type === 'Contract' && document.url !== ''
+    ).forEach((document) => {
+      contractDocumentOptions.push(new FormSelectOption({ id: document.url, name: document.filename }));
+    });
+
     this.fields = {
       name: new FormField({
         formControl: new FormControl(),
@@ -154,6 +172,73 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
         options: {
           status: ['words'],
         },
+      }),
+      // based_on_dataset_id: new FormField({
+      //   formControl: new FormControl(),
+      //   required: false,
+      //   placeholder: 'Basedon Dataset:',
+      //   type: 'select',
+      //   multiSelect: true,
+      //   selectOptions: [],
+      // }),
+      variable_measured: new FormField({
+        formControl: new FormControl(),
+        required: false,
+        placeholder: 'Variable Measured:',
+        type: 'text',
+        options: {
+          status: ['words'],
+        },
+      }),
+      license: new FormField({
+        formControl: new FormControl(),
+        required: false,
+        placeholder: 'License:',
+        type: 'text',
+        options: {
+          status: ['words'],
+        },
+      }),
+      spatial_coverage_address: new FormField({
+        formControl: new FormControl(),
+        required: false,
+        placeholder: 'Spacial Coverage Address:',
+        type: 'text',
+        options: {
+          status: ['words'],
+        },
+      }),
+      temporal_coverage_date: new FormField({
+        formControl: new FormControl(),
+        required: false,
+        maxLength: 140,
+        minLength: 1,
+        placeholder: 'Coverage Starts ~ Coverage Ends',
+        type: 'owldatetime',
+        selectMode: 'range',
+        pickerMode: 'dialog',
+      }),
+      approved_irb_link: new FormField({
+        formControl: new FormControl(),
+        required: false,
+        placeholder: 'Approved IRB:',
+        type: 'select',
+        multiSelect: false,
+        selectOptionsMap: irbDocumentOptions,
+      }),
+      contract_link: new FormField({
+        formControl: new FormControl(),
+        required: false,
+        placeholder: 'Approved Contract:',
+        type: 'select',
+        multiSelect: false,
+        selectOptionsMap: contractDocumentOptions,
+      }),
+      link_to_external_dataset: new FormField({
+        formControl: new FormControl(),
+        required: false,
+        placeholder: 'Link to External Dataset:',
+        type: 'url',
       }),
     };
   }
@@ -421,6 +506,15 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
       this.dataset.keywords = this.fields.keywords.formControl.value;
       this.dataset.identifiers_hipaa = this.fields.identifiers_hipaa.formControl.value;
       this.dataset.other_sensitive_data = this.fields.other_sensitive_data.formControl.value;
+      this.dataset.based_on_dataset_id = '';
+      this.dataset.variable_measured = this.fields.variable_measured.formControl.value;
+      this.dataset.license = this.fields.license.formControl.value;
+      this.dataset.spatial_coverage_address = this.fields.spatial_coverage_address.formControl.value;
+      this.dataset.temporal_coverage_date = this.fields.temporal_coverage_date.formControl.value;
+      this.dataset.approved_irb_link = this.fields.approved_irb_link.formControl.value;
+      this.dataset.contract_link = this.fields.contract_link.formControl.value;
+      this.dataset.link_to_external_dataset = this.fields.link_to_external_dataset.formControl.value;
+
       if (this.createNew === true) {
         this.cas.createDataset(this.dataset).subscribe(
           (e) => {

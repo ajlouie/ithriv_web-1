@@ -24,8 +24,22 @@ export function ValidateUrl(control: AbstractControl): ValidationErrors {
     '$', 'i'
   );
 
-  if (!urlRegEx.test(control.value) && control.value && control.value !== '') {
-    const error: ValidationErrors = { url: true };
-    return error;
+  // if (!urlRegEx.test(control.value) && control.value && control.value !== '') {
+  //   const error: ValidationErrors = { url: true };
+  //   return error;
+  // }
+
+  for (const url of control.value.split(',')) {
+    if (!urlRegEx.test(url.trim()) && url.trim() && url.trim() !== '') {
+      const error: ValidationErrors = { url: true };
+      return error;
+    }
   }
+  // control.value.split(',').forEach(element => {
+  //   if (!urlRegEx.test(element) && element && element !== '') {
+  //     const error: ValidationErrors = { url: true };
+  //     return error;
+  //   }
+  // });
+
 }

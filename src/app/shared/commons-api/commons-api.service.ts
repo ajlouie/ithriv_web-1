@@ -151,9 +151,9 @@ export class CommonsApiService {
           project.id +
           `/` +
           document.type +
-          `/restore`,
+        `/restore`, {},
         {
-          headers: { REMOTE_USER: user.eppn },
+          headers: { REMOTE_USER: user.eppn, EMAIL: user.eppn},
         }
       )
       .pipe(catchError(this.handleError));

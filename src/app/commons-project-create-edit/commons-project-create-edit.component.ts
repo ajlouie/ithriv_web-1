@@ -26,6 +26,7 @@ import { MatSnackBar } from '@angular/material';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { AddPermissionComponent } from '../add-permission/add-permission.component';
+import { ValidateUrl } from '../shared/validators/url.validator';
 
 @Component({
   selector: 'app-commons-project-create-edit',
@@ -150,6 +151,12 @@ export class CommonsProjectCreateEditComponent implements OnInit {
           status: ['words'],
         },
       }),
+      web_page_url: new FormField({
+        formControl: new FormControl(),
+        required: false,
+        placeholder: 'Link to project webpage:',
+        type: 'url',
+      }),
     };
   }
 
@@ -232,6 +239,10 @@ export class CommonsProjectCreateEditComponent implements OnInit {
 
         if (field.type === 'email') {
           validators.push(Validators.email);
+        }
+
+        if (field.type === 'url') {
+          validators.push(ValidateUrl);
         }
 
         if (field.formControl) {
@@ -412,7 +423,7 @@ export class CommonsProjectCreateEditComponent implements OnInit {
       this.project.keywords = this.fields.keywords.formControl.value;
       this.project.funding_source = this.fields.funding_source.formControl.value;
       this.project.partners = this.fields.partners.formControl.value;
-
+      this.project.web_page_url = this.fields.web_page_url.formControl.value;
       if (this.createNew === true) {
         this.cas.createProject(this.project).subscribe(
           (e) => {

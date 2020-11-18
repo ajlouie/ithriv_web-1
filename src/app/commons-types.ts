@@ -24,6 +24,7 @@ export interface Project {
   can_update_meta: boolean;
   can_upload_data: boolean;
   documents: Array<ProjectDocument>;
+  web_page_url?: string;
 }
 
 export interface Dataset {
@@ -47,6 +48,14 @@ export interface Dataset {
   can_restore_data: boolean;
   can_update_meta: boolean;
   can_upload_data: boolean;
+  based_on_dataset_id?: string;
+  variable_measured?: string;
+  license?: string;
+  spatial_coverage_address?: string;
+  temporal_coverage_date?: string;
+  approved_irb_link?: string;
+  contract_link?: string;
+  link_to_external_dataset?: string;
 }
 
 export class FileUploadModel {
