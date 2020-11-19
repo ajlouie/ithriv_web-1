@@ -29,10 +29,12 @@ export function ValidateUrl(control: AbstractControl): ValidationErrors {
   //   return error;
   // }
 
-  for (const url of control.value.split(',')) {
-    if (!urlRegEx.test(url.trim()) && url.trim() && url.trim() !== '') {
-      const error: ValidationErrors = { url: true };
-      return error;
+  if (control.value !== null) {
+    for (const url of control.value.split(',')) {
+      if (!urlRegEx.test(url.trim()) && url.trim() && url.trim() !== '') {
+        const error: ValidationErrors = { url: true };
+        return error;
+      }
     }
   }
   // control.value.split(',').forEach(element => {
