@@ -168,74 +168,6 @@
                 [ngClass]="{ gray: even }"
               ></tr>
             </table>
-            <!--
-            <table *ngIf="project.documents.length > 0">
-              <tr>
-                <th>NAME</th>
-                <th>TYPE</th>
-                <th>MODIFIED DATE/TIME</th>
-                <th>DOWNLOAD</th>
-                <th>UPDATE</th>
-                <th>DELETE</th>
-              </tr>
-              <ng-container *ngIf="user">
-                <tr *ngFor="let document of project.documents">
-                  <td>
-                    {{ document.filename }}
-                  </td>
-                  <td>
-                    {{ document.type }}
-                  </td>
-                  <td align="center">
-                    {{ document.last_modified | date: 'MM/d/y h:mm a' }}
-                  </td>
-                  <td align="center">
-                    <a
-                      (click)="
-                        cas.downloadFile(document.url, document.filename, user)
-                      "
-                    >
-                      <button type="button" color="primary" mat-mini-fab>
-                        <mat-icon
-                          matTooltip="Click here to download document ({{
-                            document.filename
-                          }})"
-                        >
-                          file_download
-                        </mat-icon>
-                      </button>
-                    </a>
-                  </td>
-                  <td>
-                    <button
-                      type="button"
-                      color="warn"
-                      mat-mini-fab
-                      (click)="updateDocument(document.type)"
-                    >
-                      <mat-icon>update</mat-icon>
-                    </button>
-                  </td>
-                  <td align="center">
-                    <button
-                      type="button"
-                      (click)="deleteDocument(document)"
-                      color="warn"
-                      mat-mini-fab
-                    >
-                      <mat-icon
-                        matTooltip="Click here to delete document ({{
-                          document.filename
-                        }})"
-                      >
-                        delete
-                      </mat-icon>
-                    </button>
-                  </td>
-                </tr>
-              </ng-container>
-            </table>
-          -->
           </mat-list>
           <button
             type="button"
@@ -311,7 +243,7 @@
             </mat-card-title>
           </mat-toolbar>
           <mat-list dense>
-            <ng-container *ngIf="getDataSource().length > 0">
+            <ng-container *ngIf="datasetsPrivate && datasetsPublic && getDataSource().length > 0">
               <table
                 mat-table
                 [dataSource]="getDataSource()"
@@ -490,7 +422,7 @@
       <mat-card-title>
         PROJECT DETAILS
       </mat-card-title>
-      <mat-chip-list *ngIf="user && user.email == project.pl_pi">
+      <mat-chip-list *ngIf="user && project.can_manage_permission === true ">
         <mat-chip
           *ngIf="project.private"
           matTooltip="This Resource is only visible to PI and collaborators on this project. Click here to change this setting."
@@ -512,11 +444,11 @@
       </mat-chip-list>
       <mat-card-content>
         <mat-list dense>
-          <mat-list-item *ngIf="user && user.email == project.pl_pi">
+          <mat-list-item *ngIf="user">
             <h4 mat-line>Principal Investigator(s):</h4>
             <p mat-line>{{ project.pl_pi }}</p>
           </mat-list-item>
-          <mat-list-item *ngIf="user && user.email == project.pl_pi">
+          <mat-list-item *ngIf="user">
             <h4 mat-line>Home Institution:</h4>
             <p mat-line>{{ project.institution.name }}</p>
           </mat-list-item>

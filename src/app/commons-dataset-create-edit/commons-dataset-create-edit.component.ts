@@ -63,10 +63,14 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
   isDataLoaded = false;
   createNew = false;
   hipaaOptions = [
-    'NO HIPAA',
     'Name',
-    'All geographic subdivisions smaller than a state, including street address, city, county, precinct, zip code, and their equivalent geocodes. NOTE: the initial three digits of the zip code are NOT considered an identifier IF, according to the current publicly available data from the Bureau of the Census: (1) The geographic unit formed by combining all zip codes with the same 3 initial digits contains more than 20,000 people and (2) The initial 3 digits of a zip code for all such geographic units containing 20,000 is changed to 000.',
-    'All elements of dates (except year) for dates directly related to an individual, including birth date, admission date, discharge date, date of death; and all ages over 89 and all elements of dates (including year) indicative of such age, except that such ages and elements may be aggregated into a single category of age 90 or older. [This means you may record the year but not record the month or day of any date related to the subject if the subject is under the age of 89. In addition if the subject is over the age of 89 you may not record their age and you may not record the month, day or year of any date indicative of age ( except that you may aggregate them into a category ”Age>90” )',
+    '2a: All detailed geographic such as street addresses and their equivalent geocodes. (HIPAA identifier)',
+    '2b: All geographic subdivisions at size of city, zip, or their geocode equivalent (LIMITED DATASET)',
+    '2c: ONLY the initial three digits of the zip code AND areas containing <20,000 is changed to 000. (NOT HIPAA)',
+    '2d: ONLY geographic data at the level of state or larger regions (NOT HIPAA)',
+    '3a: Some date data includes month and or day elements (LIMITED DATASET)',
+    '3b: Date data includes specific ages above age 90 (LIMITED DATASET)',
+    '3c: Date data is limited to only YEAR and no exact ages exposed above age 90. (NOT HIPAA identifier)',
     'Telephone numbers',
     'Fax numbers',
     'Electronic mail addresses',
@@ -79,9 +83,9 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
     'Device identifiers and serial numbers',
     'Web Universal Resource Locators (URLs)',
     'Internet Protocol (IP) address numbers',
-    'Biometric identifiers, including finger and voice prints (does not currently include but could eventually include: genomic data)',
-    'Full face photographic images and any comparable images  (does not currently include but could eventually include: high resolution MRIs, etc)',
-    'Any other unique identifying number, characteristic, code that is derived from or related to information about the individual (e.g. initials, last 4 digits of Social Security #, mother’s maiden name, first 3 letters of last name.)',
+    'Biometric identifiers, including finger and voice prints',
+    'Full face photographic images and any comparable images',
+    'Any other unique identifying info (e.g. initials, last 4 digits of SSN, first 3 letters of last name.)',
   ];
   userPermission: UserPermission;
   userPermissions$: Observable<UserPermission[]> | undefined;
@@ -202,7 +206,7 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
       spatial_coverage_address: new FormField({
         formControl: new FormControl(),
         required: false,
-        placeholder: 'Spacial Coverage Address:',
+        placeholder: 'Geographic Coverage Description:',
         type: 'text',
         options: {
           status: ['words'],
@@ -213,7 +217,7 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
         required: false,
         maxLength: 140,
         minLength: 1,
-        placeholder: 'Coverage Starts ~ Coverage Ends',
+        placeholder: 'Temporal Coverage of Dataset',
         type: 'owldatetime',
         selectMode: 'range',
         pickerMode: 'dialog',
@@ -221,7 +225,7 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
       approved_irb_link: new FormField({
         formControl: new FormControl(),
         required: false,
-        placeholder: 'Approved IRB:',
+        placeholder: 'IRB Protocol Number (required for highly sensitive data):',
         type: 'select',
         multiSelect: false,
         selectOptionsMap: irbDocumentOptions,
@@ -229,7 +233,7 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
       contract_link: new FormField({
         formControl: new FormControl(),
         required: false,
-        placeholder: 'Approved Contract:',
+        placeholder: 'Related Contract:',
         type: 'select',
         multiSelect: false,
         selectOptionsMap: contractDocumentOptions,
@@ -237,7 +241,7 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
       link_to_external_dataset: new FormField({
         formControl: new FormControl(),
         required: false,
-        placeholder: 'Link to External Dataset:',
+        placeholder: 'Link to Data (if stored elsewhere):',
         type: 'url',
       }),
     };
@@ -345,6 +349,11 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
       this.user,
       this.dataset
     );
+    this.currentFormChange.emit({
+      currentDataset: this.dataset,
+      previousForm: 'commons-project',
+      displayForm: 'commons-dataset-create-edit',
+    });
   }
 
   lookupRole(lookupKey: String) {
@@ -415,15 +424,15 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
       console.log('The dialog was closed');
       if (result !== null) {
         this.cas
-          .deleteUserDatasetPermission(
-            this.user,
-            this.dataset,
-            userPermissionCurrent
-          )
+          .addUserDatasetPermission(this.user, this.dataset, result)
           .subscribe(
             (e) => {
               this.cas
-                .addUserDatasetPermission(this.user, this.dataset, result)
+                .deleteUserDatasetPermission(
+                  this.user,
+                  this.dataset,
+                  userPermissionCurrent
+                )
                 .subscribe(
                   (e) => {
                     this.loadPermisssions();

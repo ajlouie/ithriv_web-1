@@ -23,6 +23,31 @@
             [formGroup]="fg"
             [errorMatcher]="errorMatcher"
           ></app-form-field>
+          <!--
+          <mat-card>
+            <mat-toolbar>
+              <mat-card-title>
+                Dataset Type
+              </mat-card-title>
+            </mat-toolbar>
+            <mat-list dense>
+              <mat-list>
+                <mat-list-item>
+                  <mat-radio-group aria-label="Select an option">
+                    <mat-radio-button value="1">DEFAULT</mat-radio-button>
+                    <mat-radio-button value="2">DICOM</mat-radio-button>
+                    <mat-radio-button value="3">REDCAP</mat-radio-button>
+                  </mat-radio-group>
+                </mat-list-item>
+              </mat-list>
+              <mat-list>
+                <ng-container>
+                  Note: Published current file to below individual users only:
+                </ng-container>
+              </mat-list>
+            </mat-list>
+          </mat-card>
+          -->
           <footer *ngIf="formStatus === 'form'">
             <div
               id="error_message"

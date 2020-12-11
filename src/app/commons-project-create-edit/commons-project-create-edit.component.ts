@@ -345,15 +345,15 @@ export class CommonsProjectCreateEditComponent implements OnInit {
       console.log('The dialog was closed');
       if (result !== null) {
         this.cas
-          .deleteUserProjectPermission(
-            this.user,
-            this.project,
-            userPermissionCurrent
-          )
+          .addUserProjectPermission(this.user, this.project, result)
           .subscribe(
             (e) => {
               this.cas
-                .addUserProjectPermission(this.user, this.project, result)
+                .deleteUserProjectPermission(
+                  this.user,
+                  this.project,
+                  userPermissionCurrent
+                )
                 .subscribe(
                   (e) => {
                     this.loadPermisssions();
@@ -416,6 +416,11 @@ export class CommonsProjectCreateEditComponent implements OnInit {
   submitProject($event) {
     $event.preventDefault();
     if (this.validate()) {
+      let updatePIPerms = false;
+      if (this.fields.pl_pi.formControl.value !== this.project.pl_pi) {
+        updatePIPerms = true;
+      }
+
       this.project.name = this.fields.name.formControl.value;
       this.project.name_alts = this.fields.name_alts.formControl.value;
       this.project.pl_pi = this.fields.pl_pi.formControl.value;
@@ -429,8 +434,30 @@ export class CommonsProjectCreateEditComponent implements OnInit {
           (e) => {
             this.errorMessage = '';
             this.formStatus = 'complete';
-            this.project = e;
-            this.showNext();
+            this.cas
+              .addUserProjectPermission(this.user, this.project,
+                <UserPermission>{ user_email: this.project.pl_pi, user_role: '3' })
+              .subscribe(
+                (e1) => {
+                  this.cas
+                    .addUserProjectPermission(this.user, this.project,
+                      <UserPermission>{ user_email: this.project.pl_pi, user_role: '1' })
+                    .subscribe(
+                      (e2) => {
+                        this.loadPermisssions();
+                        this.errorMessage = '';
+                        this.project = e;
+                        this.showNext();
+                      },
+                      (error1) => {
+                        this.errorMessage = error1;
+                      }
+                    );
+                },
+                (error1) => {
+                  this.errorMessage = error1;
+                }
+              );
           },
           (error1) => {
             if (error1) {
@@ -448,8 +475,36 @@ export class CommonsProjectCreateEditComponent implements OnInit {
           (e) => {
             this.errorMessage = '';
             this.formStatus = 'complete';
-            this.project = e;
-            this.showNext();
+            if (updatePIPerms) {
+              this.cas
+              .addUserProjectPermission(this.user, this.project,
+                <UserPermission>{ user_email: this.project.pl_pi, user_role: '3' })
+              .subscribe(
+                (e1) => {
+                  this.cas
+                    .addUserProjectPermission(this.user, this.project,
+                      <UserPermission>{ user_email: this.project.pl_pi, user_role: '1' })
+                    .subscribe(
+                      (e2) => {
+                        this.loadPermisssions();
+                        this.errorMessage = '';
+                        this.project = e;
+                        this.showNext();
+                      },
+                      (error1) => {
+                        this.errorMessage = error1;
+                      }
+                    );
+                },
+                (error1) => {
+                  this.errorMessage = error1;
+                }
+              );
+            } else {
+              this.project = e;
+              this.showNext();
+            }
+
           },
           (error1) => {
             if (error1) {

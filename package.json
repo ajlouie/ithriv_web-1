@@ -35,6 +35,7 @@
     "@syncfusion/ej2-angular-buttons": "^17.4.46",
     "@syncfusion/ej2-angular-dropdowns": "^17.4.46",
     "@syncfusion/ej2-angular-richtexteditor": "^17.4.46",
+    "@syncfusion/ej2-angular-spreadsheet": "^18.3.50",
     "@types/file-saver": "^2.0.1",
     "@types/material__top-app-bar": "^0.35.1",
     "angular2-csv": "^0.2.9",

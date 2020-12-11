@@ -125,6 +125,7 @@ import { CommonsDatasetComponent } from './commons-dataset/commons-dataset.compo
 import { AddPermissionComponent } from './add-permission/add-permission.component';
 import { CommonsProjectDocumentComponent } from './commons-project-document/commons-project-document.component';
 
+import { SpreadsheetAllModule } from '@syncfusion/ej2-angular-spreadsheet';
 // import { DropDownListComponent } from '@syncfusion/ej2-angular-dropdowns';
 
 export const MY_NATIVE_FORMATS = {
@@ -262,6 +263,7 @@ export const MY_NATIVE_FORMATS = {
     ReactiveFormsModule,
     RichTextEditorAllModule,
     ScrollToModule.forRoot(),
+    SpreadsheetAllModule,
   ],
   entryComponents: [
     CategoryFormComponent,

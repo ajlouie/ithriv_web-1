@@ -110,7 +110,11 @@ export class CommonsProjectComponent implements OnInit {
   }
 
   getDataSource() {
-    return <Dataset[]>[].concat(this.datasetsPrivate, this.datasetsPublic);
+    if (this.datasetsPrivate == null && this.datasetsPublic == null) {
+      return []
+    } else {
+      return <Dataset[]>[].concat(this.datasetsPrivate, this.datasetsPublic);
+    }
   }
 
   onFileComplete(data: any) {
