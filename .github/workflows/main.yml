@@ -70,7 +70,7 @@ jobs:
           tags: |
             ${{ steps.extract_branch.outputs.branch }}
           build-args: |
-            BUILD_ENV=develop
+            BUILD_ENV=dev
       -
         name: Build and push
         if: contains(github.ref, 'release')
