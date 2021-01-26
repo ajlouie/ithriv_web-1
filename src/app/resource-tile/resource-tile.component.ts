@@ -34,6 +34,10 @@ export class ResourceTileComponent implements OnInit {
     return ['/resource', resource.id];
   }
 
+  getResourceOrEventURL(resource: Resource) {
+    return [window.location.origin, '#', 'resource', resource.id].join('/') ;
+  }
+
   goInstitution($event, institution: Institution) {
     $event.preventDefault();
     this.router.navigateByUrl(`/search/filter?Institution=${institution.name}`);

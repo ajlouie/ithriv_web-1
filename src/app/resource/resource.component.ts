@@ -85,6 +85,10 @@ export class ResourceComponent implements OnInit {
     }
   }
 
+  getResourceOrEventURL(resource: Resource) {
+    return [window.location.origin, '#', 'resource', resource.id].join('/') ;
+  }
+
   getAvailableInstitutions() {
     return this.resource.availabilities
       .filter(av => av.available)
