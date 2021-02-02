@@ -21,15 +21,17 @@ import {
 } from 'rxjs/operators';
 import fileSaver from 'file-saver';
 import { environment } from '../../../environments/environment';
+import { mockIrbInvestigators } from '../../../testing/mocks/mock-investigators';
 import { FileAttachment } from '../../file-attachment';
 import { User } from '../../user';
 import {
   Project,
   UserPermission,
   DatasetFileVersion,
-} from 'src/app/commons-types';
-import { Dataset } from 'src/app/commons-types';
-import { ProjectDocument } from 'src/app/commons-types';
+  IrbInvestigator, IrbInvestigatorType, IrbInvestigatorTypeLabel,
+} from '../../commons-types';
+import { Dataset } from '../../commons-types';
+import { ProjectDocument } from '../../commons-types';
 @Injectable({
   providedIn: 'root',
 })
@@ -281,7 +283,7 @@ export class CommonsApiService {
 
   getDatasetPermissions(
     user: User,
-    dataset: Dataset
+    dataset: Dataset,
   ): Observable<UserPermission[]> {
     return this.http
       .get<UserPermission[]>(
@@ -381,5 +383,10 @@ export class CommonsApiService {
     // return an observable with a user-facing error message
     // FIXME: Log all error messages to Google Analytics
     return throwError(message);
+  }
+
+  // TODO: Get IRB Investigators for the given project from the backend.
+  getProjectIrbInvestigators(user: User, project: Project): Observable<IrbInvestigator[]> {
+    return observableOf(mockIrbInvestigators);
   }
 }

@@ -1,7 +1,8 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { UserPermissionMap } from '../commons-types';
+import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { IrbInvestigator, UserPermissionMap } from '../commons-types';
+import { CommonsApiService } from '../shared/commons-api/commons-api.service';
 
 @Component({
   selector: 'app-add-permission',
@@ -9,16 +10,20 @@ import { FormControl, Validators } from '@angular/forms';
   styleUrls: ['./add-permission.component.scss'],
 })
 export class AddPermissionComponent implements OnInit {
+  irbInvestigators: IrbInvestigator[];
   emailControl = new FormControl('', [Validators.required, Validators.email]);
   permissionControl = new FormControl('', Validators.required);
+
   constructor(
     public dialogRef: MatDialogRef<AddPermissionComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: UserPermissionMap
-  ) {}
+    @Inject(MAT_DIALOG_DATA) public data: UserPermissionMap,
+  ) {
+  }
 
   ngOnInit() {
     this.emailControl.setValue(this.data.userPermission.user_email);
     this.permissionControl.setValue(this.data.userPermission.user_role);
+    this.irbInvestigators = this.data.irbInvestigators;
   }
 
   onNoClick(): void {

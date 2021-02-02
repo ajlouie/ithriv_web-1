@@ -8,7 +8,12 @@ import {
   ChangeDetectionStrategy,
 } from '@angular/core';
 import { User } from '../user';
-import { Dataset, Project, ProjectDocument, UserPermission, UserPermissionMap } from '../commons-types';
+import {
+  Dataset, IrbInvestigator,
+  Project,
+  UserPermission,
+  UserPermissionMap
+} from '../commons-types';
 import { ErrorMatcher } from '../error-matcher';
 import { Fieldset } from '../fieldset';
 import {
@@ -91,6 +96,7 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
   userPermissions$: Observable<UserPermission[]> | undefined;
   displayedUserpermColumns: string[] = ['email', 'role', 'edit', 'delete'];
   dateTimeRange: Date[];
+  irbInvestigators: IrbInvestigator[];
 
   constructor(
     fb: FormBuilder,
@@ -347,7 +353,7 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
   loadPermisssions() {
     this.userPermissions$ = this.cas.getDatasetPermissions(
       this.user,
-      this.dataset
+      this.dataset,
     );
     this.currentFormChange.emit({
       currentDataset: this.dataset,
@@ -384,6 +390,7 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
         },
         permissionsMap:
           CommonsDatasetCreateEditComponent.DATASET_ROLE_MAP_STATIC,
+        irbInvestigators: this.irbInvestigators,
       },
     });
 
@@ -417,6 +424,7 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
         userPermission: userPermission,
         permissionsMap:
           CommonsDatasetCreateEditComponent.DATASET_ROLE_MAP_STATIC,
+        irbInvestigators: this.irbInvestigators,
       },
     });
 

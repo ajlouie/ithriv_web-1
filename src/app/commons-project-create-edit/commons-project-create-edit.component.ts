@@ -1,32 +1,25 @@
-import {
-  Component,
-  OnInit,
-  Input,
-  Output,
-  EventEmitter,
-  ChangeDetectorRef,
-} from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  FormControl,
-  Validators,
-} from '@angular/forms';
-import { ErrorMatcher } from '../error-matcher';
-import { FormField } from '../form-field';
-import { IThrivForm } from '../shared/IThrivForm';
-import { User } from '../user';
-import { ResourceApiService } from '../shared/resource-api/resource-api.service';
-import { CommonsApiService } from '../shared/commons-api/commons-api.service';
-import { Project, UserPermission, UserPermissionMap } from '../commons-types';
-import { filter } from 'rxjs/operators';
-import { Fieldset } from '../fieldset';
-import { ValidateDateTimeRange } from '../shared/validators/date_time_range.validator';
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, Validators, } from '@angular/forms';
 import { MatSnackBar } from '@angular/material';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { AddPermissionComponent } from '../add-permission/add-permission.component';
+import {
+  IrbInvestigatorType,
+  IrbInvestigatorTypeLabel,
+  Project,
+  UserPermission,
+  UserPermissionMap
+} from '../commons-types';
+import { ErrorMatcher } from '../error-matcher';
+import { Fieldset } from '../fieldset';
+import { FormField } from '../form-field';
+import { CommonsApiService } from '../shared/commons-api/commons-api.service';
+import { IThrivForm } from '../shared/IThrivForm';
+import { ResourceApiService } from '../shared/resource-api/resource-api.service';
+import { ValidateDateTimeRange } from '../shared/validators/date_time_range.validator';
 import { ValidateUrl } from '../shared/validators/url.validator';
+import { User } from '../user';
 
 @Component({
   selector: 'app-commons-project-create-edit',
@@ -274,6 +267,8 @@ export class CommonsProjectCreateEditComponent implements OnInit {
       this.user,
       this.project
     );
+
+    this.cas.getProjectIrbInvestigators(this.user, this.project).subscribe(ii => this.project.irb_investigators = ii);
   }
 
   lookupRole(lookupKey: String) {
@@ -304,6 +299,7 @@ export class CommonsProjectCreateEditComponent implements OnInit {
         },
         permissionsMap:
           CommonsProjectCreateEditComponent.PROJECT_ROLE_MAP_STATIC,
+        irbInvestigators: this.project.irb_investigators,
       },
     });
 
@@ -338,6 +334,7 @@ export class CommonsProjectCreateEditComponent implements OnInit {
         userPermission: userPermission,
         permissionsMap:
           CommonsProjectCreateEditComponent.PROJECT_ROLE_MAP_STATIC,
+        irbInvestigators: this.project.irb_investigators,
       },
     });
 
