@@ -11,7 +11,7 @@ export const environment = {
   api_commons_adapter: `http://${localhost}:5001/commons_adapter/api/`,
   api_commons_adapter_private: `http://${localhost}:5001/commons_adapter/api/`,
   landing_service: [
-    { name: 'UVA', url: 'http://hitthrivpoc.hscs.virginia.edu' },
+    { name: 'UVA', url: 'https://poc.commons.ithriv.org' },
   ],
   ga_tracking_id: 'UA-138286052-1',
 };
