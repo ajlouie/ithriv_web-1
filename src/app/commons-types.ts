@@ -25,7 +25,6 @@ export interface Project {
   can_upload_data: boolean;
   documents: Array<ProjectDocument>;
   web_page_url?: string;
-  irb_investigators?: IrbInvestigator[];
 }
 
 export interface Dataset {
@@ -57,7 +56,7 @@ export interface Dataset {
   approved_irb_link?: string;
   contract_link?: string;
   link_to_external_dataset?: string;
-  has_highly_sensitive_data?: boolean;
+  irb_investigators?: IrbInvestigator[];
 }
 
 export class FileUploadModel {
@@ -97,7 +96,9 @@ export interface ProjectDocument {
 export interface UserPermissionMap {
   userPermission: UserPermission;
   permissionsMap: any;
-  irbInvestigators: IrbInvestigator[];
+  isDataset: boolean;
+  hasHighlySensitiveData?: boolean;
+  irbInvestigators?: IrbInvestigator[];
 }
 export interface UserPermission {
   user_email?: string;
@@ -110,6 +111,14 @@ export interface IrbInvestigator {
   type_full: IrbInvestigatorTypeLabel;
 }
 
+/**
+ * 1. Principal Investigator
+ * 2. Study Coordinator I
+ * 3. Study Coordinator II
+ * 4. Additional Study Coordinator
+ * 5. IRB Coordinator
+ * 6. Sub-Investigator
+ */
 export enum IrbInvestigatorType {
   'PI' = 'PI',
   'SI' = 'SI',

@@ -9,7 +9,7 @@ import {
   MatSelectModule
 } from '@angular/material';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { mockIrbInvestigators } from '../../testing/mocks/mock-investigators';
+import { mockIrbInvestigators } from '../shared/fixtures/investigators';
 import { CommonsDatasetCreateEditComponent } from '../commons-dataset-create-edit/commons-dataset-create-edit.component';
 
 import { AddPermissionComponent } from './add-permission.component';
@@ -42,6 +42,8 @@ describe('AddPermissionComponent', () => {
           provide: MAT_DIALOG_DATA, useValue: {
             userPermission: {},
             permissionsMap: CommonsDatasetCreateEditComponent.DATASET_ROLE_MAP_STATIC,
+            isDataset: true,
+            hasHighlySensitiveData: true,
             irbInvestigators: mockIrbInvestigators,
           }
         },

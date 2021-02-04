@@ -7,6 +7,7 @@ import {
   ChangeDetectorRef,
   ChangeDetectionStrategy,
 } from '@angular/core';
+import { mockIrbInvestigators } from '../shared/fixtures/investigators';
 import { User } from '../user';
 import {
   Dataset, IrbInvestigator,
@@ -96,7 +97,40 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
   userPermissions$: Observable<UserPermission[]> | undefined;
   displayedUserpermColumns: string[] = ['email', 'role', 'edit', 'delete'];
   dateTimeRange: Date[];
-  irbInvestigators: IrbInvestigator[];
+
+  /**
+   * Returns true if the dataset has HIPAA identifiers
+   */
+  get hasHipaaIdentifiers(): boolean {
+    if (
+      this.dataset.identifiers_hipaa &&
+      this.dataset.identifiers_hipaa as any instanceof Array &&
+      this.dataset.identifiers_hipaa.length > 0
+    ) {
+      const hipaaOptionsIndices = [1, ];
+
+      for (const i of hipaaOptionsIndices) {
+        if (this.dataset.identifiers_hipaa.includes(this.hipaaOptions[i])) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  /**
+   * Returns true if the dataset has a valid IRB number and HIPAA identifiers or other sensitive data.
+   */
+  get hasHighlySensitiveData(): boolean {
+    return !!(
+      (
+        this.dataset &&
+        this.dataset.approved_irb_link &&
+          this.hasHipaaIdentifiers
+      ) || this.dataset.other_sensitive_data
+    );
+  }
 
   constructor(
     fb: FormBuilder,
@@ -126,16 +160,16 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
 
   loadFields() {
     const irbDocumentOptions = [];
-    this.project.documents.filter(
-      document => (document.type === 'IRB_Approval' ||  document.type === 'IRB Approval') && document.url !== ''
-    ).forEach((document) => {
-      irbDocumentOptions.push(new FormSelectOption({ id: document.url, name: document.filename }));
+    this.project.documents.forEach(document => {
+      if ((document.type === 'IRB_Approval' ||  document.type === 'IRB Approval') && document.url !== '') {
+        irbDocumentOptions.push(new FormSelectOption({ id: document.url, name: document.filename }));
+      }
     });
     const contractDocumentOptions = [];
-    this.project.documents.filter(
-      document => document.type === 'Contract' && document.url !== ''
-    ).forEach((document) => {
-      contractDocumentOptions.push(new FormSelectOption({ id: document.url, name: document.filename }));
+    this.project.documents.forEach(document => {
+      if (document.type === 'Contract' && document.url !== '') {
+        contractDocumentOptions.push(new FormSelectOption({ id: document.url, name: document.filename }));
+      }
     });
 
     this.fields = {
@@ -351,6 +385,8 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
   }
 
   loadPermisssions() {
+    this.cas.getDatasetIrbInvestigators(this.user, this.dataset).subscribe(ii => this.dataset.irb_investigators = ii);
+
     this.userPermissions$ = this.cas.getDatasetPermissions(
       this.user,
       this.dataset,
@@ -383,15 +419,10 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
   addPermission(): void {
     const dialogRef = this.dialog.open(AddPermissionComponent, {
       width: '250px',
-      data: <UserPermissionMap>{
-        userPermission: <UserPermission>{
-          user_email: '',
-          user_role: '',
-        },
-        permissionsMap:
-          CommonsDatasetCreateEditComponent.DATASET_ROLE_MAP_STATIC,
-        irbInvestigators: this.irbInvestigators,
-      },
+      data: this.buildUserPermissionMap({
+        user_email: '',
+        user_role: '',
+      }),
     });
 
     dialogRef.afterClosed().subscribe((result: UserPermission) => {
@@ -418,14 +449,11 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
       user_role: userPermission.user_role,
     };
 
+    console.log('this.dataset.identifiers_hipaa', this.dataset.identifiers_hipaa);
+
     const dialogRef = this.dialog.open(AddPermissionComponent, {
       width: '250px',
-      data: <UserPermissionMap>{
-        userPermission: userPermission,
-        permissionsMap:
-          CommonsDatasetCreateEditComponent.DATASET_ROLE_MAP_STATIC,
-        irbInvestigators: this.irbInvestigators,
-      },
+      data: this.buildUserPermissionMap(userPermission),
     });
 
     dialogRef.afterClosed().subscribe((result: UserPermission) => {
@@ -473,6 +501,16 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
         this.loadPermisssions();
       }
     });
+  }
+
+  private buildUserPermissionMap(userPermission: UserPermission): UserPermissionMap {
+    return {
+      userPermission: userPermission,
+      permissionsMap: CommonsDatasetCreateEditComponent.DATASET_ROLE_MAP_STATIC,
+      isDataset: true,
+      hasHighlySensitiveData: this.hasHighlySensitiveData,
+      irbInvestigators: this.dataset.irb_investigators,
+    };
   }
 
   deletePermission(userPermission: UserPermission) {

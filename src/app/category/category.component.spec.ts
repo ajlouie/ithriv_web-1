@@ -44,14 +44,15 @@ describe('CategoryComponent', () => {
           { provide: MarkdownService, useClass: MockMarkdownService },
         ]
       })
-      .compileComponents()
-      .then(() => {
-        api.spyAndReturnFake('getCategory', category);
-        fixture = TestBed.createComponent(CategoryComponent);
-        component = fixture.componentInstance;
-        component.categoryResources = categoryResources;
-      });
+      .compileComponents();
   }));
+
+  beforeEach(() => {
+    api.spyAndReturnFake('getCategory', category);
+    fixture = TestBed.createComponent(CategoryComponent);
+    component = fixture.componentInstance;
+    component.categoryResources = categoryResources;
+  });
 
   it('should create', () => {
     expect(component).toBeTruthy();

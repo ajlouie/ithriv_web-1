@@ -7,11 +7,15 @@ import {
   MatIconModule,
   MatToolbarModule
 } from '@angular/material';
+import { HAMMER_LOADER } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
+import { DeviceDetectorService } from 'ngx-device-detector';
+import { of } from 'rxjs/internal/observable/of';
 import { AppComponent } from './app.component';
+import { TimeLeftPipe } from './shared/filters/time-left.pipe';
 import { MockResourceApiService } from './shared/mocks/resource-api.service.mock';
 import { ResourceApiService } from './shared/resource-api/resource-api.service';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { BrowserAnimationsModule, NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Icon } from './icon';
 
 describe('AppComponent', () => {
@@ -21,12 +25,17 @@ describe('AppComponent', () => {
   let icons: Icon[];
 
   beforeEach(async(() => {
+    window['ga'] = function () {};
     api = new MockResourceApiService();
 
     TestBed
       .configureTestingModule({
+        declarations: [
+          AppComponent,
+          TimeLeftPipe,
+        ],
         imports: [
-          BrowserAnimationsModule,
+          NoopAnimationsModule,
           MatButtonModule,
           MatIconModule,
           MatDividerModule,
@@ -34,28 +43,28 @@ describe('AppComponent', () => {
           MatButtonToggleModule,
           RouterTestingModule.withRoutes([])
         ],
-        declarations: [
-          AppComponent
-        ],
         providers: [
-          { provide: ResourceApiService, useValue: api }
+          { provide: ResourceApiService, useValue: api },
+          DeviceDetectorService,
+          { provide: HAMMER_LOADER, useValue: () => new Promise(() => {}) },
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA]
       })
-      .compileComponents()
-      .then(() => {
-        icons = [
-          { id: 0, name: 'jabba_the_hutt', url: 'some.website.com/icons/jabba' },
-          { id: 1, name: 'boba_fett', url: 'some.website.com/icons/boba' },
-          { id: 2, name: 'max_rebo', url: 'some.website.com/icons/max' },
-        ];
-
-        api.spyAndReturnFake('getIcons', icons);
-        fixture = TestBed.createComponent(AppComponent);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
-      });
+      .compileComponents();
   }));
+
+  beforeEach(() => {
+    icons = [
+      { id: 0, name: 'jabba_the_hutt', url: 'some.website.com/icons/jabba' },
+      { id: 1, name: 'boba_fett', url: 'some.website.com/icons/boba' },
+      { id: 2, name: 'max_rebo', url: 'some.website.com/icons/max' },
+    ];
+
+    api.spyAndReturnFake('getIcons', icons);
+    fixture = TestBed.createComponent(AppComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
 
   it('should create the app', () => {
     expect(component).toBeTruthy();

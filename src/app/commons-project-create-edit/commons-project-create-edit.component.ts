@@ -5,8 +5,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { AddPermissionComponent } from '../add-permission/add-permission.component';
 import {
-  IrbInvestigatorType,
-  IrbInvestigatorTypeLabel,
   Project,
   UserPermission,
   UserPermissionMap
@@ -267,8 +265,6 @@ export class CommonsProjectCreateEditComponent implements OnInit {
       this.user,
       this.project
     );
-
-    this.cas.getProjectIrbInvestigators(this.user, this.project).subscribe(ii => this.project.irb_investigators = ii);
   }
 
   lookupRole(lookupKey: String) {
@@ -299,7 +295,7 @@ export class CommonsProjectCreateEditComponent implements OnInit {
         },
         permissionsMap:
           CommonsProjectCreateEditComponent.PROJECT_ROLE_MAP_STATIC,
-        irbInvestigators: this.project.irb_investigators,
+        isDataset: false,
       },
     });
 
@@ -334,7 +330,7 @@ export class CommonsProjectCreateEditComponent implements OnInit {
         userPermission: userPermission,
         permissionsMap:
           CommonsProjectCreateEditComponent.PROJECT_ROLE_MAP_STATIC,
-        irbInvestigators: this.project.irb_investigators,
+        isDataset: false,
       },
     });
 

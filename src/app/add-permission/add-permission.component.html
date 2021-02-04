@@ -1,6 +1,23 @@
 <h1 mat-dialog-title>USER</h1>
 <div mat-dialog-content>
-  <mat-form-field>
+
+  <mat-form-field *ngIf="!isDataset || !hasHighlySensitiveData">
+    <mat-label>IRB Investigator Email</mat-label>
+    <input matInput
+      [(ngModel)]="data.userPermission.user_email"
+      [formControl]="emailControl"
+      required
+    />
+    <mat-error *ngIf="emailControl.hasError('required')"
+      >User Email is empty</mat-error
+    >
+    <mat-error *ngIf="emailControl.hasError('email')"
+      >User Email is invalid</mat-error
+    >
+    <mat-hint>Select dataset user login email</mat-hint>
+  </mat-form-field>
+
+  <mat-form-field *ngIf="isDataset && hasHighlySensitiveData">
     <mat-label>IRB Investigator Email</mat-label>
     <mat-select
       [(ngModel)]="data.userPermission.user_email"

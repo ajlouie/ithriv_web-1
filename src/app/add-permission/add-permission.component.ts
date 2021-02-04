@@ -13,6 +13,8 @@ export class AddPermissionComponent implements OnInit {
   irbInvestigators: IrbInvestigator[];
   emailControl = new FormControl('', [Validators.required, Validators.email]);
   permissionControl = new FormControl('', Validators.required);
+  hasHighlySensitiveData: boolean;
+  isDataset: boolean;
 
   constructor(
     public dialogRef: MatDialogRef<AddPermissionComponent>,
@@ -23,7 +25,12 @@ export class AddPermissionComponent implements OnInit {
   ngOnInit() {
     this.emailControl.setValue(this.data.userPermission.user_email);
     this.permissionControl.setValue(this.data.userPermission.user_role);
-    this.irbInvestigators = this.data.irbInvestigators;
+    this.isDataset = this.data.isDataset || false;
+
+    if (this.isDataset) {
+      this.irbInvestigators = this.data.irbInvestigators;
+      this.hasHighlySensitiveData = this.data.hasHighlySensitiveData;
+    }
   }
 
   onNoClick(): void {

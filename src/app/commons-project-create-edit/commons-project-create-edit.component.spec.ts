@@ -20,11 +20,12 @@ import { ColorPickerModule } from 'ngx-color-picker';
 import { FileDropModule } from 'ngx-file-drop';
 import { MarkdownModule } from 'ngx-markdown';
 import { NgProgressModule } from 'ngx-progressbar';
-import { mockUser } from '../../testing/mocks/mock-user';
 import { Project } from '../commons-types';
 import { FileUploadComponent } from '../file-upload/file-upload.component';
 import { FormFieldLabelComponent } from '../form-field-label/form-field-label.component';
 import { FormFieldComponent } from '../form-field/form-field.component';
+import { mockProject } from '../shared/fixtures/project';
+import { mockUser } from '../shared/fixtures/user';
 import { ResourceApiService } from '../shared/resource-api/resource-api.service';
 import { TreeSelectComponent } from '../tree-select/tree-select.component';
 import { User } from '../user';
@@ -92,9 +93,7 @@ describe('CommonsProjectCreateEditComponent', () => {
     component.user = mockUser;
     component.currentForm = '';
     component.previousForm = '';
-    component.project = {
-      documents: [],
-    } as Project;
+    component.project = mockProject;
 
     fixture.detectChanges();
   });

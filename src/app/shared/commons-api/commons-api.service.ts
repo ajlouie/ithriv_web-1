@@ -21,7 +21,7 @@ import {
 } from 'rxjs/operators';
 import fileSaver from 'file-saver';
 import { environment } from '../../../environments/environment';
-import { mockIrbInvestigators } from '../../../testing/mocks/mock-investigators';
+import { mockIrbInvestigators } from '../fixtures/investigators';
 import { FileAttachment } from '../../file-attachment';
 import { User } from '../../user';
 import {
@@ -386,7 +386,7 @@ export class CommonsApiService {
   }
 
   // TODO: Get IRB Investigators for the given project from the backend.
-  getProjectIrbInvestigators(user: User, project: Project): Observable<IrbInvestigator[]> {
+  getDatasetIrbInvestigators(user: User, dataset: Dataset): Observable<IrbInvestigator[]> {
     return observableOf(mockIrbInvestigators);
   }
 }

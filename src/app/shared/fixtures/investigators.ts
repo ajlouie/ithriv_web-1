@@ -1,4 +1,4 @@
-import { IrbInvestigatorType, IrbInvestigatorTypeLabel } from '../../app/commons-types';
+import { IrbInvestigatorType, IrbInvestigatorTypeLabel } from '../../commons-types';
 
 export const mockIrbInvestigators = [
   {
