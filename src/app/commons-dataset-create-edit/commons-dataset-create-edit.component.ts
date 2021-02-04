@@ -128,7 +128,7 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
         this.dataset &&
         this.dataset.approved_irb_link &&
           this.hasHipaaIdentifiers
-      ) || this.dataset.other_sensitive_data
+      ) || this.dataset.other_sensitive_data !== 'None'
     );
   }
 
