@@ -43,9 +43,11 @@ export class CommonsProjectComponent implements OnInit {
     'name',
     'last_modified',
     'private',
+    'can_update_meta',
     'can_download_data',
     'can_upload_data',
-    'can_update_meta',
+    'can_delete_data',
+    'can_restore_data',
   ];
   displayedDocumentColumns: string[] = [
     'name',
@@ -67,6 +69,7 @@ export class CommonsProjectComponent implements OnInit {
   ngOnInit() {
     this.dataset = <Dataset>{
       id: '',
+      dataset_type: 'Generic',
       project_id: this.project.id,
       name: '',
       description: '',
@@ -78,6 +81,30 @@ export class CommonsProjectComponent implements OnInit {
       private_data: true,
       url: '',
       filename: '',
+      variable_measured: '',
+      license : '',
+      spatial_coverage_address: '',
+      temporal_coverage_date: null,
+      study_irb_number: '',
+      approved_irb_link: '',
+      contract_link: '',
+      link_to_external_dataset: '',
+      dicom_de_identified: '',
+      dicom_bids_structure: '',
+      dicom_quality: '',
+      dicom_study_date: '',
+      dicom_scanner_manufacturer_name: '',
+      dicom_scanner_model_name: '',
+      dicom_organ_name: '',
+      dicom_fieldof_view: '',
+      dicom_field_strength: '',
+      redcap_project_url: '',
+      redcap_extract_data: '',
+      redcap_refresh_rate: 1,
+      redcap_report_id: '',
+      redcap_project_token: '',
+      redcap_project_title: '',
+      redcap_project_pi: ''
     };
     this.loadPermisssions();
   }
@@ -129,14 +156,13 @@ export class CommonsProjectComponent implements OnInit {
       },
       (error1) => {}
     );
-    console.log(data);
+    // console.log(data);
   }
 
   togglePrivate(isPrivate: boolean) {
     this.project.private = isPrivate;
     this.cas.updateProject(this.project).subscribe(
       (e) => {
-        this.project = e;
       },
       (error1) => {}
     );
@@ -216,6 +242,7 @@ export class CommonsProjectComponent implements OnInit {
       );
     });
   }
+
   updateDocument(documentType: string) {
     const dialogRef = this.dialog.open(CommonsProjectDocumentComponent, {
       width: '300px',
@@ -246,6 +273,54 @@ export class CommonsProjectComponent implements OnInit {
     });
   }
 
+  restoreDatasetData(dataset) {
+    this.cas.restoreDatasetData(dataset, this.user).subscribe(
+      (e) => {
+        this.cas.updateProject(this.project).subscribe(
+          (e) => {
+            this.project = e;
+            this.currentFormChange.emit({
+              currentProject: this.project,
+              previousForm: 'commons-project',
+              displayForm: 'commons-project',
+            });
+          },
+          (error1) => {
+            console.log(error1);
+          }
+        );
+      },
+      (error1) => {
+        console.log(error1);
+      }
+    );
+    // console.log(document);
+  }
+
+  deleteDatasetData(dataset) {
+    this.cas.deleteDatasetData(dataset, this.user).subscribe(
+      (e) => {
+        this.cas.updateProject(this.project).subscribe(
+          (e) => {
+            this.project = e;
+            this.currentFormChange.emit({
+              currentProject: this.project,
+              previousForm: 'commons-project',
+              displayForm: 'commons-project',
+            });
+          },
+          (error1) => {
+            console.log(error1);
+          }
+        );
+      },
+      (error1) => {
+        console.log(error1);
+      }
+    );
+    // console.log(document);
+  }
+
   restoreDocument(document) {
     this.cas.restoreDocument(this.project, document, this.user).subscribe(
       (e) => {
@@ -263,7 +338,7 @@ export class CommonsProjectComponent implements OnInit {
       },
       (error1) => {}
     );
-    console.log(document);
+    // console.log(document);
   }
 
   deleteDocument(document) {
@@ -283,6 +358,6 @@ export class CommonsProjectComponent implements OnInit {
       },
       (error1) => {}
     );
-    console.log(document);
+    // console.log(document);
   }
 }

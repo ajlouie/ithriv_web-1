@@ -18,7 +18,7 @@
   </mat-form-field>
 </mat-list>
 <mat-list mat-dialog-actions>
-  <ng-container *ngIf="!documentTypeControl.hasError('required')">
+  <ng-container *ngIf="projectDocumentMap.project.can_upload_data && !documentTypeControl.hasError('required')">
     <app-commons-file-upload
       matTooltip="Click here to upload project document"
       color="primary"

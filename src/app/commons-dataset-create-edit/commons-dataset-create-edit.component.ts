@@ -63,34 +63,53 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
   isDataLoaded = false;
   createNew = false;
   hipaaOptions = [
-    'Name',
-    '2a: All detailed geographic such as street addresses and their equivalent geocodes. (HIPAA identifier)',
-    '2b: All geographic subdivisions at size of city, zip, or their geocode equivalent (LIMITED DATASET)',
-    '2c: ONLY the initial three digits of the zip code AND areas containing <20,000 is changed to 000. (NOT HIPAA)',
-    '2d: ONLY geographic data at the level of state or larger regions (NOT HIPAA)',
-    '3a: Some date data includes month and or day elements (LIMITED DATASET)',
-    '3b: Date data includes specific ages above age 90 (LIMITED DATASET)',
-    '3c: Date data is limited to only YEAR and no exact ages exposed above age 90. (NOT HIPAA identifier)',
-    'Telephone numbers',
-    'Fax numbers',
-    'Electronic mail addresses',
-    'Social Security number',
-    'Medical Record number',
-    'Health plan beneficiary numbers',
-    'Account numbers',
-    'Certificate/license numbers',
-    'Vehicle identifiers and serial numbers, including license plate numbers',
-    'Device identifiers and serial numbers',
-    'Web Universal Resource Locators (URLs)',
-    'Internet Protocol (IP) address numbers',
-    'Biometric identifiers, including finger and voice prints',
-    'Full face photographic images and any comparable images',
-    'Any other unique identifying info (e.g. initials, last 4 digits of SSN, first 3 letters of last name.)',
+    'Name (HSD)',
+    '2a: All detailed geographic such as street addresses and their equivalent geocodes. (HIPAA identifier) (HSD)',
+    '2b: All geographic subdivisions at size of city, zip, or their geocode equivalent (LIMITED DATASET) (LDS)',
+    '2c: ONLY the initial three digits of the zip code AND areas containing <20,000 is changed to 000. (NOT HIPAA) (De-ID)',
+    '2d: ONLY geographic data at the level of state or larger regions (NOT HIPAA) (De-ID)',
+    '3a: Some date data includes month and or day elements (LIMITED DATASET) (LDS)',
+    '3b: Date data includes specific ages above age 90 (LIMITED DATASET) (LDS)',
+    '3c: Date data is limited to only YEAR and no exact ages exposed above age 90. (NOT HIPAA identifier) (De-ID)',
+    'Telephone numbers (HSD)',
+    'Fax numbers (HSD)',
+    'Electronic mail addresses (HSD)',
+    'Social Security number (HSD)',
+    'Medical Record number (HSD)',
+    'Health plan beneficiary numbers (HSD)',
+    'Account numbers (HSD)',
+    'Certificate/license numbers (HSD)',
+    'Vehicle identifiers and serial numbers, including license plate numbers (HSD)',
+    'Device identifiers and serial numbers (HSD)',
+    'Web Universal Resource Locators (URLs) (HSD)',
+    'Internet Protocol (IP) address numbers (HSD)',
+    'Biometric identifiers, including finger and voice prints (HSD)',
+    'Full face photographic images and any comparable images (HSD)',
+    'Any other unique identifying info (e.g. initials, last 4 digits of SSN, first 3 letters of last name.) (HSD)',
   ];
   userPermission: UserPermission;
   userPermissions$: Observable<UserPermission[]> | undefined;
   displayedUserpermColumns: string[] = ['email', 'role', 'edit', 'delete'];
   dateTimeRange: Date[];
+  listOfOptions = [
+    { name: 'Generic' },
+    { name: 'DICOM' },
+    { name: 'REDCap' }
+  ];
+  toggleOptions = [
+    { name: 'true' },
+    { name: 'false' }
+  ];
+  urlFormControl = new FormControl('', [
+    Validators.required,
+    ValidateUrl,
+  ]);
+  numberRangeControl = new FormControl('', [
+    Validators.required,
+    Validators.min(1),
+    Validators.max(365)
+  ]);
+  datasetTypeSelected: string;
 
   constructor(
     fb: FormBuilder,
@@ -118,6 +137,15 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
     });
   }
 
+  getNavLabel(form: string) {
+    if (form === 'commons-project') {
+      return 'Project Home';
+    } else if (form === 'commons-dataset') {
+      return 'View Dataset';
+    } else {
+      return form;
+    }
+  }
   loadFields() {
     const irbDocumentOptions = [];
     this.project.documents.filter(
@@ -215,12 +243,19 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
       temporal_coverage_date: new FormField({
         formControl: new FormControl(),
         required: false,
-        maxLength: 140,
-        minLength: 1,
         placeholder: 'Temporal Coverage of Dataset',
         type: 'owldatetime',
         selectMode: 'range',
         pickerMode: 'dialog',
+      }),
+      study_irb_number: new FormField({
+        formControl: new FormControl(),
+        required: false,
+        placeholder: 'Study IRB Number:',
+        type: 'text',
+        options: {
+          status: ['words'],
+        },
       }),
       approved_irb_link: new FormField({
         formControl: new FormControl(),
@@ -310,6 +345,7 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
 
         if (field.type === 'owldatetime') {
           validators.push(ValidateDateTimeRange);
+          field.formControl.setValue('');
         }
 
         if (field.type === 'email') {
@@ -351,7 +387,7 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
     );
     this.currentFormChange.emit({
       currentDataset: this.dataset,
-      previousForm: 'commons-project',
+      previousForm: this.previousForm,
       displayForm: 'commons-dataset-create-edit',
     });
   }
@@ -388,7 +424,7 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe((result: UserPermission) => {
-      console.log('The dialog was closed');
+      // console.log('The dialog was closed');
       if (result !== null) {
         this.cas
           .addUserDatasetPermission(this.user, this.dataset, result)
@@ -421,7 +457,7 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe((result: UserPermission) => {
-      console.log('The dialog was closed');
+      // console.log('The dialog was closed');
       if (result !== null) {
         this.cas
           .addUserDatasetPermission(this.user, this.dataset, result)
@@ -484,7 +520,7 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
   onFileComplete(data: any) {
     this.dataset.url = data.url;
     this.dataset.filename = data.fileName;
-    console.log(data);
+    // console.log(data);
   }
 
   validate() {
@@ -520,6 +556,7 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
       this.dataset.license = this.fields.license.formControl.value;
       this.dataset.spatial_coverage_address = this.fields.spatial_coverage_address.formControl.value;
       this.dataset.temporal_coverage_date = this.fields.temporal_coverage_date.formControl.value;
+      this.dataset.study_irb_number = this.fields.study_irb_number.formControl.value;
       this.dataset.approved_irb_link = this.fields.approved_irb_link.formControl.value;
       this.dataset.contract_link = this.fields.contract_link.formControl.value;
       this.dataset.link_to_external_dataset = this.fields.link_to_external_dataset.formControl.value;
@@ -530,6 +567,29 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
             this.errorMessage = '';
             this.formStatus = 'complete';
             this.dataset = e;
+            if (this.dataset.dataset_type === 'REDCap' && this.dataset.redcap_project_token === '') {
+              this.ras
+                .sendConsultRequestToJIRA(
+                  this.user,
+                  'Informatics Tools',
+                  'Inquiry',
+                  'iTHriov commons portal: Request to create REDcap token' ,
+                  this.dataset.redcap_project_url
+                )
+                .subscribe(
+                  e => {
+                    this.errorMessage = '';
+                  },
+                  error1 => {
+                    if (error1) {
+                      this.errorMessage = error1;
+                    } else {
+                      this.errorMessage =
+                        'Failed to submit request to create REDCap tokem, please contact system admin';
+                    }
+                  }
+                );
+            }
             this.showNext();
           },
           (error1) => {
@@ -578,7 +638,7 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
               switch (errorName) {
                 case 'dateTimeRange':
                   messages.push(
-                    `${label} is not a valid event start and end date/time.`
+                    `${label} is not a valid start and end date/time.`
                   );
                   break;
                 case 'email':
