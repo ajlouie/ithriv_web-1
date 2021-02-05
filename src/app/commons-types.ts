@@ -27,8 +27,9 @@ export interface Project {
   web_page_url?: string;
 }
 
-export interface Dataset {
+export interface Dataset { 
   id?: string;
+  dataset_type: string;
   project_id?: string;
   name?: string;
   description?: string;
@@ -53,9 +54,26 @@ export interface Dataset {
   license?: string;
   spatial_coverage_address?: string;
   temporal_coverage_date?: string;
+  study_irb_number?: string;
   approved_irb_link?: string;
   contract_link?: string;
   link_to_external_dataset?: string;
+  dicom_de_identified?: string;
+  dicom_bids_structure?: string;
+  dicom_quality?: string;
+  dicom_study_date?: string;
+  dicom_scanner_manufacturer_name?: string;
+  dicom_scanner_model_name?: string;
+  dicom_organ_name?: string;
+  dicom_fieldof_view?: string;
+  dicom_field_strength?: string;
+  redcap_project_url?: string;
+  redcap_extract_data?: string; 
+  redcap_refresh_rate?: number;
+  redcap_report_id?: string;
+  redcap_project_token?: string;
+  redcap_project_title?: string;
+  redcap_project_pi?: string;
   irb_investigators?: IrbInvestigator[];
 }
 

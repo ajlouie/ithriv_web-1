@@ -9,7 +9,7 @@ export function ValidateDateTimeRange(
   );
   const regEx2 = new RegExp('.*-.*-.*:.*:.*,.*-.*-.*:.*:.*', 'g');
 
-  console.log(control.value);
+  // console.log(control.value);
   if (
     control.value &&
     control.value !== '' &&

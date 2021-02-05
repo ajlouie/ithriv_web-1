@@ -10,7 +10,7 @@
     <div
       fxFlex.xl="75%"
       fxFlex.lg="75%"
-      fxFlex.md="67%"
+      fxFlex.md="75%"
       fxFlex.sm="50%"
       fxFlex.xs="100%"
     >
@@ -32,7 +32,7 @@
         </mat-card-content>
       </mat-card>
       <mat-divider [inset]="true"></mat-divider>
-      <mat-card *ngIf="user">
+      <mat-card *ngIf="user && project.id !== '' && project.can_upload_data === true || project.can_download_data === true || project.can_delete_data === true">
         <mat-card-content *ngIf="user">
           <mat-toolbar>
             <mat-card-title>
@@ -145,7 +145,7 @@
                     mat-mini-fab
                   >
                     <mat-icon
-                      matTooltip="Click here to delete document ({{
+                      matTooltip="Click here to restore document ({{
                         document.filename
                       }})"
                     >
@@ -170,6 +170,9 @@
             </table>
           </mat-list>
           <button
+            *ngIf="
+              user && project.id !== '' && project.can_upload_data === true
+            "
             type="button"
             color="primary"
             mat-raised-button
@@ -370,7 +373,7 @@
                     >
                       <button type="button" color="primary" mat-mini-fab>
                         <mat-icon
-                          matTooltip="Click here to download dataset ({{
+                          matTooltip="Click here to download dataset file ({{
                             projectDataset.filename
                           }})"
                         >
@@ -378,6 +381,54 @@
                         </mat-icon>
                       </button>
                     </a>
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="can_delete_data">
+                  <th mat-header-cell *matHeaderCellDef>DELETE</th>
+                  <td mat-cell *matCellDef="let projectDataset">
+                    <button
+                      *ngIf="
+                        user &&
+                        projectDataset.url !== '' &&
+                        projectDataset.can_delete_data === true
+                      "
+                      type="button"
+                      (click)="deleteDatasetData(projectDataset,user)"
+                      color="warn"
+                      mat-mini-fab
+                    >
+                      <mat-icon
+                        matTooltip="Click here to delete dataset file ({{
+                          projectDataset.filename
+                        }})"
+                      >
+                        delete
+                      </mat-icon>
+                    </button>
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="can_restore_data">
+                  <th mat-header-cell *matHeaderCellDef>RESTORE</th>
+                  <td mat-cell *matCellDef="let projectDataset">
+                    <button
+                      *ngIf="
+                        user &&
+                        projectDataset.url === '' &&
+                        projectDataset.can_restore_data === true
+                      "
+                      type="button"
+                      (click)="restoreDatasetData(projectDataset,user)"
+                      color="warn"
+                      mat-mini-fab
+                    >
+                      <mat-icon
+                        matTooltip="Click here to restore dataset file ({{
+                          projectDataset.filename
+                        }})"
+                      >
+                        undo
+                      </mat-icon>
+                    </button>
                   </td>
                 </ng-container>
                 <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
@@ -395,9 +446,11 @@
           </mat-list>
           <button
             mat-raised-button
+            *ngIf="
+              user && project.id !== '' && project.can_download_data === true
+            "
             color="primary"
             (click)="showDataset(dataset)"
-            *ngIf="user"
           >
             <mat-icon>post_add</mat-icon>
             ADD DATASET
@@ -415,7 +468,7 @@
     <mat-card
       fxFlex.xl="25%"
       fxFlex.lg="25%"
-      fxFlex.md="33%"
+      fxFlex.md="25%"
       fxFlex.sm="50%"
       fxFlex.xs="100%"
     >
@@ -423,24 +476,30 @@
         PROJECT DETAILS
       </mat-card-title>
       <mat-chip-list *ngIf="user && project.can_manage_permission === true ">
-        <mat-chip
-          *ngIf="project.private"
-          matTooltip="This Resource is only visible to PI and collaborators on this project. Click here to change this setting."
-          (click)="togglePrivate(!project.private)"
-          id="button-not-private"
-        >
-          <mat-icon style="margin-right: 8px;">visibility_off</mat-icon>
-          PRIVATE
-        </mat-chip>
-        <mat-chip
-          *ngIf="!project.private"
-          matTooltip="This Resource is visible to all iTHRIV users. Click to restrict it to just project PI and collaborators on this project."
-          (click)="togglePrivate(!project.private)"
-          id="button-private"
-        >
-          <mat-icon style="margin-right: 8px;">visibility</mat-icon>
-          PUBLIC
-        </mat-chip>
+        <ng-container *ngIf="project.private">
+          <mat-chip
+            matTooltip="This project is only visible to owners and collaborators on this project."
+            (click)="togglePrivate(!project.private)"
+            id="button-not-private"
+          >
+            <mat-icon style="margin-right: 8px;"
+              >visibility_off</mat-icon
+            >
+            PRIVATE
+          </mat-chip>
+        </ng-container>
+        <ng-container *ngIf="!project.private">
+          <mat-chip
+            (click)="togglePrivate(!project.private)"
+            matTooltip="This project is visible to all iTHRIV users."
+            id="button-private"
+          >
+            <mat-icon style="margin-right: 8px;"
+              >visibility</mat-icon
+            >
+            PUBLIC
+          </mat-chip>
+        </ng-container>
       </mat-chip-list>
       <mat-card-content>
         <mat-list dense>

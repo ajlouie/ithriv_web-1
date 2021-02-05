@@ -60,16 +60,16 @@ export class CommonsApiService {
     return this.http
       .get<Project[]>(this.apiRootPrivate + 'project_list')
       .pipe(
-        map((projects) => projects.filter((project) => project.pl_pi !== ''))
+        catchError(this.handleError)
       );
   }
   loadPublicProjects(): Observable<Project[]> {
     return this.http
-      .get<Project[]>(this.apiRoot + 'project_list')
+      .get<Project[]>(this.apiRoot + 'project_list_public')
       .pipe(
         map((projects) =>
           projects.filter(
-            (project) => project.private === false && project.pl_pi === ''
+            (project) => project.private === false && project.private === false
           )
         )
       );
@@ -141,6 +141,32 @@ export class CommonsApiService {
       .pipe(catchError(this.handleError));
   }
 
+  deleteDatasetData(dataset: Dataset, user: User): Observable<any> {
+    if (dataset.can_delete_data) {
+      return this.http
+      .delete<any>(
+        this.getLandingServiceUrl(user) +
+          `/commons/data/datasets/file/${dataset.id}`, {
+            headers: { REMOTE_USER: user.eppn },
+          })
+          .pipe(catchError(this.handleError));
+    }
+  }
+
+  restoreDatasetData(dataset: Dataset, user: User): Observable<any> {
+    if (dataset.can_restore_data) {
+      return this.http
+        .put<any>(
+          this.getLandingServiceUrl(user) +
+            `/commons/data/datasets/file/${dataset.id}/restore`, {},
+            {
+              headers: { REMOTE_USER: user.eppn, EMAIL: user.eppn },
+            }
+        )
+        .pipe(catchError(this.handleError));
+    }
+  }
+
   restoreDocument(
     project: Project,
     document: ProjectDocument,
@@ -153,6 +179,8 @@ export class CommonsApiService {
           project.id +
           `/` +
           document.type +
+          `/` +
+          document.filename +
         `/restore`, {},
         {
           headers: { REMOTE_USER: user.eppn, EMAIL: user.eppn},
@@ -160,6 +188,7 @@ export class CommonsApiService {
       )
       .pipe(catchError(this.handleError));
   }
+
   deleteDocument(document: ProjectDocument, user: User): Observable<any> {
     return this.http
       .delete<any>(document.url, {

@@ -5,6 +5,20 @@ import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { AddPermissionComponent } from '../add-permission/add-permission.component';
 import {
+  Component,
+  OnInit,
+  Input,
+  Output,
+  EventEmitter,
+  ChangeDetectorRef,
+} from '@angular/core';
+import {
+  FormBuilder,
+  FormGroup,
+  FormControl,
+  Validators,
+  AbstractControl,
+} from '@angular/forms';
   Project,
   UserPermission,
   UserPermissionMap
@@ -17,6 +31,7 @@ import { IThrivForm } from '../shared/IThrivForm';
 import { ResourceApiService } from '../shared/resource-api/resource-api.service';
 import { ValidateDateTimeRange } from '../shared/validators/date_time_range.validator';
 import { ValidateUrl } from '../shared/validators/url.validator';
+import { ValidateEmail } from '../shared/validators/comms_sep_email.validator';
 import { User } from '../user';
 
 @Component({
@@ -28,7 +43,6 @@ export class CommonsProjectCreateEditComponent implements OnInit {
   public static PROJECT_ROLE_MAP_STATIC = [
     { key: '1', value: 'PROJECT OWNER' },
     { key: '2', value: 'PROJECT COLLABORATOR' },
-    { key: '3', value: 'PRINCIPLE INVESTIGATOR' },
   ];
   @Input() user: User;
   @Input() currentForm: String;
@@ -229,7 +243,7 @@ export class CommonsProjectCreateEditComponent implements OnInit {
         }
 
         if (field.type === 'email') {
-          validators.push(Validators.email);
+          validators.push(ValidateEmail);
         }
 
         if (field.type === 'url') {
@@ -426,31 +440,27 @@ export class CommonsProjectCreateEditComponent implements OnInit {
         this.cas.createProject(this.project).subscribe(
           (e) => {
             this.errorMessage = '';
-            this.formStatus = 'complete';
+            this.formStatus = 'form';
             this.project = e;
-            this.cas
-            .addUserProjectPermission(this.user, this.project,
-              <UserPermission>{ user_email: this.project.pl_pi, user_role: '3' })
-            .subscribe(
-              (e1) => {
-                this.cas
-                  .addUserProjectPermission(this.user, this.project,
-                    <UserPermission>{ user_email: this.project.pl_pi, user_role: '1' })
-                  .subscribe(
-                    (e2) => {
-                      this.loadPermisssions();
-                      this.errorMessage = '';
-                      this.showNext();
-                    },
-                    (error1) => {
-                      this.errorMessage = error1;
-                    }
-                  );
-              },
-              (error1) => {
-                this.errorMessage = error1;
-              }
-            );
+            for (const pi of this.project.pl_pi.split(',')) {
+              this.cas
+              .addUserProjectPermission(this.user, this.project,
+                <UserPermission>{ user_email: pi.trim(), user_role: '1' })
+              .subscribe(
+                (e1) => {
+                  this.loadPermisssions();
+                  this.errorMessage = '';
+                },
+                (error1) => {
+                  this.errorMessage = '';
+                }
+              );
+            }
+            setTimeout(() => {
+              this.loadPermisssions();
+              this.errorMessage = '';
+              this.showNext();
+            }, 2000);
           },
           (error1) => {
             if (error1) {
@@ -467,32 +477,28 @@ export class CommonsProjectCreateEditComponent implements OnInit {
         this.cas.updateProject(this.project).subscribe(
           (e) => {
             this.errorMessage = '';
-            this.formStatus = 'complete';
+            this.formStatus = 'form';
             this.project = e;
             if (updatePIPerms) {
-              this.cas
-              .addUserProjectPermission(this.user, this.project,
-                <UserPermission>{ user_email: this.project.pl_pi, user_role: '3' })
-              .subscribe(
-                (e1) => {
-                  this.cas
-                    .addUserProjectPermission(this.user, this.project,
-                      <UserPermission>{ user_email: this.project.pl_pi, user_role: '1' })
-                    .subscribe(
-                      (e2) => {
-                        this.loadPermisssions();
-                        this.errorMessage = '';
-                        this.showNext();
-                      },
-                      (error1) => {
-                        this.errorMessage = error1;
-                      }
-                    );
-                },
-                (error1) => {
-                  this.errorMessage = error1;
-                }
-              );
+              for (const pi of this.project.pl_pi.split(',')) {
+                this.cas
+                .addUserProjectPermission(this.user, this.project,
+                  <UserPermission>{ user_email: pi.trim(), user_role: '1' })
+                .subscribe(
+                  (e1) => {
+                    this.loadPermisssions();
+                    this.errorMessage = '';
+                  },
+                  (error1) => {
+                    this.errorMessage = '';
+                  }
+                );
+              }
+              setTimeout(() => {
+                this.loadPermisssions();
+                this.errorMessage = '';
+                this.showNext();
+              }, 2000);
             } else {
               this.project = e;
               this.showNext();

@@ -112,26 +112,28 @@
   <mat-label>
     {{ field.placeholder }}
   </mat-label>
-  <div class="trigger input-group-btn">
     <!--button class="btn btn-default" type="button" [owlDateTimeTrigger]="dt">
       <i class="material-icons md-16">&#xE916;</i></button-->
-    <button *ngIf="!field.required" class="btn btn-default" type="button" (click)="clearValue(field.formControl)">
-      <i class="material-icons md-16">&#xE14C;</i></button>
-  </div>
-  <input
-    matInput
-    class="form-control"
-    [formControl]="field.formControl"
-    [owlDateTime]="dt"
-    [selectMode]="field.selectMode"
-    [owlDateTimeFilter]="eventFilter"
-    [disabled]="true"
-    [owlDateTimeTrigger]="dt"
-    [placeholder]="field.placeholder"
-    [required]="field.required"
+  <span class="input-group-addon">
+    <input
+      matInput
+      class="form-control"
+      [formControl]="field.formControl"
+      [owlDateTime]="dt"
+      [selectMode]="field.selectMode"
+      [owlDateTimeFilter]="eventFilter"
+      [disabled]="true"
+      [owlDateTimeTrigger]="dt"
+      [placeholder]="field.placeholder"
+      [required]="field.required"
 
-  />
-  <owl-date-time [pickerType]="'both'" #dt="owlDateTime"></owl-date-time>
+    />
+    <owl-date-time [pickerType]="'both'" #dt="owlDateTime">
+    </owl-date-time>
+    <button *ngIf="!field.required" class="btn btn-default" type="button" (click)="clearValue(field.formControl)">
+      <i class="material-icons md-16">&#xE14C;</i>
+    </button>
+  </span>
   <mat-hint *ngIf="field.helpText">
     <markdown>{{ field.helpText }}</markdown>
   </mat-hint>

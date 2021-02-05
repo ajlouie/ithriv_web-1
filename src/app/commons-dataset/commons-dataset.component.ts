@@ -98,17 +98,21 @@ export class CommonsDatasetComponent implements OnInit {
   toggleDatasetPrivate(dataset: Dataset, isPrivate: boolean) {
     dataset.private = isPrivate;
     this.cas.updateDataset(dataset).subscribe(
-      (e) => {},
+      (e) => {
+        this.dataset = e;
+      },
       (error1) => {}
     );
   }
 
   toggleDatasetDataPrivate(dataset: Dataset, isPrivate: boolean) {
-    dataset.private_data = isPrivate;
-    this.cas.updateDataset(dataset).subscribe(
-      (e) => {},
-      (error1) => {}
-    );
+    // dataset.private_data = isPrivate;
+    // this.cas.updateDataset(dataset).subscribe(
+    //   (e) => {
+    //     this.dataset = e;
+    //   },
+    //   (error1) => {}
+    // );
   }
 
   keywords() {
