@@ -137,7 +137,7 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
     });
   }
 
-  getNavLabel(form: string) {
+  getNavLabel(form: String) {
     if (form === 'commons-project') {
       return 'Project Home';
     } else if (form === 'commons-dataset') {
