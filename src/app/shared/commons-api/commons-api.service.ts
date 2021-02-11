@@ -417,5 +417,17 @@ export class CommonsApiService {
   // TODO: Get IRB Investigators for the given project from the backend.
   getDatasetIrbInvestigators(user: User, dataset: Dataset): Observable<IrbInvestigator[]> {
     return observableOf(mockIrbInvestigators);
+    // return this.http
+    //   .get<IrbInvestigator[]>(
+    //     this.getLandingServiceUrl(user) +
+    //       `/commons/meta/datasets/` +
+    //       dataset.id +
+    //       `/investigators`,
+    //     {
+    //       headers: { REMOTE_USER: user.eppn },
+    //       responseType: 'json',
+    //     }
+    //   )
+    //   .pipe(catchError(this.handleError));
   }
 }
