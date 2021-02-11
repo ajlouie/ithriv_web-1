@@ -81,7 +81,6 @@ export interface Dataset {
   redcap_project_token?: string;
   redcap_project_title?: string;
   redcap_project_pi?: string;
-  irb_investigators?: IrbInvestigator[];
 }
 
 export class FileUploadModel {
@@ -123,7 +122,7 @@ export interface UserPermissionMap {
   userPermission: UserPermission;
   permissionsMap: any;
   isDataset: boolean;
-  hasHighlySensitiveData?: boolean;
+  hasIrbNumber?: boolean;
   irbInvestigators?: IrbInvestigator[];
 }
 

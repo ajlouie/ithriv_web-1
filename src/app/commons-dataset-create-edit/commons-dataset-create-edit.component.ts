@@ -12,7 +12,7 @@ import { MatSnackBar } from '@angular/material';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { AddPermissionComponent } from '../add-permission/add-permission.component';
-import { Dataset, Project, UserPermission, UserPermissionMap } from '../commons-types';
+import { Dataset, IrbInvestigator, Project, UserPermission, UserPermissionMap } from '../commons-types';
 import { ErrorMatcher } from '../error-matcher';
 import { Fieldset } from '../fieldset';
 import { FormField } from '../form-field';
@@ -104,6 +104,7 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
     Validators.max(365)
   ]);
   datasetTypeSelected: string;
+  private irbInvestigators: IrbInvestigator[];
 
   constructor(
     fb: FormBuilder,
@@ -113,38 +114,6 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
     public dialog: MatDialog,
     private changeDetectorRef: ChangeDetectorRef
   ) {
-  }
-
-  /**
-   * Returns true if the dataset has HIPAA identifiers
-   */
-  get hasHipaaIdentifiers(): boolean {
-    if (
-      this.dataset.identifiers_hipaa &&
-      this.dataset.identifiers_hipaa as any instanceof Array &&
-      this.dataset.identifiers_hipaa.length > 0
-    ) {
-      const hipaaOptionsIndices = [1,];
-
-      for (const i of hipaaOptionsIndices) {
-        if (this.dataset.identifiers_hipaa.includes(this.hipaaOptions[i])) {
-          return true;
-        }
-      }
-    }
-
-    return false;
-  }
-
-  /**
-   * Returns true if the dataset has a valid IRB number and HIPAA identifiers or other sensitive data.
-   */
-  get hasHighlySensitiveData(): boolean {
-    return !!(
-      this.dataset &&
-      this.dataset.approved_irb_link &&
-      (this.hasHipaaIdentifiers || this.dataset.other_sensitive_data !== 'None')
-    );
   }
 
   ngOnInit() {
@@ -409,7 +378,7 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
   }
 
   loadPermisssions() {
-    this.cas.getDatasetIrbInvestigators(this.user, this.dataset).subscribe(ii => this.dataset.irb_investigators = ii);
+    this.cas.getDatasetIrbInvestigators(this.user, this.dataset).subscribe(ii => this.irbInvestigators = ii);
 
     this.userPermissions$ = this.cas.getDatasetPermissions(
       this.user,
@@ -472,8 +441,6 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
       user_email: userPermission.user_email,
       user_role: userPermission.user_role,
     };
-
-    console.log('this.dataset.identifiers_hipaa', this.dataset.identifiers_hipaa);
 
     const dialogRef = this.dialog.open(AddPermissionComponent, {
       width: '250px',
@@ -756,8 +723,8 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
       userPermission: userPermission,
       permissionsMap: CommonsDatasetCreateEditComponent.DATASET_ROLE_MAP_STATIC,
       isDataset: true,
-      hasHighlySensitiveData: this.hasHighlySensitiveData,
-      irbInvestigators: this.dataset.irb_investigators,
+      hasIrbNumber: !!this.dataset.study_irb_number,
+      irbInvestigators: this.irbInvestigators,
     };
   }
 }

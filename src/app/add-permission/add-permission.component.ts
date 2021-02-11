@@ -13,7 +13,7 @@ export class AddPermissionComponent implements OnInit {
   irbInvestigators: IrbInvestigator[];
   emailControl = new FormControl('', [Validators.required, Validators.email]);
   permissionControl = new FormControl('', Validators.required);
-  hasHighlySensitiveData: boolean;
+  hasIrbNumber: boolean;
   isDataset: boolean;
 
   constructor(
@@ -29,7 +29,7 @@ export class AddPermissionComponent implements OnInit {
 
     if (this.isDataset) {
       this.irbInvestigators = this.data.irbInvestigators;
-      this.hasHighlySensitiveData = this.data.hasHighlySensitiveData;
+      this.hasIrbNumber = this.data.hasIrbNumber;
     }
   }
 

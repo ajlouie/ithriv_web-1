@@ -1,4 +1,4 @@
-import { Dataset, DatasetType, IrbInvestigatorType, IrbInvestigatorTypeLabel } from '../../commons-types';
+import { Dataset, DatasetType } from '../../commons-types';
 import { mockInstitution } from './institution';
 
 export const mockDataset: Dataset = {
@@ -12,21 +12,4 @@ export const mockDataset: Dataset = {
   can_upload_data: false,
   institution: mockInstitution,
   keywords: 'some keywords',
-  irb_investigators: [
-    {
-      email: 'pi@institution.edu',
-      type: IrbInvestigatorType.PI,
-      type_full: IrbInvestigatorTypeLabel.PI,
-    },
-    {
-      email: 'studycoordinator@institution.edu',
-      type: IrbInvestigatorType.SC_I,
-      type_full: IrbInvestigatorTypeLabel.SC_I,
-    },
-    {
-      email: 'deptchair@institution.edu',
-      type: IrbInvestigatorType.DEPT_CH,
-      type_full: IrbInvestigatorTypeLabel.DEPT_CH,
-    },
-  ],
 };
