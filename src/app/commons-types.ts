@@ -1,7 +1,8 @@
+import { Subscription } from 'rxjs';
 import { Icon } from './icon';
 import { Institution } from './institution';
 import { User } from './user';
-import { Subscription } from 'rxjs';
+
 export interface Project {
   id?: string;
   collab_mgmt_service_id?: string;
@@ -27,9 +28,15 @@ export interface Project {
   web_page_url?: string;
 }
 
-export interface Dataset { 
+export enum DatasetType {
+  'Generic' = 'Generic',
+  'DICOM' = 'DICOM',
+  'REDCap' = 'REDCap',
+}
+
+export interface Dataset {
   id?: string;
-  dataset_type: string;
+  dataset_type: DatasetType;
   project_id?: string;
   name?: string;
   description?: string;
@@ -68,7 +75,7 @@ export interface Dataset {
   dicom_fieldof_view?: string;
   dicom_field_strength?: string;
   redcap_project_url?: string;
-  redcap_extract_data?: string; 
+  redcap_extract_data?: string;
   redcap_refresh_rate?: number;
   redcap_report_id?: string;
   redcap_project_token?: string;
@@ -103,6 +110,7 @@ export interface ProjectDocumentMap {
   project: Project;
   document: ProjectDocument;
 }
+
 export interface ProjectDocument {
   last_modified?: string;
   url?: string;
@@ -118,6 +126,7 @@ export interface UserPermissionMap {
   hasHighlySensitiveData?: boolean;
   irbInvestigators?: IrbInvestigator[];
 }
+
 export interface UserPermission {
   user_email?: string;
   user_role?: any;

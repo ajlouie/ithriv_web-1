@@ -1,7 +1,8 @@
-import { Dataset, IrbInvestigatorType, IrbInvestigatorTypeLabel } from '../../commons-types';
+import { Dataset, DatasetType, IrbInvestigatorType, IrbInvestigatorTypeLabel } from '../../commons-types';
 import { mockInstitution } from './institution';
 
 export const mockDataset: Dataset = {
+  dataset_type: DatasetType.Generic,
   can_delete_data: false,
   can_delete_meta: false,
   can_download_data: false,

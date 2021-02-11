@@ -4,34 +4,16 @@ import { MatSnackBar } from '@angular/material';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { AddPermissionComponent } from '../add-permission/add-permission.component';
-import {
-  Component,
-  OnInit,
-  Input,
-  Output,
-  EventEmitter,
-  ChangeDetectorRef,
-} from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  FormControl,
-  Validators,
-  AbstractControl,
-} from '@angular/forms';
-  Project,
-  UserPermission,
-  UserPermissionMap
-} from '../commons-types';
+import { Project, UserPermission, UserPermissionMap } from '../commons-types';
 import { ErrorMatcher } from '../error-matcher';
 import { Fieldset } from '../fieldset';
 import { FormField } from '../form-field';
 import { CommonsApiService } from '../shared/commons-api/commons-api.service';
 import { IThrivForm } from '../shared/IThrivForm';
 import { ResourceApiService } from '../shared/resource-api/resource-api.service';
+import { ValidateEmail } from '../shared/validators/comms_sep_email.validator';
 import { ValidateDateTimeRange } from '../shared/validators/date_time_range.validator';
 import { ValidateUrl } from '../shared/validators/url.validator';
-import { ValidateEmail } from '../shared/validators/comms_sep_email.validator';
 import { User } from '../user';
 
 @Component({
@@ -41,8 +23,8 @@ import { User } from '../user';
 })
 export class CommonsProjectCreateEditComponent implements OnInit {
   public static PROJECT_ROLE_MAP_STATIC = [
-    { key: '1', value: 'PROJECT OWNER' },
-    { key: '2', value: 'PROJECT COLLABORATOR' },
+    {key: '1', value: 'PROJECT OWNER'},
+    {key: '2', value: 'PROJECT COLLABORATOR'},
   ];
   @Input() user: User;
   @Input() currentForm: String;
@@ -294,7 +276,7 @@ export class CommonsProjectCreateEditComponent implements OnInit {
       ) {
         return CommonsProjectCreateEditComponent.PROJECT_ROLE_MAP_STATIC[i][
           'value'
-        ];
+          ];
       }
     }
   }
@@ -308,7 +290,7 @@ export class CommonsProjectCreateEditComponent implements OnInit {
           user_role: '',
         },
         permissionsMap:
-          CommonsProjectCreateEditComponent.PROJECT_ROLE_MAP_STATIC,
+        CommonsProjectCreateEditComponent.PROJECT_ROLE_MAP_STATIC,
         isDataset: false,
       },
     });
@@ -343,7 +325,7 @@ export class CommonsProjectCreateEditComponent implements OnInit {
       data: <UserPermissionMap>{
         userPermission: userPermission,
         permissionsMap:
-          CommonsProjectCreateEditComponent.PROJECT_ROLE_MAP_STATIC,
+        CommonsProjectCreateEditComponent.PROJECT_ROLE_MAP_STATIC,
         isDataset: false,
       },
     });
@@ -351,44 +333,30 @@ export class CommonsProjectCreateEditComponent implements OnInit {
     dialogRef.afterClosed().subscribe((result: UserPermission) => {
       console.log('The dialog was closed');
       if (result !== null) {
-        this.cas
-          .addUserProjectPermission(this.user, this.project, result)
-          .subscribe(
-            (e) => {
-              this.cas
-                .deleteUserProjectPermission(
-                  this.user,
-                  this.project,
-                  userPermissionCurrent
-                )
-                .subscribe(
-                  (e) => {
+        this.cas.addUserProjectPermission(this.user, this.project, result).subscribe(
+          () => {
+            this.cas.deleteUserProjectPermission(this.user, this.project, userPermissionCurrent).subscribe(
+              () => {
+                this.loadPermisssions();
+                this.errorMessagePerm = '';
+              },
+              (deletePermissionError) => {
+                this.cas.addUserProjectPermission(this.user, this.project, userPermissionCurrent).subscribe(
+                  () => {
                     this.loadPermisssions();
-                    this.errorMessagePerm = '';
                   },
-                  (error1) => {
-                    this.cas
-                      .addUserProjectPermission(
-                        this.user,
-                        this.project,
-                        userPermissionCurrent
-                      )
-                      .subscribe(
-                        (e) => {
-                          this.loadPermisssions();
-                        },
-                        (error1) => {
-                          this.errorMessagePerm = error1;
-                        }
-                      );
-                    this.errorMessagePerm = error1;
+                  (addPermissionError2) => {
+                    this.errorMessagePerm = addPermissionError2;
                   }
                 );
-            },
-            (error1) => {
-              this.errorMessagePerm = error1;
-            }
-          );
+                    this.errorMessagePerm = deletePermissionError;
+                  }
+                );
+              },
+          (addPermissionError1) => {
+            this.errorMessagePerm = addPermissionError1;
+          }
+        );
       } else {
         this.loadPermisssions();
       }
@@ -444,17 +412,17 @@ export class CommonsProjectCreateEditComponent implements OnInit {
             this.project = e;
             for (const pi of this.project.pl_pi.split(',')) {
               this.cas
-              .addUserProjectPermission(this.user, this.project,
-                <UserPermission>{ user_email: pi.trim(), user_role: '1' })
-              .subscribe(
-                (e1) => {
-                  this.loadPermisssions();
-                  this.errorMessage = '';
-                },
-                (error1) => {
-                  this.errorMessage = '';
-                }
-              );
+                .addUserProjectPermission(this.user, this.project,
+                  <UserPermission>{user_email: pi.trim(), user_role: '1'})
+                .subscribe(
+                  (e1) => {
+                    this.loadPermisssions();
+                    this.errorMessage = '';
+                  },
+                  (error1) => {
+                    this.errorMessage = '';
+                  }
+                );
             }
             setTimeout(() => {
               this.loadPermisssions();
@@ -482,17 +450,17 @@ export class CommonsProjectCreateEditComponent implements OnInit {
             if (updatePIPerms) {
               for (const pi of this.project.pl_pi.split(',')) {
                 this.cas
-                .addUserProjectPermission(this.user, this.project,
-                  <UserPermission>{ user_email: pi.trim(), user_role: '1' })
-                .subscribe(
-                  (e1) => {
-                    this.loadPermisssions();
-                    this.errorMessage = '';
-                  },
-                  (error1) => {
-                    this.errorMessage = '';
-                  }
-                );
+                  .addUserProjectPermission(this.user, this.project,
+                    <UserPermission>{user_email: pi.trim(), user_role: '1'})
+                  .subscribe(
+                    (e1) => {
+                      this.loadPermisssions();
+                      this.errorMessage = '';
+                    },
+                    (error1) => {
+                      this.errorMessage = '';
+                    }
+                  );
               }
               setTimeout(() => {
                 this.loadPermisssions();

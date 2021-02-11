@@ -1,40 +1,28 @@
 import {
-  Component,
-  OnInit,
-  Input,
-  Output,
-  EventEmitter,
-  ChangeDetectorRef,
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
 } from '@angular/core';
-import { mockIrbInvestigators } from '../shared/fixtures/investigators';
-import { User } from '../user';
-import {
-  Dataset, IrbInvestigator,
-  Project,
-  UserPermission,
-  UserPermissionMap
-} from '../commons-types';
-import { ErrorMatcher } from '../error-matcher';
-import { Fieldset } from '../fieldset';
-import {
-  FormGroup,
-  FormBuilder,
-  FormControl,
-  Validators,
-} from '@angular/forms';
-import { IThrivForm } from '../shared/IThrivForm';
-import { CommonsApiService } from '../shared/commons-api/commons-api.service';
-import { ResourceApiService } from '../shared/resource-api/resource-api.service';
-import { FormField } from '../form-field';
-import { ValidateDateTimeRange } from '../shared/validators/date_time_range.validator';
-import { ValidateUrl } from '../shared/validators/url.validator';
-import { environment } from '../../environments/environment';
+import { FormBuilder, FormControl, FormGroup, Validators, } from '@angular/forms';
 import { MatSnackBar } from '@angular/material';
 import { MatDialog } from '@angular/material/dialog';
-import { AddPermissionComponent } from '../add-permission/add-permission.component';
 import { Observable } from 'rxjs';
+import { AddPermissionComponent } from '../add-permission/add-permission.component';
+import { Dataset, Project, UserPermission, UserPermissionMap } from '../commons-types';
+import { ErrorMatcher } from '../error-matcher';
+import { Fieldset } from '../fieldset';
+import { FormField } from '../form-field';
 import { FormSelectOption } from '../form-select-option';
+import { CommonsApiService } from '../shared/commons-api/commons-api.service';
+import { IThrivForm } from '../shared/IThrivForm';
+import { ResourceApiService } from '../shared/resource-api/resource-api.service';
+import { ValidateDateTimeRange } from '../shared/validators/date_time_range.validator';
+import { ValidateUrl } from '../shared/validators/url.validator';
+import { User } from '../user';
 
 @Component({
   selector: 'app-commons-dataset-create-edit',
@@ -44,9 +32,9 @@ import { FormSelectOption } from '../form-select-option';
 })
 export class CommonsDatasetCreateEditComponent implements OnInit {
   public static DATASET_ROLE_MAP_STATIC = [
-    { key: '1', value: 'DATASET ADMINISTRATOR' },
-    { key: '2', value: 'DATASET COLLABORATOR' },
-    { key: '3', value: 'DATASET CUSTOMER' },
+    {key: '1', value: 'DATASET ADMINISTRATOR'},
+    {key: '2', value: 'DATASET COLLABORATOR'},
+    {key: '3', value: 'DATASET CUSTOMER'},
   ];
   @Input() user: User;
   @Input() currentForm: String;
@@ -98,13 +86,13 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
   displayedUserpermColumns: string[] = ['email', 'role', 'edit', 'delete'];
   dateTimeRange: Date[];
   listOfOptions = [
-    { name: 'Generic' },
-    { name: 'DICOM' },
-    { name: 'REDCap' }
+    {name: 'Generic'},
+    {name: 'DICOM'},
+    {name: 'REDCap'}
   ];
   toggleOptions = [
-    { name: 'true' },
-    { name: 'false' }
+    {name: 'true'},
+    {name: 'false'}
   ];
   urlFormControl = new FormControl('', [
     Validators.required,
@@ -117,6 +105,16 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
   ]);
   datasetTypeSelected: string;
 
+  constructor(
+    fb: FormBuilder,
+    private cas: CommonsApiService,
+    private ras: ResourceApiService,
+    public snackBar: MatSnackBar,
+    public dialog: MatDialog,
+    private changeDetectorRef: ChangeDetectorRef
+  ) {
+  }
+
   /**
    * Returns true if the dataset has HIPAA identifiers
    */
@@ -126,7 +124,7 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
       this.dataset.identifiers_hipaa as any instanceof Array &&
       this.dataset.identifiers_hipaa.length > 0
     ) {
-      const hipaaOptionsIndices = [1, ];
+      const hipaaOptionsIndices = [1,];
 
       for (const i of hipaaOptionsIndices) {
         if (this.dataset.identifiers_hipaa.includes(this.hipaaOptions[i])) {
@@ -143,22 +141,10 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
    */
   get hasHighlySensitiveData(): boolean {
     return !!(
-      (
-        this.dataset &&
-        this.dataset.approved_irb_link &&
-          this.hasHipaaIdentifiers
-      ) || this.dataset.other_sensitive_data !== 'None'
+      this.dataset &&
+      this.dataset.approved_irb_link &&
+      (this.hasHipaaIdentifiers || this.dataset.other_sensitive_data !== 'None')
     );
-  }
-
-  constructor(
-    fb: FormBuilder,
-    private cas: CommonsApiService,
-    private ras: ResourceApiService,
-    public snackBar: MatSnackBar,
-    public dialog: MatDialog,
-    private changeDetectorRef: ChangeDetectorRef
-  ) {
   }
 
   ngOnInit() {
@@ -169,7 +155,7 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
   }
 
   showNext() {
-    this.currentFormChange.emit({ displayForm: 'commons-project' });
+    this.currentFormChange.emit({displayForm: 'commons-project'});
     this.currentFormChange.emit({
       currentDataset: this.dataset,
       previousForm: 'commons-dataset-create-edit',
@@ -186,17 +172,19 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
       return form;
     }
   }
+
   loadFields() {
-    const irbDocumentOptions = [];
+    // TODO: Populate options with IRB Protocol numbers from IRB API
+    const irbDocumentOptions: FormSelectOption[] = [];
     this.project.documents.forEach(document => {
-      if ((document.type === 'IRB_Approval' ||  document.type === 'IRB Approval') && document.url !== '') {
-        irbDocumentOptions.push(new FormSelectOption({ id: document.url, name: document.filename }));
+      if ((document.type === 'IRB_Approval' || document.type === 'IRB Approval') && document.url !== '') {
+        irbDocumentOptions.push(new FormSelectOption({id: document.url, name: document.filename}));
       }
     });
     const contractDocumentOptions = [];
     this.project.documents.forEach(document => {
       if (document.type === 'Contract' && document.url !== '') {
-        contractDocumentOptions.push(new FormSelectOption({ id: document.url, name: document.filename }));
+        contractDocumentOptions.push(new FormSelectOption({id: document.url, name: document.filename}));
       }
     });
 
@@ -447,7 +435,7 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
       ) {
         return CommonsDatasetCreateEditComponent.DATASET_ROLE_MAP_STATIC[i][
           'value'
-        ];
+          ];
       }
     }
   }
@@ -539,16 +527,6 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
     });
   }
 
-  private buildUserPermissionMap(userPermission: UserPermission): UserPermissionMap {
-    return {
-      userPermission: userPermission,
-      permissionsMap: CommonsDatasetCreateEditComponent.DATASET_ROLE_MAP_STATIC,
-      isDataset: true,
-      hasHighlySensitiveData: this.hasHighlySensitiveData,
-      irbInvestigators: this.dataset.irb_investigators,
-    };
-  }
-
   deletePermission(userPermission: UserPermission) {
     this.cas
       .deleteUserDatasetPermission(this.user, this.dataset, userPermission)
@@ -583,8 +561,10 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
   togglePrivate(isPrivate: boolean) {
     this.dataset.private = isPrivate;
     this.cas.updateDataset(this.dataset).subscribe(
-      (e) => {},
-      (error1) => {}
+      (e) => {
+      },
+      (error1) => {
+      }
     );
   }
 
@@ -619,7 +599,7 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
                   this.user,
                   'Informatics Tools',
                   'Inquiry',
-                  'iTHriov commons portal: Request to create REDcap token' ,
+                  'iTHriov commons portal: Request to create REDcap token',
                   this.dataset.redcap_project_url
                 )
                 .subscribe(
@@ -730,7 +710,7 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
       (e) => {
         this.error = '';
         this.formStatus = 'complete';
-        this.currentFormChange.emit({ displayForm: 'commons-project' });
+        this.currentFormChange.emit({displayForm: 'commons-project'});
       },
       (error1) => {
         if (error1) {
@@ -769,5 +749,15 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
       this.cas.getLandingServiceUrl(this.user) +
       `/commons/data/datasets/file/${this.dataset.id}`
     );
+  }
+
+  private buildUserPermissionMap(userPermission: UserPermission): UserPermissionMap {
+    return {
+      userPermission: userPermission,
+      permissionsMap: CommonsDatasetCreateEditComponent.DATASET_ROLE_MAP_STATIC,
+      isDataset: true,
+      hasHighlySensitiveData: this.hasHighlySensitiveData,
+      irbInvestigators: this.dataset.irb_investigators,
+    };
   }
 }
