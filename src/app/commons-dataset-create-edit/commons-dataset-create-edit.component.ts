@@ -104,8 +104,8 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
     Validators.max(365)
   ]);
   datasetTypeSelected: string;
-  private irbInvestigators: IrbInvestigator[];
   irbNumberOptions: FormSelectOption[] = [];
+  private irbInvestigators: IrbInvestigator[];
 
   constructor(
     fb: FormBuilder,
@@ -467,7 +467,7 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
                   userPermissionCurrent
                 )
                 .subscribe(
-                  (e) => {
+                  () => {
                     this.loadPermisssions();
                     this.errorMessagePerm = '';
                   },
@@ -479,19 +479,19 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
                         userPermissionCurrent
                       )
                       .subscribe(
-                        (e) => {
+                        () => {
                           this.loadPermisssions();
                         },
-                        (error1) => {
-                          this.errorMessagePerm = error1;
+                        (error2) => {
+                          this.errorMessagePerm = error2;
                         }
                       );
                     this.errorMessagePerm = error1;
                   }
                 );
             },
-            (error1) => {
-              this.errorMessagePerm = error1;
+            (error0) => {
+              this.errorMessagePerm = error0;
             }
           );
       } else {
@@ -576,7 +576,7 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
                   this.dataset.redcap_project_url
                 )
                 .subscribe(
-                  e => {
+                  () => {
                     this.errorMessage = '';
                   },
                   error1 => {
