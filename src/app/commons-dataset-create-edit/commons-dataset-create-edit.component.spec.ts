@@ -11,7 +11,8 @@ import {
   MatIconModule,
   MatInputModule,
   MatListModule,
-  MatProgressSpinnerModule, MatRadioModule,
+  MatProgressSpinnerModule,
+  MatRadioModule,
   MatSelectModule,
   MatSlideToggleModule,
   MatSnackBarModule,
@@ -27,7 +28,6 @@ import { ColorPickerModule } from 'ngx-color-picker';
 import { FileDropModule } from 'ngx-file-drop';
 import { MarkdownModule } from 'ngx-markdown';
 import { NgProgressModule } from 'ngx-progressbar';
-import { Dataset, Project } from '../commons-types';
 import { FileUploadComponent } from '../file-upload/file-upload.component';
 import { FormFieldLabelComponent } from '../form-field-label/form-field-label.component';
 import { FormFieldComponent } from '../form-field/form-field.component';
@@ -36,7 +36,6 @@ import { mockProject } from '../shared/fixtures/project';
 import { mockUser } from '../shared/fixtures/user';
 import { ResourceApiService } from '../shared/resource-api/resource-api.service';
 import { TreeSelectComponent } from '../tree-select/tree-select.component';
-import { User } from '../user';
 
 import { CommonsDatasetCreateEditComponent } from './commons-dataset-create-edit.component';
 
@@ -97,7 +96,7 @@ describe('CommonsDatasetCreateEditComponent', () => {
   }));
 
   beforeEach(() => {
-    // httpMock = TestBed.inject(HttpTestingController);
+    httpMock = TestBed.get(HttpTestingController);
     fixture = TestBed.createComponent(CommonsDatasetCreateEditComponent);
     component = fixture.componentInstance;
 
@@ -112,7 +111,7 @@ describe('CommonsDatasetCreateEditComponent', () => {
 
   afterEach(() => {
     fixture.destroy();
-    // httpMock.verify();
+    httpMock.verify();
   });
 
   it('should create', () => {
