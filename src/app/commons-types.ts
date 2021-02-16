@@ -138,6 +138,10 @@ export interface IrbInvestigator {
   type_full: IrbInvestigatorTypeLabel;
 }
 
+export interface IrbNumber {
+  study_id: string;
+}
+
 /**
  * 1. Principal Investigator
  * 2. Study Coordinator I

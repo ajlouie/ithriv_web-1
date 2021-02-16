@@ -12,7 +12,7 @@ import { MatSnackBar } from '@angular/material';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { AddPermissionComponent } from '../add-permission/add-permission.component';
-import { Dataset, IrbInvestigator, Project, UserPermission, UserPermissionMap } from '../commons-types';
+import { Dataset, IrbInvestigator, IrbNumber, Project, UserPermission, UserPermissionMap } from '../commons-types';
 import { ErrorMatcher } from '../error-matcher';
 import { Fieldset } from '../fieldset';
 import { FormField } from '../form-field';
@@ -105,6 +105,7 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
   ]);
   datasetTypeSelected: string;
   private irbInvestigators: IrbInvestigator[];
+  irbNumberOptions: FormSelectOption[] = [];
 
   constructor(
     fb: FormBuilder,
@@ -144,6 +145,12 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
 
   loadFields() {
     // TODO: Populate options with IRB Protocol numbers from IRB API
+    this.cas.getUserIrbNumbers(this.user).subscribe((irbNumbers: IrbNumber[]) => {
+      this.irbNumberOptions = irbNumbers.map((irbNumber: IrbNumber) => {
+        return new FormSelectOption({id: irbNumber.study_id, name: irbNumber.study_id});
+      });
+    });
+
     const irbDocumentOptions: FormSelectOption[] = [];
     this.project.documents.forEach(document => {
       if ((document.type === 'IRB_Approval' || document.type === 'IRB Approval') && document.url !== '') {
@@ -249,10 +256,9 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
         formControl: new FormControl(),
         required: false,
         placeholder: 'Study IRB Number:',
-        type: 'text',
-        options: {
-          status: ['words'],
-        },
+        type: 'select',
+        multiSelect: false,
+        selectOptionsMap: this.irbNumberOptions,
       }),
       approved_irb_link: new FormField({
         formControl: new FormControl(),
