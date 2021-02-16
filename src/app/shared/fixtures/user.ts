@@ -15,7 +15,7 @@ export const mockUser: User = {
   eppn: 'mock_eppn@whatever.edu',
   email: 'mock_email@whatever.edu',
   display_name: '',
-  role: '',
+  role: 'Whatever Role',
   institutional_role: '',
   division: '',
   institution_id: 0,

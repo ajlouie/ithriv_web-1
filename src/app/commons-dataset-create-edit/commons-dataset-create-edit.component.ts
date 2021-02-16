@@ -105,7 +105,7 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
   ]);
   datasetTypeSelected: string;
   irbNumberOptions: FormSelectOption[] = [];
-  private irbInvestigators: IrbInvestigator[];
+  irbInvestigators: IrbInvestigator[] = [];
 
   constructor(
     fb: FormBuilder,
