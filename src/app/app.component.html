@@ -156,15 +156,6 @@
             class="fill-remaining-space"
           ></span>
           <button
-            id="search-button"
-            mat-stroked-button
-            [routerLink]="['/search']"
-            fxFlex.xs="calc(50% - 20px)"
-          >
-            <mat-icon>search</mat-icon>
-            Search
-          </button>
-          <button
             mat-stroked-button
             [routerLink]="['/help']"
             fxFlex.xs="calc(50% - 20px)"
@@ -206,7 +197,7 @@
             class="fill-remaining-space"
           ></span>
           <ng-container
-            *ngIf="isNetworkOrBrowseview() && isGraphViewSupported()"
+            *ngIf="isNetworkOrBrowseview() && isGraphViewSupported(); else searchButton"
           >
             <div>Change View:</div>
             <mat-button-toggle-group #group="matButtonToggleGroup">
@@ -232,6 +223,10 @@
           </ng-container>
         </mat-toolbar-row>
       </mat-toolbar>
+      <app-search-bar
+        *ngIf="!(isNetworkOrBrowseview() && isGraphViewSupported())"
+        [isExpanded]="isExpanded"
+      ></app-search-bar>
 
       <div class="content" [@fadeTransition]="getState(o)" fxFlexFill>
         <router-outlet #o="outlet" fxFlexFill></router-outlet>
@@ -239,3 +234,24 @@
     </mat-sidenav-content>
   </mat-sidenav-container>
 </div>
+
+<ng-template #searchButton>
+  <button
+    [routerLink]="['/search']"
+    fxFlex.xs="calc(50% - 20px)"
+    id="search-button"
+    mat-stroked-button
+  >
+    <mat-icon>search</mat-icon>
+    Search Resources
+  </button>
+  <button
+    (click)="isExpanded = !isExpanded"
+    fxFlex.xs="calc(50% - 20px)"
+    id="expand-categories"
+    mat-stroked-button
+  >
+    Browse Resources
+    <mat-icon>{{isExpanded ? 'caret-up' : 'caret-down'}}</mat-icon>
+  </button>
+</ng-template>

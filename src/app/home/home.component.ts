@@ -1,23 +1,13 @@
-import {
-  Component,
-  Input,
-  OnInit,
-  HostBinding,
-  Output,
-  EventEmitter
-} from '@angular/core';
+import { Component, HostBinding, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { Router } from '@angular/router';
-import { Category } from '../category';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Institution } from '../institution';
 import { Resource } from '../resource';
-import { ResourceApiService } from '../shared/resource-api/resource-api.service';
 import { ResourceQuery } from '../resource-query';
 import { fadeTransition } from '../shared/animations';
-import { ActivatedRoute } from '@angular/router';
-
+import { ResourceApiService } from '../shared/resource-api/resource-api.service';
 import { User } from '../user';
-import { Institution } from '../institution';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-home',
@@ -35,11 +25,9 @@ export class HomeComponent implements OnInit {
   loading = false;
   resources: Resource[];
   events: Array<Resource> = [];
-  categories: Category[];
   user: User;
   institution: Institution;
-  panelOpenState = true;
-  url: string = 'http://localhost:4200/#/commons';
+  url = 'http://localhost:4200/#/commons';
   urlSafe: SafeResourceUrl;
 
   constructor(
@@ -49,11 +37,6 @@ export class HomeComponent implements OnInit {
     public sanitizer: DomSanitizer
   ) {
     this.loadUser();
-    this.categories = [];
-
-    this.api.getRootCategories().subscribe(categories => {
-      this.categories = categories;
-    });
 
     this.api.getResources().subscribe(resources => {
       this.resources = resources;
@@ -61,7 +44,6 @@ export class HomeComponent implements OnInit {
 
     this.api.getResources('Event').subscribe(events => {
       events.forEach(event => {
-        const user = this.user;
         event.availabilities.forEach(availability => {
           if (this.user !== undefined && this.user !== null) {
             if (
@@ -92,18 +74,6 @@ export class HomeComponent implements OnInit {
         this.publicpage = Boolean(params.get('publicpage'));
       }
     });
-    // const projectstoken = localStorage.getItem('token');
-    // if (!projectstoken) {
-    //  this.api.getProjectsSession().subscribe(user => {
-    //  this.user = user;
-    //  this.getInstitution();
-    //});
-    // this.api.loginProjectsAdapter().subscribe(token => {
-    //   this.api.openProjectsSession(token).subscribe(user => {
-    //     this.user = user;
-    //     this.getInstitution();
-    //   });
-    // });
     this.urlSafe = this.sanitizer.bypassSecurityTrustResourceUrl(this.url);
   }
 
@@ -121,25 +91,6 @@ export class HomeComponent implements OnInit {
         .subscribe(inst => {
           this.institution = inst;
         });
-    }
-  }
-
-  goSearch() {
-    this.router.navigate(['search', this.searchBox.value]);
-  }
-
-  goCategory(category: Category) {
-    const viewPrefs = this.api.getViewPreferences();
-    const isNetworkView =
-      viewPrefs && viewPrefs.hasOwnProperty('isNetworkView')
-        ? viewPrefs.isNetworkView
-        : true;
-    const catId = category.id.toString();
-
-    if (isNetworkView) {
-      this.router.navigate(['network', catId]);
-    } else {
-      this.router.navigate(['browse', catId]);
     }
   }
 }

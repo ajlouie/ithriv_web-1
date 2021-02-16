@@ -126,6 +126,7 @@ import { AddPermissionComponent } from './add-permission/add-permission.componen
 import { CommonsProjectDocumentComponent } from './commons-project-document/commons-project-document.component';
 
 import { SpreadsheetAllModule } from '@syncfusion/ej2-angular-spreadsheet';
+import { SearchBarComponent } from './search-bar/search-bar.component';
 // import { DropDownListComponent } from '@syncfusion/ej2-angular-dropdowns';
 
 export const MY_NATIVE_FORMATS = {
@@ -207,6 +208,7 @@ export const MY_NATIVE_FORMATS = {
     CommonsDatasetComponent,
     AddPermissionComponent,
     CommonsProjectDocumentComponent,
+    SearchBarComponent,
     // DropDownListComponent
   ],
   imports: [

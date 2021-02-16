@@ -45,6 +45,7 @@ export class AppComponent implements OnInit, OnDestroy {
   hideHeader = false;
   icons: Icon[];
   institution: Institution;
+  isExpanded = true;
   isHome = false;
   isNetworkView: boolean;
   isResourceView = false;
