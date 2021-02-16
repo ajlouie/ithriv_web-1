@@ -256,9 +256,9 @@
                   <th mat-header-cell *matHeaderCellDef>NAME</th>
                   <td mat-cell *matCellDef="let projectDataset">
                     <mat-label
-                      [matTooltip]="projectDataset.is_hsd ? 'You do not have IRB approval to view this data.' : 'Click here to view dataset details'"
-                      (click)="!projectDataset.is_hsd && viewDataset(projectDataset)"
-                      [ngStyle]="{textDecoration: projectDataset.is_hsd ? 'none' : 'underline', cursor: projectDataset.is_hsd ? 'not-allowed' : 'link'}"
+                      [matTooltip]="!userCanEditHsd(projectDataset) ? 'You do not have IRB approval to view this data.' : 'Click here to view dataset details'"
+                      (click)="userCanEditHsd(projectDataset) && viewDataset(projectDataset)"
+                      [ngStyle]="{textDecoration: !userCanEditHsd(projectDataset) ? 'none' : 'underline', cursor: !userCanEditHsd(projectDataset) ? 'not-allowed' : 'link'}"
                     >
                       {{ projectDataset.name }}
                     </mat-label>
@@ -326,16 +326,16 @@
                   <td mat-cell *matCellDef="let projectDataset">
                     <button
                       type="button"
-                      (click)="showDataset(projectDataset)"
+                      (click)="userCanEditHsd(projectDataset) && showDataset(projectDataset)"
                       *ngIf="projectDataset.can_update_meta === true"
-                      [disabled]="projectDataset.is_hsd"
+                      [disabled]="!userCanEditHsd(projectDataset)"
                       color="warn"
                       mat-mini-fab
                     >
                       <mat-icon
-                        matTooltip="Click here to edit dataset details/permissions "
+                        [matTooltip]="!userCanEditHsd(projectDataset) ? 'You do not have IRB approval to view this data.' : 'Click here to edit dataset details/permissions'"
                       >
-                        {{projectDataset.is_hsd ? 'lock' : 'edit'}}
+                        {{userCanEditHsd(projectDataset) ? 'lock' : 'edit'}}
                       </mat-icon>
                     </button>
                   </td>
@@ -347,7 +347,8 @@
                       *ngIf="
                         user &&
                         projectDataset.id !== '' &&
-                        projectDataset.can_upload_data === true
+                        projectDataset.can_upload_data === true &&
+                        userCanEditHsd(projectDataset)
                       "
                       (complete)="onFileComplete($event)"
                       [target]="uploadUrlDataset(projectDataset)"
@@ -362,9 +363,11 @@
                       *ngIf="
                         (!projectDataset.private || user) &&
                         projectDataset.url !== '' &&
-                        projectDataset.can_download_data === true
+                        projectDataset.can_download_data === true &&
+                        userCanEditHsd(projectDataset)
                       "
                       (click)="
+                        userCanEditHsd(projectDataset) &&
                         cas.downloadFile(
                           projectDataset.url,
                           projectDataset.filename,
@@ -394,7 +397,8 @@
                         projectDataset.can_delete_data === true
                       "
                       type="button"
-                      (click)="deleteDatasetData(projectDataset)"
+                      [disabled]="!userCanEditHsd(projectDataset)"
+                      (click)="userCanEditHsd(projectDataset) && deleteDatasetData(projectDataset)"
                       color="warn"
                       mat-mini-fab
                     >
@@ -418,7 +422,8 @@
                         projectDataset.can_restore_data === true
                       "
                       type="button"
-                      (click)="restoreDatasetData(projectDataset)"
+                      [disabled]="!userCanEditHsd(projectDataset)"
+                      (click)="userCanEditHsd(projectDataset) && restoreDatasetData(projectDataset)"
                       color="warn"
                       mat-mini-fab
                     >

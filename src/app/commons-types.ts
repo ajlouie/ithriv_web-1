@@ -81,6 +81,7 @@ export interface Dataset {
   redcap_project_token?: string;
   redcap_project_title?: string;
   redcap_project_pi?: string;
+  is_hsd?: boolean;
 }
 
 export class FileUploadModel {

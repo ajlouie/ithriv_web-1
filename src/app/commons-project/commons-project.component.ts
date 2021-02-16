@@ -108,6 +108,13 @@ export class CommonsProjectComponent implements OnInit {
     };
     this.loadPermisssions();
   }
+  userCanEditHsd(dataset: Dataset): boolean {
+    if (!dataset.hasOwnProperty('is_hsd')) {
+      return dataset.is_hsd;
+    } else {
+      return true;
+    }
+  }
 
   showNext() {
     this.currentFormChange.emit({ displayForm: 'commons-projects-list' });
@@ -138,7 +145,7 @@ export class CommonsProjectComponent implements OnInit {
 
   getDataSource() {
     if (this.datasetsPrivate == null && this.datasetsPublic == null) {
-      return []
+      return [];
     } else {
       return <Dataset[]>[].concat(this.datasetsPrivate, this.datasetsPublic);
     }
