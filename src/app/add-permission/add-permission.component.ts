@@ -2,6 +2,7 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { UserPermissionMap } from '../commons-types';
 import { FormControl, Validators } from '@angular/forms';
+import { ValidateEmailSingle } from '../shared/validators/comms_sep_email.validator';
 
 @Component({
   selector: 'app-add-permission',
@@ -9,7 +10,7 @@ import { FormControl, Validators } from '@angular/forms';
   styleUrls: ['./add-permission.component.scss'],
 })
 export class AddPermissionComponent implements OnInit {
-  emailControl = new FormControl('', [Validators.required, Validators.email]);
+  emailControl = new FormControl('', [Validators.required, ValidateEmailSingle]);
   permissionControl = new FormControl('', Validators.required);
   constructor(
     public dialogRef: MatDialogRef<AddPermissionComponent>,

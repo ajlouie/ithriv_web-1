@@ -1,67 +1,81 @@
-<div
-  *ngIf="projects && projects.length > 0"
-  class="resource-list"
-  fxLayout="row wrap"
-  fxLayout.xs="column"
-  fxLayoutAlign="start stretch"
-  fxLayoutAlign.xs="start start"
-  fxLayoutGap="20px grid"
-  [ngClass]="{
-    'resource-list': true,
-    'resource-list-narrow': sidenavExpanded,
-    'resource-list-xl': breakpoint === 'xl',
-    'resource-list-lg': breakpoint === 'lg',
-    'resource-list-md': breakpoint === 'md',
-    'resource-list-sm': breakpoint === 'sm',
-    'resource-list-xs': breakpoint === 'xs'
-  }"
->
+<ng-container
+  *ngIf="projects && projects.length > 0">
   <div
-    *ngIf="user && user.role === 'Admin'"
-    fxFlex="100%"
-    fxFlexFill
-    fxLayout="row"
-    fxLayoutAlign="end end"
+    class="resource-list"
+    fxLayout="row wrap"
+    fxLayout.xs="column"
+    fxLayoutAlign="start stretch"
+    fxLayoutAlign.xs="start start"
+    fxLayoutGap="20px grid"
+    [ngClass]="{
+      'resource-list': true,
+      'resource-list-narrow': sidenavExpanded,
+      'resource-list-xl': breakpoint === 'xl',
+      'resource-list-lg': breakpoint === 'lg',
+      'resource-list-md': breakpoint === 'md',
+      'resource-list-sm': breakpoint === 'sm',
+      'resource-list-xs': breakpoint === 'xs'
+    }"
   >
-    <div *ngIf="!csvDataReady">
-      <button
-        mat-raised-button
-        (click)="getCsvData()"
-        *ngIf="!preparingCsvData"
-      >
-        <mat-icon>save_alt</mat-icon>
-        Download this list as a CSV file
-      </button>
-      <button
-        *ngIf="preparingCsvData"
-        mat-raised-button
-        disabled
-        class="preparingCsvData"
-      >
-        <mat-spinner [diameter]="24"></mat-spinner>
-        Generating CSV file...
-      </button>
+    <div
+      *ngIf="user && user.role === 'Admin'"
+      fxFlex="100%"
+      fxFlexFill
+      fxLayout="row"
+      fxLayoutAlign="end end"
+    >
+      <div *ngIf="!csvDataReady">
+        <button
+          mat-raised-button
+          (click)="getCsvData()"
+          *ngIf="!preparingCsvData"
+        >
+          <mat-icon>save_alt</mat-icon>
+          Download this list as a CSV file
+        </button>
+        <button
+          *ngIf="preparingCsvData"
+          mat-raised-button
+          disabled
+          class="preparingCsvData"
+        >
+          <mat-spinner [diameter]="24"></mat-spinner>
+          Generating CSV file...
+        </button>
+      </div>
+      <div *ngIf="csvDataReady">
+        <app-csv-export-button
+          [data]="csvData"
+          [filename]="getCsvFilename()"
+          [options]="getCsvOptions()"
+        ></app-csv-export-button>
+      </div>
     </div>
-    <div *ngIf="csvDataReady">
-      <app-csv-export-button
-        [data]="csvData"
-        [filename]="getCsvFilename()"
-        [options]="getCsvOptions()"
-      ></app-csv-export-button>
-    </div>
+    <app-commons-project-tile
+      *ngFor="let project of projects"
+      class="resource-tile-container"
+      [fxFlex.xl]="sidenavExpanded ? '1 1 25%' : '1 1 20%'"
+      [fxFlex.lg]="sidenavExpanded ? '1 1 33%' : '1 1 25%'"
+      [fxFlex.md]="sidenavExpanded ? '1 1 50%' : '1 1 33%'"
+      [fxFlex.sm]="sidenavExpanded ? '1 1 100%' : '1 1 50%'"
+      [fxFlex.xs]="sidenavExpanded ? '1 1 100%' : '1 1 100%'"
+      fxFlexFill
+      [user]="user"
+      [project]="project"
+      [projectChange]="currentFormChange"
+      id="project-tile-{{ project.id }}"
+    ></app-commons-project-tile>
   </div>
-  <app-commons-project-tile
-    *ngFor="let project of projects"
-    class="resource-tile-container"
-    [fxFlex.xl]="sidenavExpanded ? '1 1 25%' : '1 1 20%'"
-    [fxFlex.lg]="sidenavExpanded ? '1 1 33%' : '1 1 25%'"
-    [fxFlex.md]="sidenavExpanded ? '1 1 50%' : '1 1 33%'"
-    [fxFlex.sm]="sidenavExpanded ? '1 1 100%' : '1 1 50%'"
-    [fxFlex.xs]="sidenavExpanded ? '1 1 100%' : '1 1 100%'"
-    fxFlexFill
-    [user]="user"
-    [project]="project"
-    [projectChange]="currentFormChange"
-    id="project-tile-{{ project.id }}"
-  ></app-commons-project-tile>
-</div>
+</ng-container>
+<ng-container
+  *ngIf="user && !projects">
+  <h2>
+    Please ensure you are connected to VPN to access commons projects. Contact system admin if issue still persists.
+  </h2>
+</ng-container>
+<ng-container
+  *ngIf="projects && projects.length == 0">
+  <h2>
+    You have no commons projects to view. 
+  </h2>
+</ng-container>
