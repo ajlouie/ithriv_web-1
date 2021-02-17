@@ -40,7 +40,10 @@ describe('AddPermissionComponent', () => {
         },
         {
           provide: MAT_DIALOG_DATA, useValue: {
-            userPermission: {},
+            userPermission: {
+              user_role: '',
+              user_email: '',
+            },
             permissionsMap: CommonsDatasetCreateEditComponent.DATASET_ROLE_MAP_STATIC,
             isDataset: true,
             hasHighlySensitiveData: true,

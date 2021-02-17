@@ -27,8 +27,7 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 })
 export class HomeComponent implements OnInit {
   @HostBinding('@fadeTransition')
-  @Input()
-  resourceQuery: ResourceQuery;
+  @Input() resourceQuery: ResourceQuery;
   publicpage: Boolean;
   searchForm: FormGroup;
   searchBox: FormControl;
@@ -56,10 +55,12 @@ export class HomeComponent implements OnInit {
     });
 
     this.api.getResources().subscribe(resources => {
+      console.log('getResources -> resources', resources);
       this.resources = resources;
     });
 
     this.api.getResources('Event').subscribe(events => {
+      console.log('getResources -> events', events);
       events.forEach(event => {
         const user = this.user;
         event.availabilities.forEach(availability => {

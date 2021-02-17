@@ -1,9 +1,8 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { ValidateEmailSingle } from '../shared/validators/comms_sep_email.validator';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { IrbInvestigator, UserPermissionMap } from '../commons-types';
-import { CommonsApiService } from '../shared/commons-api/commons-api.service';
+import { ValidateEmailSingle } from '../shared/validators/comms_sep_email.validator';
 
 @Component({
   selector: 'app-add-permission',

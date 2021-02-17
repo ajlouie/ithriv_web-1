@@ -1,6 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatIconModule } from '@angular/material';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { CommonsComponent } from './commons.component';
+import { MenuComponent } from './menu/menu.component';
 
 describe('CommonsComponent', () => {
   let component: CommonsComponent;
@@ -8,7 +11,14 @@ describe('CommonsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CommonsComponent ]
+      declarations: [
+        CommonsComponent,
+        MenuComponent,
+      ],
+      imports: [
+        MatIconModule,
+        RouterTestingModule,
+      ],
     })
     .compileComponents();
   }));
