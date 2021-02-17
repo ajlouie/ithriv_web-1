@@ -9,6 +9,7 @@ import {
   MatSelectModule
 } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 import { ColorPickerModule } from 'ngx-color-picker';
 import { MarkdownModule } from 'ngx-markdown';
 import { FormField } from '../form-field';
@@ -40,6 +41,8 @@ describe('FormFieldComponent', () => {
           MatFormFieldModule,
           MatInputModule,
           MatSelectModule,
+          OwlDateTimeModule,
+          OwlNativeDateTimeModule,
           ReactiveFormsModule
         ],
         providers: [
