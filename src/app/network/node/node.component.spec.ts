@@ -27,6 +27,7 @@ describe('NodeComponent', () => {
       .compileComponents().then(() => {
         fixture = TestBed.createComponent(NodeComponent);
         component = fixture.componentInstance;
+
         component.options = new NodeOptions({
           relationship: 'self',
           x: 0,
@@ -35,9 +36,10 @@ describe('NodeComponent', () => {
           angle: 0,
           titleHeight: 40
         });
-
         component.category = getDummyCategory();
         component.numTotal = 1;
+        component.state = 'tertiary';
+
         fixture.detectChanges();
       });
   }));

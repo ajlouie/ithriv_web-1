@@ -35,6 +35,10 @@ describe('ResourceTileComponent', () => {
       category: getDummyCategory(),
       _links: null
     }];
+    resource.segment = {
+      id: 0,
+      name: '',
+    };
     component.resource = resource;
 
     fixture.detectChanges();

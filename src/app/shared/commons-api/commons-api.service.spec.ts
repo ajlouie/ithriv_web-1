@@ -40,7 +40,7 @@ describe('CommonsApiService', () => {
       expect(data).toEqual(mockIrbInvestigators);
     });
 
-    const req = httpMock.expectOne(`undefined/commons/meta/datasets/undefined/investigators`);
+    const req = httpMock.expectOne(`undefined/commons/meta/datasets/${mockDataset.id}/investigators`);
     expect(req.request.method).toEqual('GET');
     req.flush(mockIrbInvestigators);
   });

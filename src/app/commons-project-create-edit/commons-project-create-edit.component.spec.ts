@@ -87,7 +87,7 @@ describe('CommonsProjectCreateEditComponent', () => {
   }));
 
   beforeEach(() => {
-    // httpMock = TestBed.inject(HttpTestingController);
+    httpMock = TestBed.get(HttpTestingController);
     fixture = TestBed.createComponent(CommonsProjectCreateEditComponent);
     component = fixture.componentInstance;
     component.user = mockUser;
@@ -100,7 +100,7 @@ describe('CommonsProjectCreateEditComponent', () => {
 
   afterEach(() => {
     fixture.destroy();
-    // httpMock.verify();
+    httpMock.verify();
   });
 
   it('should create', () => {
