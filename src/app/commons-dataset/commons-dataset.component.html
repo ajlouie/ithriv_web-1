@@ -65,6 +65,74 @@
           <h4>
             <markdown [data]="dataset.description"></markdown>
           </h4>
+          <mat-list  *ngIf="user && dataset.can_update_meta === true && dataset.dataset_type === 'DICOM'" dense>
+            <mat-list-item>
+              <h4 mat-line>Deidentified:</h4>
+              <p mat-line>{{ dataset.dicom_de_identified }}</p>
+            </mat-list-item>
+            <mat-list-item>
+              <h4 mat-line>Bids Structure:</h4>
+              <p mat-line>{{ dataset.dicom_bids_structure }}</p>
+            </mat-list-item>
+            <mat-list-item>
+              <h4 mat-line>Quality:</h4>
+              <p mat-line>{{ dataset.dicom_quality }}</p>
+            </mat-list-item>
+            <mat-list-item>
+              <h4 mat-line>Study Date:</h4>
+              <p mat-line>{{ dataset.dicom_study_date }}</p>
+            </mat-list-item>
+            <mat-list-item>
+              <h4 mat-line>Scanner Manufacturer Name:</h4>
+              <p mat-line>{{ dataset.dicom_scanner_manufacturer_name }}</p>
+            </mat-list-item>
+            <mat-list-item>
+              <h4 mat-line>Scanner Model Name:</h4>
+              <p mat-line>{{ dataset.dicom_scanner_model_name }}</p>
+            </mat-list-item>
+            <mat-list-item>
+              <h4 mat-line>Organ Name:</h4>
+              <p mat-line>{{ dataset.dicom_organ_name }}</p>
+            </mat-list-item>
+            <mat-list-item>
+              <h4 mat-line>Field of View:</h4>
+              <p mat-line>{{ dataset.dicom_fieldof_view }}</p>
+            </mat-list-item>
+            <mat-list-item>
+              <h4 mat-line>Field Strength:</h4>
+              <p mat-line>{{ dataset.dicom_field_strength }}</p>
+            </mat-list-item>
+          </mat-list>
+          <mat-list  *ngIf="user && dataset.can_update_meta === true && dataset.dataset_type === 'REDCap'" dense>
+            <mat-list-item>
+              <h4 mat-line>Project URL:</h4>
+              <p mat-line>{{ dataset.redcap_project_url }}</p>
+            </mat-list-item>
+            <mat-list-item>
+              <h4 mat-line>Extract Data:</h4>
+              <p mat-line>{{ dataset.redcap_extract_data }}</p>
+            </mat-list-item>
+            <mat-list-item>
+              <h4 mat-line>Refresh Rate:</h4>
+              <p mat-line>{{ dataset.redcap_refresh_rate }}</p>
+            </mat-list-item>
+            <mat-list-item>
+              <h4 mat-line>Report ID:</h4>
+              <p mat-line>{{ dataset.redcap_report_id }}</p>
+            </mat-list-item>
+            <mat-list-item>
+              <h4 mat-line>Project Token:</h4>
+              <p mat-line>{{ dataset.redcap_project_token }}</p>
+            </mat-list-item>
+            <mat-list-item>
+              <h4 mat-line>Project Title:</h4>
+              <p mat-line>{{ dataset.redcap_project_title }}</p>
+            </mat-list-item>
+            <mat-list-item>
+              <h4 mat-line>Project PI:</h4>
+              <p mat-line>{{ dataset.redcap_project_pi }}</p>
+            </mat-list-item>
+          </mat-list>
         </mat-card-content>
       </mat-card>
       <!--
@@ -254,7 +322,7 @@
       <mat-divider [inset]="true"></mat-divider>
       <mat-card
         *ngIf="
-          user && dataset.id !== '' && dataset.can_manage_permission === true
+          user && dataset.id !== '' && dataset.can_upload_data === true
         "
       >
         <mat-toolbar>
@@ -399,6 +467,10 @@
         </mat-chip-list>
         <mat-list dense>
           <mat-list-item>
+            <h4 mat-line>Dataset Type:</h4>
+            <p mat-line>{{ dataset.dataset_type }}</p>
+          </mat-list-item>
+          <mat-list-item>
             <h4 mat-line>HIPAA Identifier(s):</h4>
             <p mat-line>{{ dataset.identifiers_hipaa }}</p>
           </mat-list-item>
@@ -413,6 +485,26 @@
           <mat-list-item>
             <h4 mat-line>Modified Date/Time:</h4>
             <p mat-line>{{ dataset.last_modified | date: 'MM/d/y h:mm a' }}</p>
+          </mat-list-item>
+          <mat-list-item>
+            <h4 mat-line>Variable Measured:</h4>
+            <p mat-line>{{ dataset.variable_measured }}</p>
+          </mat-list-item>
+          <mat-list-item>
+            <h4 mat-line>License:</h4>
+            <p mat-line>{{ dataset.license }}</p>
+          </mat-list-item>
+          <mat-list-item>
+            <h4 mat-line>Spatial Coverage Address:</h4>
+            <p mat-line>{{ dataset.spatial_coverage_address }}</p>
+          </mat-list-item>
+          <mat-list-item>
+            <h4 mat-line>Study IRB Number:</h4>
+            <p mat-line>{{ dataset.study_irb_number }}</p>
+          </mat-list-item>
+          <mat-list-item>
+            <h4 mat-line>Link to External Dataset:</h4>
+            <p mat-line>{{ dataset.link_to_external_dataset }}</p>
           </mat-list-item>
           <mat-list-item>
             <h4 mat-line></h4>

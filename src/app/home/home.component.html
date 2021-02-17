@@ -104,7 +104,7 @@
       </ng-container>
     </ng-template>
   </mat-tab>
-  <mat-tab>
+  <mat-tab *ngIf="user && user.institution.name==='UVA'">
     <ng-template mat-tab-label>
       <span>Research Commons</span>
     </ng-template>
