@@ -29,6 +29,10 @@ export function getDummyResource(): Resource {
       available: true,
       institution: institution
     }],
-    institution: institution
+    institution: institution,
+    segment: {
+      id: 0,
+      name: 'Event',
+    },
   };
 }
