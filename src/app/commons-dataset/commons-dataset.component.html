@@ -236,25 +236,15 @@
                 "
               >
                 <mat-chip
+                  *ngIf="dataset.private_data"
                   matTooltip="This Resource is only visible to PI and collaborators on this dataset."
                   id="button-not-private"
                 >
                   <mat-icon style="margin-right: 8px;">visibility_off</mat-icon>
                   PRIVATE
                 </mat-chip>
-              </mat-slide-toggle>
-            </mat-list-item>
-            <mat-list-item>
-              <mat-slide-toggle
-                *ngIf="user && dataset.can_manage_permission === true"
-                disabled
-                color="primary"
-                [checked]="!dataset.private_data"
-                (change)="
-                  toggleDatasetDataPrivate(dataset, !dataset.private_data)
-                "
-              >
                 <mat-chip
+                  *ngIf="!dataset.private_data"
                   matTooltip="This Resource is visible to all iTHRIV users."
                   id="button-private"
                 >

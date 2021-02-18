@@ -46,8 +46,8 @@ export class CommonsProjectComponent implements OnInit {
     'can_update_meta',
     'can_download_data',
     'can_upload_data',
-    'can_delete_data',
-    'can_restore_data',
+    // 'can_delete_data',
+    // 'can_restore_data',
   ];
   displayedDocumentColumns: string[] = [
     'name',
