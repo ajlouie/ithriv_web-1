@@ -22,20 +22,23 @@ install:
   - if [ "$TRAVIS_BRANCH" == "develop" ]; then
     export BUILD_ENV="dev" || exit 1 ;
     fi
+  - if [ "$TRAVIS_BRANCH" == "develop_commons" ]; then
+    export BUILD_ENV="dev" || exit 1 ;
+    fi
   - if [ "$TRAVIS_BRANCH" == "master" ]; then
     export BUILD_ENV="prod" || exit 1 ;
     fi
   - if [ "$TRAVIS_BRANCH" == "master" ]; then
-    export GIT_TAG=prod-1.8 || exit 1 ;
+    export GIT_TAG=prod-1.8.8 || exit 1 ;
     docker build --build-arg BUILD_ENV -f docker/Dockerfile --no-cache -t ithriv/ithriv_web:"$GIT_TAG" . || exit 1 ;
     docker push ithriv/ithriv_web:"$GIT_TAG" || exit 1 ;
     docker tag ithriv/ithriv_web:"$GIT_TAG" ithriv/ithriv_web:latest || exit 1 ;
     docker push ithriv/ithriv_web:latest || exit 1 ;
     git tag $GIT_TAG -a -m "Generated tag from TravisCI for build $TRAVIS_BUILD_NUMBER" || exit 1 ;
     else
-    export BUILD_ENV="dev" || exit 1 ;
-    docker build --build-arg BUILD_ENV -f docker/Dockerfile --no-cache -t ithriv/ithriv_web:"$TRAVIS_BRANCH"_1 . || exit 1 ;
-    docker push ithriv/ithriv_web:"$TRAVIS_BRANCH"_1 || exit 1 ;
+    docker build --build-arg BUILD_ENV -f docker/Dockerfile --no-cache -t ithriv/ithriv_web:"$TRAVIS_BRANCH" . || exit 1 ;
+    docker push ithriv/ithriv_web:"$TRAVIS_BRANCH" || exit 1 ;
+    aws sqs send-message --queue-url 'https://sqs.us-east-1.amazonaws.com/836779629086/ithriv-updates' --message-body ithriv/ithriv_web:$TRAVIS_BRANCH || exit 1;
     fi
 
 notifications:

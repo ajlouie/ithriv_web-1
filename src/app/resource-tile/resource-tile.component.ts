@@ -9,7 +9,7 @@ declare const addeventatc: any;
 @Component({
   selector: 'app-resource-tile',
   templateUrl: './resource-tile.component.html',
-  styleUrls: ['./resource-tile.component.scss']
+  styleUrls: ['./resource-tile.component.scss'],
 })
 export class ResourceTileComponent implements OnInit {
   @Input() resource: Resource;
@@ -18,7 +18,7 @@ export class ResourceTileComponent implements OnInit {
   constructor(private router: Router) {}
 
   ngOnInit() {
-    setTimeout(function() {
+    setTimeout(function () {
       addeventatc.refresh();
     }, 200);
   }
@@ -34,6 +34,10 @@ export class ResourceTileComponent implements OnInit {
     return ['/resource', resource.id];
   }
 
+  getResourceOrEventURL(resource: Resource) {
+    return [window.location.origin, '#', 'resource', resource.id].join('/') ;
+  }
+
   goInstitution($event, institution: Institution) {
     $event.preventDefault();
     this.router.navigateByUrl(`/search/filter?Institution=${institution.name}`);
@@ -42,6 +46,13 @@ export class ResourceTileComponent implements OnInit {
   goResourceType($event, type: ResourceType) {
     $event.preventDefault();
     this.router.navigateByUrl(`/search/filter?Type=${type.name}`);
+  }
+
+  getResourceDescText() {
+    const temp = document.createElement('div');
+    temp.innerHTML = this.resource.description;
+    return temp.textContent || temp.innerText || '';
+    // return this.resource.description.replace(/<\/?[^>]+>/gi, ' ');
   }
 
   typeIconId(resource: Resource) {

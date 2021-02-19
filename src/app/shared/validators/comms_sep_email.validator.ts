@@ -19,7 +19,7 @@ export function ValidateEmail(control: AbstractControl): ValidationErrors {
         }
     }
     // console.log(notindomain);
-    return forbidden || notindomain ? { 'toAddress': { value: control.value } } : null;
+    return forbidden || notindomain ? { 'email': { value: control.value } } : null;
 }
 
 export function ValidateEmailSingle(control: AbstractControl): ValidationErrors {
@@ -38,5 +38,6 @@ export function ValidateEmailSingle(control: AbstractControl): ValidationErrors 
         notindomain = false;
     }
     // console.log(notindomain);
-    return forbidden || notindomain ? { 'toAddress': { value: control.value } } : null;
+    const error: ValidationErrors = { value: control.value };
+    return forbidden || notindomain ? { 'email': { value: control.value } } : null;
 }

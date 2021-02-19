@@ -8,7 +8,6 @@ export function ValidateDateTimeRange(
     'g'
   );
   const regEx2 = new RegExp('.*-.*-.*:.*:.*,.*-.*-.*:.*:.*', 'g');
-
   // console.log(control.value);
   if (
     control.value &&
