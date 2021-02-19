@@ -320,6 +320,10 @@ export class CommonsProjectCreateEditComponent implements OnInit {
               this.errorMessagePerm = '';
             },
             (error1) => {
+              this.snackBar.open(error1, '', {
+                duration: 5000,
+                panelClass: 'snackbar-warning',
+              });
               this.errorMessagePerm = error1;
             }
           );
@@ -368,18 +372,30 @@ export class CommonsProjectCreateEditComponent implements OnInit {
                         userPermissionCurrent
                       )
                       .subscribe(
-                        (e) => {
+                        (e1) => {
                           this.loadPermisssions();
                         },
-                        (error1) => {
-                          this.errorMessagePerm = error1;
+                        (error2) => {
+                          this.snackBar.open(error2, '', {
+                            duration: 5000,
+                            panelClass: 'snackbar-warning',
+                          });
+                          this.errorMessagePerm = error2;
                         }
                       );
+                    this.snackBar.open(error1, '', {
+                      duration: 5000,
+                      panelClass: 'snackbar-warning',
+                    });
                     this.errorMessagePerm = error1;
                   }
                 );
             },
             (error1) => {
+              this.snackBar.open(error1, '', {
+                duration: 5000,
+                panelClass: 'snackbar-warning',
+              });
               this.errorMessagePerm = error1;
             }
           );
@@ -398,6 +414,10 @@ export class CommonsProjectCreateEditComponent implements OnInit {
           this.errorMessagePerm = '';
         },
         (error1) => {
+          this.snackBar.open(error1, '', {
+            duration: 5000,
+            panelClass: 'snackbar-warning',
+          });
           this.errorMessagePerm = error1;
         }
       );
@@ -458,6 +478,10 @@ export class CommonsProjectCreateEditComponent implements OnInit {
           },
           (error1) => {
             if (error1) {
+              this.snackBar.open(error1, '', {
+                duration: 5000,
+                panelClass: 'snackbar-warning',
+              });
               this.errorMessage = error1;
             } else {
               this.errorMessage =
@@ -500,10 +524,18 @@ export class CommonsProjectCreateEditComponent implements OnInit {
           },
           (error1) => {
             if (error1) {
+              this.snackBar.open(error1, '', {
+                duration: 5000,
+                panelClass: 'snackbar-warning',
+              });
               this.errorMessage = error1;
             } else {
               this.errorMessage =
                 'Failed to update project, please try again later or contact system admin';
+              this.snackBar.open(this.errorMessage, '', {
+                duration: 5000,
+                panelClass: 'snackbar-warning',
+              });
             }
             this.formStatus = 'form';
             this.changeDetectorRef.detectChanges();
@@ -582,6 +614,10 @@ export class CommonsProjectCreateEditComponent implements OnInit {
         });
       },
       (error1) => {
+        this.snackBar.open(error1, '', {
+          duration: 5000,
+          panelClass: 'snackbar-warning',
+        });
         this.error = error1;
       }
     );

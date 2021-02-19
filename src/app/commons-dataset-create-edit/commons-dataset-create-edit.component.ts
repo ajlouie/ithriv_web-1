@@ -434,6 +434,10 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
               this.errorMessagePerm = '';
             },
             (error1) => {
+              this.snackBar.open(error1, '', {
+                duration: 5000,
+                panelClass: 'snackbar-warning',
+              });
               this.errorMessagePerm = error1;
             }
           );
@@ -485,15 +489,27 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
                         (e) => {
                           this.loadPermisssions();
                         },
-                        (error1) => {
-                          this.errorMessagePerm = error1;
+                        (error2) => {
+                          this.snackBar.open(error2, '', {
+                            duration: 5000,
+                            panelClass: 'snackbar-warning',
+                          });
+                          this.errorMessagePerm = error2;
                         }
                       );
+                    this.snackBar.open(error1, '', {
+                      duration: 5000,
+                      panelClass: 'snackbar-warning',
+                    });
                     this.errorMessagePerm = error1;
                   }
                 );
             },
             (error1) => {
+              this.snackBar.open(error1, '', {
+                duration: 5000,
+                panelClass: 'snackbar-warning',
+              });
               this.errorMessagePerm = error1;
             }
           );
@@ -512,6 +528,10 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
           this.errorMessagePerm = '';
         },
         (error1) => {
+          this.snackBar.open(error1, '', {
+            duration: 5000,
+            panelClass: 'snackbar-warning',
+          });
           this.errorMessagePerm = error1;
         }
       );
@@ -582,10 +602,18 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
                   },
                   error1 => {
                     if (error1) {
+                      this.snackBar.open(error1, '', {
+                        duration: 5000,
+                        panelClass: 'snackbar-warning',
+                      });
                       this.errorMessage = error1;
                     } else {
                       this.errorMessage =
                         'Failed to submit request to create REDCap tokem, please contact system admin';
+                      this.snackBar.open(this.errorMessage, '', {
+                        duration: 5000,
+                        panelClass: 'snackbar-warning',
+                      });
                     }
                   }
                 );
@@ -594,10 +622,18 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
           },
           (error1) => {
             if (error1) {
+              this.snackBar.open(error1, '', {
+                duration: 5000,
+                panelClass: 'snackbar-warning',
+              });
               this.errorMessage = error1;
             } else {
               this.errorMessage =
                 'Failed to create dataset, please try again later or contact system admin';
+              this.snackBar.open(this.errorMessage, '', {
+                duration: 5000,
+                panelClass: 'snackbar-warning',
+              });
             }
             this.formStatus = 'form';
             this.changeDetectorRef.detectChanges();
@@ -613,10 +649,18 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
           },
           (error1) => {
             if (error1) {
+              this.snackBar.open(error1, '', {
+                duration: 5000,
+                panelClass: 'snackbar-warning',
+              });
               this.errorMessage = error1;
             } else {
               this.errorMessage =
                 'Failed to update dataset, please try again later or contact system admin';
+              this.snackBar.open(this.errorMessage, '', {
+                duration: 5000,
+                panelClass: 'snackbar-warning',
+              });
             }
             this.formStatus = 'form';
             this.changeDetectorRef.detectChanges();
@@ -688,10 +732,18 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
       },
       (error1) => {
         if (error1) {
+          this.snackBar.open(error1, '', {
+            duration: 5000,
+            panelClass: 'snackbar-warning',
+          });
           this.error = error1;
         } else {
           this.errorMessage =
             'Failed to delete dataset, please try again later or contact system admin';
+          this.snackBar.open(this.errorMessage, '', {
+            duration: 5000,
+            panelClass: 'snackbar-warning',
+          });
         }
         this.formStatus = 'form';
         this.changeDetectorRef.detectChanges();
