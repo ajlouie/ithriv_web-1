@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { Angular2CsvComponent } from 'angular2-csv';
+import { Component, Input } from '@angular/core';
+import { Angular2CsvComponent, Options } from 'angular2-csv';
 
 @Component({
   selector: 'app-csv-export-button',
@@ -7,5 +7,9 @@ import { Angular2CsvComponent } from 'angular2-csv';
   styleUrls: ['./csv-export-button.component.css']
 })
 export class CsvExportButtonComponent extends Angular2CsvComponent {
-
+  @Input() data: any[];
+  @Input() filename: string;
+  @Input() options: Options;
+  @Input() label_btn: string;
+  @Input() csv: string;
 }

@@ -12,7 +12,7 @@ import { MatSnackBar } from '@angular/material';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { AddPermissionComponent } from '../add-permission/add-permission.component';
-import { Dataset, IrbInvestigator, Project, UserPermission, UserPermissionMap } from '../commons-types';
+import { Dataset, IrbInvestigator, IrbNumber, Project, UserPermission, UserPermissionMap } from '../commons-types';
 import { ErrorMatcher } from '../error-matcher';
 import { Fieldset } from '../fieldset';
 import { FormField } from '../form-field';
@@ -104,7 +104,8 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
     Validators.max(365)
   ]);
   datasetTypeSelected: string;
-  private irbInvestigators: IrbInvestigator[];
+  irbNumberOptions: FormSelectOption[] = [];
+  irbInvestigators: IrbInvestigator[] = [];
 
   constructor(
     fb: FormBuilder,
@@ -144,6 +145,12 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
 
   loadFields() {
     // TODO: Populate options with IRB Protocol numbers from IRB API
+    this.cas.getUserIrbNumbers(this.user).subscribe((irbNumbers: IrbNumber[]) => {
+      this.irbNumberOptions = irbNumbers.map((irbNumber: IrbNumber) => {
+        return new FormSelectOption({id: irbNumber.study_id, name: irbNumber.study_id});
+      });
+    });
+
     const irbDocumentOptions: FormSelectOption[] = [];
     this.project.documents.forEach(document => {
       if ((document.type === 'IRB_Approval' || document.type === 'IRB Approval') && document.url !== '') {
@@ -249,10 +256,9 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
         formControl: new FormControl(),
         required: false,
         placeholder: 'Study IRB Number:',
-        type: 'text',
-        options: {
-          status: ['words'],
-        },
+        type: 'select',
+        multiSelect: false,
+        selectOptionsMap: this.irbNumberOptions,
       }),
       approved_irb_link: new FormField({
         formControl: new FormControl(),
@@ -429,6 +435,10 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
               this.errorMessagePerm = '';
             },
             (error1) => {
+              this.snackBar.open(error1, '', {
+                duration: 5000,
+                panelClass: 'snackbar-warning',
+              });
               this.errorMessagePerm = error1;
             }
           );
@@ -461,7 +471,7 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
                   userPermissionCurrent
                 )
                 .subscribe(
-                  (e) => {
+                  () => {
                     this.loadPermisssions();
                     this.errorMessagePerm = '';
                   },
@@ -473,18 +483,30 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
                         userPermissionCurrent
                       )
                       .subscribe(
-                        (e) => {
+                        () => {
                           this.loadPermisssions();
                         },
-                        (error1) => {
-                          this.errorMessagePerm = error1;
+                        (error2) => {
+                          this.snackBar.open(error2, '', {
+                            duration: 5000,
+                            panelClass: 'snackbar-warning',
+                          });
+                          this.errorMessagePerm = error2;
                         }
                       );
+                    this.snackBar.open(error1, '', {
+                      duration: 5000,
+                      panelClass: 'snackbar-warning',
+                    });
                     this.errorMessagePerm = error1;
                   }
                 );
             },
             (error1) => {
+              this.snackBar.open(error1, '', {
+                duration: 5000,
+                panelClass: 'snackbar-warning',
+              });
               this.errorMessagePerm = error1;
             }
           );
@@ -503,6 +525,10 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
           this.errorMessagePerm = '';
         },
         (error1) => {
+          this.snackBar.open(error1, '', {
+            duration: 5000,
+            panelClass: 'snackbar-warning',
+          });
           this.errorMessagePerm = error1;
         }
       );
@@ -570,15 +596,23 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
                   this.dataset.redcap_project_url
                 )
                 .subscribe(
-                  e => {
+                  () => {
                     this.errorMessage = '';
                   },
                   error1 => {
                     if (error1) {
+                      this.snackBar.open(error1, '', {
+                        duration: 5000,
+                        panelClass: 'snackbar-warning',
+                      });
                       this.errorMessage = error1;
                     } else {
                       this.errorMessage =
                         'Failed to submit request to create REDCap tokem, please contact system admin';
+                      this.snackBar.open(this.errorMessage, '', {
+                        duration: 5000,
+                        panelClass: 'snackbar-warning',
+                      });
                     }
                   }
                 );
@@ -587,10 +621,18 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
           },
           (error1) => {
             if (error1) {
+              this.snackBar.open(error1, '', {
+                duration: 5000,
+                panelClass: 'snackbar-warning',
+              });
               this.errorMessage = error1;
             } else {
               this.errorMessage =
                 'Failed to create dataset, please try again later or contact system admin';
+              this.snackBar.open(this.errorMessage, '', {
+                duration: 5000,
+                panelClass: 'snackbar-warning',
+              });
             }
             this.formStatus = 'form';
             this.changeDetectorRef.detectChanges();
@@ -606,10 +648,18 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
           },
           (error1) => {
             if (error1) {
+              this.snackBar.open(error1, '', {
+                duration: 5000,
+                panelClass: 'snackbar-warning',
+              });
               this.errorMessage = error1;
             } else {
               this.errorMessage =
                 'Failed to update dataset, please try again later or contact system admin';
+              this.snackBar.open(this.errorMessage, '', {
+                duration: 5000,
+                panelClass: 'snackbar-warning',
+              });
             }
             this.formStatus = 'form';
             this.changeDetectorRef.detectChanges();
@@ -681,10 +731,18 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
       },
       (error1) => {
         if (error1) {
+          this.snackBar.open(error1, '', {
+            duration: 5000,
+            panelClass: 'snackbar-warning',
+          });
           this.error = error1;
         } else {
           this.errorMessage =
             'Failed to delete dataset, please try again later or contact system admin';
+          this.snackBar.open(this.errorMessage, '', {
+            duration: 5000,
+            panelClass: 'snackbar-warning',
+          });
         }
         this.formStatus = 'form';
         this.changeDetectorRef.detectChanges();

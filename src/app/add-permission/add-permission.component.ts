@@ -2,7 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { IrbInvestigator, UserPermissionMap } from '../commons-types';
-import { CommonsApiService } from '../shared/commons-api/commons-api.service';
+import { ValidateEmailSingle } from '../shared/validators/comms_sep_email.validator';
 
 @Component({
   selector: 'app-add-permission',
@@ -10,8 +10,8 @@ import { CommonsApiService } from '../shared/commons-api/commons-api.service';
   styleUrls: ['./add-permission.component.scss'],
 })
 export class AddPermissionComponent implements OnInit {
+  emailControl = new FormControl('', [Validators.required, ValidateEmailSingle]);
   irbInvestigators: IrbInvestigator[];
-  emailControl = new FormControl('', [Validators.required, Validators.email]);
   permissionControl = new FormControl('', Validators.required);
   hasIrbNumber: boolean;
   isDataset: boolean;

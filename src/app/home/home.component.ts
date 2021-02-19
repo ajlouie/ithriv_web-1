@@ -17,8 +17,7 @@ import { User } from '../user';
 })
 export class HomeComponent implements OnInit {
   @HostBinding('@fadeTransition')
-  @Input()
-  resourceQuery: ResourceQuery;
+  @Input() resourceQuery: ResourceQuery;
   publicpage: Boolean;
   searchForm: FormGroup;
   searchBox: FormControl;
@@ -39,10 +38,12 @@ export class HomeComponent implements OnInit {
     this.loadUser();
 
     this.api.getResources().subscribe(resources => {
+      console.log('getResources -> resources', resources);
       this.resources = resources;
     });
 
     this.api.getResources('Event').subscribe(events => {
+      console.log('getResources -> events', events);
       events.forEach(event => {
         event.availabilities.forEach(availability => {
           if (this.user !== undefined && this.user !== null) {

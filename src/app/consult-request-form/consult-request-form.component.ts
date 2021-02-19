@@ -4,7 +4,7 @@ import {
   ElementRef,
   OnInit,
   ViewChild,
-  ChangeDetectorRef
+  ChangeDetectorRef,
 } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -23,7 +23,7 @@ import { fromEvent } from 'rxjs/internal/observable/fromEvent';
 @Component({
   selector: 'app-consult-request-form',
   templateUrl: './consult-request-form.component.html',
-  styleUrls: ['./consult-request-form.component.scss']
+  styleUrls: ['./consult-request-form.component.scss'],
 })
 export class ConsultRequestFormComponent implements AfterViewInit, OnInit {
   user: User;
@@ -38,24 +38,25 @@ export class ConsultRequestFormComponent implements AfterViewInit, OnInit {
       required: true,
       placeholder: 'Pick the category that best represents your request:',
       type: 'select',
-      selectOptions: []
+      selectOptions: [],
     }),
-    request_type: new FormField({
-      formControl: new FormControl(),
-      required: true,
-      placeholder: 'Pick the type that best represents your request:',
-      type: 'select',
-      selectOptions: ['Inquiry', 'Feedback', 'Unmet Need']
-    }),
+    // request_type: new FormField({
+    //   formControl: new FormControl(),
+    //   required: true,
+    //   placeholder: 'Pick the type that best represents your request:',
+    //   type: 'select',
+    //   selectOptions: ['Inquiry', 'Feedback', 'Unmet Need'],
+    // }),
     request_title: new FormField({
       formControl: new FormControl(),
-      required: false,
+      required: true,
       placeholder:
         'Please provide an issue summary for which you are requesting a consult:',
       type: 'textarea',
+      maxLength: 100,
       options: {
-        status: ['words']
-      }
+        status: ['words'],
+      },
     }),
     request_text: new FormField({
       formControl: new FormControl(),
@@ -64,9 +65,9 @@ export class ConsultRequestFormComponent implements AfterViewInit, OnInit {
         'Please describe the issue for which you are requesting a consult:',
       type: 'textarea',
       options: {
-        status: ['words']
-      }
-    })
+        status: ['words'],
+      },
+    }),
   };
   iThrivForm = new IThrivForm(this.fields, this.requestConsultForm);
 
@@ -76,7 +77,7 @@ export class ConsultRequestFormComponent implements AfterViewInit, OnInit {
     'request_type',
     'summary',
     'status',
-    'create_date'
+    'create_date',
   ];
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
   @ViewChild('input', { static: false }) input: ElementRef;
@@ -87,13 +88,13 @@ export class ConsultRequestFormComponent implements AfterViewInit, OnInit {
     private api: ResourceApiService,
     private changeDetectorRef: ChangeDetectorRef
   ) {
-    this.api.getConsultCategoryList().subscribe(categoryList => {
+    this.api.getConsultCategoryList().subscribe((categoryList) => {
       this.fields['request_category'] = new FormField({
         formControl: new FormControl(),
         required: true,
         placeholder: 'Pick the category that best represents your request:',
         type: 'select',
-        selectOptions: categoryList
+        selectOptions: categoryList,
       });
       this.iThrivForm.loadForm();
     });
@@ -101,7 +102,7 @@ export class ConsultRequestFormComponent implements AfterViewInit, OnInit {
 
   ngOnInit() {
     this.dataSource = new ConsultRequestDataSource(this.api);
-    this.api.getSession().subscribe(user => {
+    this.api.getSession().subscribe((user) => {
       this.user = user;
       this.dataSource.loadConsultRequests(this.user, 0, this.default_page_size);
       this.ngAfterViewInit();
@@ -110,9 +111,11 @@ export class ConsultRequestFormComponent implements AfterViewInit, OnInit {
 
   ngAfterViewInit() {
     this.api.getSession().subscribe(user => {
-      this.paginator.page
-        .pipe(tap(() => this.loadConsultRequests()))
-        .subscribe();
+      if (this.paginator && this.paginator.page) {
+        this.paginator.page
+          .pipe(tap(() => this.loadConsultRequests()))
+          .subscribe();
+      }
     });
   }
 
@@ -131,12 +134,12 @@ export class ConsultRequestFormComponent implements AfterViewInit, OnInit {
       .sendConsultRequestToJIRA(
         this.user,
         this.fields.request_category.formControl.value,
-        this.fields.request_type.formControl.value,
+        'Inquiry',
         this.fields.request_title.formControl.value,
         this.fields.request_text.formControl.value
       )
       .subscribe(
-        e => {
+        (e) => {
           this.errorMessage = '';
           this.dataSource.loadConsultRequests(
             this.user,
@@ -145,7 +148,7 @@ export class ConsultRequestFormComponent implements AfterViewInit, OnInit {
           );
           this.formStatus = 'complete';
         },
-        error1 => {
+        (error1) => {
           if (error1) {
             this.errorMessage = error1;
           }

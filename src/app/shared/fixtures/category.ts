@@ -75,6 +75,11 @@ export function getDummyCategory(): Category {
     image: '',
     resource_count: 1,
     display_order: 0,
-    parent: parent
+    parent: parent,
+    _links: {
+      self: '/api/category/123',
+      collection: '/api/category',
+      resources: '/api/category/123/resource',
+    },
   };
 }

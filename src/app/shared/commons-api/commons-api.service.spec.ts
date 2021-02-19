@@ -4,6 +4,7 @@ import { Dataset } from '../../commons-types';
 import { User } from '../../user';
 import { mockDataset } from '../fixtures/dataset';
 import { mockIrbInvestigators } from '../fixtures/investigators';
+import { mockIrbNumbers } from '../fixtures/irb';
 import { mockUser } from '../fixtures/user';
 import { CommonsApiService } from './commons-api.service';
 
@@ -39,8 +40,18 @@ describe('CommonsApiService', () => {
       expect(data).toEqual(mockIrbInvestigators);
     });
 
-    const req = httpMock.expectOne(`undefined/commons/meta/datasets/undefined/investigators`);
+    const req = httpMock.expectOne(`undefined/commons/meta/datasets/${mockDataset.id}/investigators`);
     expect(req.request.method).toEqual('GET');
     req.flush(mockIrbInvestigators);
+  });
+
+  it('should get list of IRB Numbers for a user', () => {
+    service.getUserIrbNumbers(mockUser).subscribe(data => {
+      expect(data).toEqual(mockIrbNumbers);
+    });
+
+    const req = httpMock.expectOne(`undefined/commons/meta/user/${mockUser.email}/irb_protocols`);
+    expect(req.request.method).toEqual('GET');
+    req.flush(mockIrbNumbers);
   });
 });

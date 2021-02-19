@@ -46,8 +46,8 @@ export class CommonsProjectComponent implements OnInit {
     'can_update_meta',
     'can_download_data',
     'can_upload_data',
-    'can_delete_data',
-    'can_restore_data',
+    // 'can_delete_data',
+    // 'can_restore_data',
   ];
   displayedDocumentColumns: string[] = [
     'name',
@@ -109,11 +109,14 @@ export class CommonsProjectComponent implements OnInit {
     this.loadPermisssions();
   }
   userCanEditHsd(dataset: Dataset): boolean {
-    if (!dataset.hasOwnProperty('is_hsd')) {
-      return dataset.is_hsd;
-    } else {
-      return true;
-    }
+    return true;
+
+    // TODO: Uncomment this when Ravi adds the is_hsd flag to the backend.
+    // if (!dataset.hasOwnProperty('is_hsd')) {
+    //   return dataset.is_hsd;
+    // } else {
+    //   return true;
+    // }
   }
 
   showNext() {

@@ -1,5 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { Router } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
+import { HomeComponent } from '../home/home.component';
+import { LogoComponent } from '../logo/logo.component';
 import { UpgradeBrowserComponent } from './upgrade-browser.component';
 
 describe('UpgradeBrowserComponent', () => {
@@ -8,7 +11,15 @@ describe('UpgradeBrowserComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ UpgradeBrowserComponent ]
+      declarations: [
+        LogoComponent,
+        UpgradeBrowserComponent
+      ],
+      imports: [
+        RouterTestingModule.withRoutes([
+          { path: '', redirectTo: 'home', pathMatch: 'full' },
+        ])
+      ],
     })
     .compileComponents();
   }));

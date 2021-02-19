@@ -7,7 +7,7 @@ import { User } from '../user';
 @Component({
   selector: 'app-edit-category-button',
   templateUrl: './edit-category-button.component.html',
-  styleUrls: ['./edit-category-button.component.scss']
+  styleUrls: ['./edit-category-button.component.scss'],
 })
 export class EditCategoryButtonComponent implements OnInit {
   @Input() category: Category;
@@ -15,20 +15,16 @@ export class EditCategoryButtonComponent implements OnInit {
   @Input() parent: Category;
   @Output() updatedCategory: EventEmitter<Category> = new EventEmitter();
 
-  constructor(
-    private dialog: MatDialog
-  ) { }
+  constructor(private dialog: MatDialog) {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   openEdit() {
     const dialogRef = this.dialog.open(CategoryFormComponent, {
-      data: { 'edit': this.category, 'parent_category': this.parent }
+      data: { edit: this.category, parent_category: this.parent },
     });
-    dialogRef.afterClosed().subscribe(result => {
-      this.updatedCategory.emit(result);
-    });
+    // dialogRef.afterClosed().subscribe(result => {
+    //   this.updatedCategory.emit(result);
+    // });
   }
-
 }

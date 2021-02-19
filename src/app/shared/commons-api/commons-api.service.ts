@@ -7,7 +7,7 @@ import { environment } from '../../../environments/environment';
 import {
   Dataset,
   DatasetFileVersion,
-  IrbInvestigator,
+  IrbInvestigator, IrbNumber,
   Project,
   ProjectDocument,
   UserPermission,
@@ -388,6 +388,23 @@ export class CommonsApiService {
         `/commons/meta/datasets/` +
         dataset.id +
         `/investigators`,
+        {
+          headers: {REMOTE_USER: user.eppn},
+          responseType: 'json',
+        }
+      )
+      .pipe(catchError(this.handleError));
+  }
+
+  /**
+   * Returns the list of IRB Study Numbers for the given user from the backend.
+   * @param user
+   */
+  getUserIrbNumbers(user: User): Observable<IrbNumber[]> {
+    return this.http
+      .get<IrbNumber[]>(
+        this.getLandingServiceUrl(user) +
+        `/commons/meta/user/${user.email}/irb_protocols`,
         {
           headers: {REMOTE_USER: user.eppn},
           responseType: 'json',
