@@ -7,22 +7,19 @@ import { User } from '../user';
 @Component({
   selector: 'app-add-category-button',
   templateUrl: './add-category-button.component.html',
-  styleUrls: ['./add-category-button.component.scss']
+  styleUrls: ['./add-category-button.component.scss'],
 })
 export class AddCategoryButtonComponent implements OnInit {
   @Input() category: Category;
   @Input() user: User;
 
-  constructor(
-    private dialog: MatDialog
-  ) { }
+  constructor(private dialog: MatDialog) {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   openAdd() {
     this.dialog.open(CategoryFormComponent, {
-      data: { 'parent_category': this.category }
+      data: { parent_category: this.category },
     });
   }
 }

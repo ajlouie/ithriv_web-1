@@ -4,7 +4,7 @@ import {
   Input,
   OnInit,
   ViewChild,
-  ElementRef
+  ElementRef,
 } from '@angular/core';
 import { FormGroup, ValidationErrors } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material';
@@ -17,7 +17,8 @@ import {
   ImageService,
   ResizeService,
   TableService,
-  HtmlEditorService
+  HtmlEditorService,
+  ImageSettingsModel,
 } from '@syncfusion/ej2-angular-richtexteditor';
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -30,8 +31,8 @@ import {
     ImageService,
     ResizeService,
     TableService,
-    HtmlEditorService
-  ]
+    HtmlEditorService,
+  ],
 })
 export class FormFieldComponent implements OnInit {
   @Input() field: FormField;
@@ -65,8 +66,18 @@ export class FormFieldComponent implements OnInit {
       'Print',
       'SourceCode',
       '|',
-      'FullScreen'
-    ]
+      'FullScreen',
+    ],
+  };
+
+  public insertImageSettings: ImageSettingsModel = {
+    allowedTypes: ['.jpeg', '.jpg', '.png'],
+    display: 'inline',
+    width: 'auto',
+    height: 'auto',
+    saveFormat: 'Base64',
+    saveUrl: null,
+    path: null,
   };
 
   options = [];
@@ -90,7 +101,7 @@ export class FormFieldComponent implements OnInit {
     if (this.field.type === 'select') {
       if (this.field.hasOwnProperty('selectOptions')) {
         this.options = this.field.selectOptions.map(
-          s => new FormSelectOption({ id: s, name: s })
+          (s) => new FormSelectOption({ id: s, name: s })
         );
         this.dataLoaded = true;
       } else if (this.field.hasOwnProperty('selectOptionsMap')) {
@@ -99,7 +110,7 @@ export class FormFieldComponent implements OnInit {
         const source = this.field.apiSource;
 
         if (this.api[source] && typeof this.api[source] === 'function') {
-          this.api[source]().subscribe(results => {
+          this.api[source]().subscribe((results) => {
             this.options = results;
             this.field.formControl.updateValueAndValidity();
             this.dataLoaded = true;
@@ -129,7 +140,7 @@ export class FormFieldComponent implements OnInit {
   getLabel(s) {
     return s
       .split('_')
-      .map(w => w[0].toUpperCase() + w.substr(1))
+      .map((w) => w[0].toUpperCase() + w.substr(1))
       .join(' ');
   }
 
@@ -145,7 +156,7 @@ export class FormFieldComponent implements OnInit {
         'toggle',
         'files',
         'checkbox',
-        'owldatetime'
+        'owldatetime',
       ].indexOf(field.type) > -1
     );
   }

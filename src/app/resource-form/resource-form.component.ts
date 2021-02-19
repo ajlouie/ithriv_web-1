@@ -22,14 +22,14 @@ import {
   ToolbarService,
   LinkService,
   ImageService,
-  HtmlEditorService
+  HtmlEditorService,
 } from '@syncfusion/ej2-angular-richtexteditor';
 
 @Component({
   selector: 'app-resource-form',
   templateUrl: './resource-form.component.html',
   styleUrls: ['./resource-form.component.scss'],
-  animations: [fadeTransition()]
+  animations: [fadeTransition()],
 })
 export class ResourceFormComponent implements OnInit {
   @HostBinding('@fadeTransition')
@@ -64,7 +64,7 @@ export class ResourceFormComponent implements OnInit {
     public snackBar: MatSnackBar,
     private intervalService: IntervalService
   ) {
-    this.api.getSession().subscribe(user => {
+    this.api.getSession().subscribe((user) => {
       this.user = user;
       this.loadFields();
       this.loadData();
@@ -89,8 +89,8 @@ export class ResourceFormComponent implements OnInit {
     } else if (this.router.url.includes('/resource/')) {
       this.resourceType = 'Resource';
     }
-    this.api.getSegments().subscribe(segments => {
-      segments.forEach(segment => {
+    this.api.getSegments().subscribe((segments) => {
+      segments.forEach((segment) => {
         if (segment.name === this.resourceType) {
           this.resource.segment_id = segment.id;
           this.resource.segment = segment;
@@ -126,7 +126,7 @@ export class ResourceFormComponent implements OnInit {
             this.router.navigate(['timedout']);
           });
         } else {
-          this.api.getSession().subscribe(user => {
+          this.api.getSession().subscribe((user) => {
             this.user = user;
           });
         }
@@ -136,14 +136,14 @@ export class ResourceFormComponent implements OnInit {
 
   loadData() {
     this.isDataLoaded = false;
-    this.route.params.subscribe(params => {
+    this.route.params.subscribe((params) => {
       const resourceId = params['resource'];
       this.categoryId = params['category'];
 
       if (resourceId) {
         this.createNew = false;
         this.loadAllCategories(() => {
-          this.api.getResource(resourceId).subscribe(resource => {
+          this.api.getResource(resourceId).subscribe((resource) => {
             this.resource = resource;
             this.loadResourceCategories(resource, () => this.loadForm());
           });
@@ -154,7 +154,7 @@ export class ResourceFormComponent implements OnInit {
           id: null,
           name: '',
           description: '',
-          availabilities: []
+          availabilities: [],
         };
         this.loadAllCategories(() => this.loadForm());
       }
@@ -162,7 +162,7 @@ export class ResourceFormComponent implements OnInit {
   }
 
   loadAllCategories(callback: Function) {
-    const leafCats = function(cats, result = []) {
+    const leafCats = function (cats, result = []) {
       for (const c of cats) {
         if (Array.isArray(c.children) && c.children.length > 0) {
           result = leafCats(c.children, result);
@@ -173,14 +173,14 @@ export class ResourceFormComponent implements OnInit {
       return result;
     };
 
-    this.api.getCategories().subscribe(categories => {
+    this.api.getCategories().subscribe((categories) => {
       this.allCategories = leafCats(categories);
       callback();
     });
   }
 
   loadResourceCategories(resource: Resource, callback: Function) {
-    this.api.getResourceCategories(resource).subscribe(rcs => {
+    this.api.getResourceCategories(resource).subscribe((rcs) => {
       this.resourceCategories = rcs;
       callback();
     });
@@ -188,11 +188,11 @@ export class ResourceFormComponent implements OnInit {
 
   loadResourceFiles() {
     if (this.resource.files && this.resource.files.length > 0) {
-      this.resource.files.forEach(fa => {
+      this.resource.files.forEach((fa) => {
         if (fa.id) {
           this.fields.attachments.attachments.set(fa.md5, fa);
           this.fields.attachments.formControl.updateValueAndValidity({
-            emitEvent: true
+            emitEvent: true,
           });
         }
       });
@@ -216,7 +216,7 @@ export class ResourceFormComponent implements OnInit {
             new Fieldset({
               id: field.fieldsetId || Math.random().toString(),
               label: field.fieldsetLabel || null,
-              fields: []
+              fields: [],
             })
           );
         }
@@ -240,7 +240,7 @@ export class ResourceFormComponent implements OnInit {
         You must be one of the persons responsible for a research resource to add it.
         After saving your resource page, a system administrator must review and approve
         it before it will be live in the system.
-        `
+        `,
       }),
       location: new FormField({
         formControl: new FormControl(),
@@ -251,11 +251,12 @@ export class ResourceFormComponent implements OnInit {
         type: 'text',
         helpText: `
         Please provide event location
-        `
+        `,
       }),
       event_date: new FormField({
         formControl: new FormControl(),
         required: true,
+        disabled: true,
         maxLength: 140,
         minLength: 1,
         placeholder: 'Event Starts ~ Event Ends',
@@ -264,7 +265,7 @@ export class ResourceFormComponent implements OnInit {
         pickerMode: 'dialog',
         helpText: `
         Please provide event datetime
-        `
+        `,
       }),
       description: new FormField({
         formControl: new FormControl(),
@@ -272,14 +273,14 @@ export class ResourceFormComponent implements OnInit {
         placeholder: 'Description',
         type: 'richtexteditor',
         options: {
-          status: ['words']
+          status: ['words'],
         },
         helpText: `
         Describe your resource or service and when a researcher or community member
         should access it.  You may use the hyperlink feature here to link to multiple
         external websites or other related portal pages, but you should use the WEBSITE
         field below for the main associated webpage.
-      `
+      `,
       }),
       contact_notes: new FormField({
         formControl: new FormControl(),
@@ -290,7 +291,7 @@ export class ResourceFormComponent implements OnInit {
         type: 'text',
         fieldsetId: 'contact_info',
         fieldsetLabel: 'Contact:',
-        helpText: `Contact information is optional, but will be displayed to the users.`
+        helpText: `Contact information is optional, but will be displayed to the users.`,
       }),
       contact_email: new FormField({
         formControl: new FormControl(),
@@ -299,7 +300,7 @@ export class ResourceFormComponent implements OnInit {
         minLength: 1,
         placeholder: 'Contact Email',
         type: 'email',
-        fieldsetId: 'contact_info'
+        fieldsetId: 'contact_info',
       }),
       contact_phone: new FormField({
         formControl: new FormControl(),
@@ -308,7 +309,7 @@ export class ResourceFormComponent implements OnInit {
         minLength: 1,
         placeholder: 'Contact Phone',
         type: 'text',
-        fieldsetId: 'contact_info'
+        fieldsetId: 'contact_info',
       }),
       owner: new FormField({
         formControl: new FormControl(),
@@ -323,7 +324,7 @@ export class ResourceFormComponent implements OnInit {
           in one of the following formats: xxx@virginia.edu, xxx@vt.edu,
           xxx@carilionclinic.org, xxx@inova.org.
         `,
-        defaultValue: this.user.email.toLowerCase()
+        defaultValue: this.user.email.toLowerCase(),
       }),
       cost: new FormField({
         formControl: new FormControl(),
@@ -335,19 +336,19 @@ export class ResourceFormComponent implements OnInit {
           'Variable',
           'Free Across iTHRIV',
           'Free to Home Institution',
-          'Cost Recovery'
+          'Cost Recovery',
         ],
         helpText: `
         This is an optional field and can be used to generally indicate if there are
         charges associated with use of this resource.
-      `
+      `,
       }),
       type_id: new FormField({
         formControl: new FormControl(),
         required: true,
         placeholder: 'Select Type',
         type: 'select',
-        apiSource: 'getTypes'
+        apiSource: 'getTypes',
       }),
       institution_id: new FormField({
         formControl: new FormControl(),
@@ -356,7 +357,7 @@ export class ResourceFormComponent implements OnInit {
         type: 'select',
         apiSource: 'getInstitutions',
         fieldsetId: 'institution_prefs',
-        fieldsetLabel: 'Institutions'
+        fieldsetLabel: 'Institutions',
       }),
       private: new FormField({
         formControl: new FormControl(),
@@ -364,7 +365,7 @@ export class ResourceFormComponent implements OnInit {
         placeholder: 'Only visible to Home Institution',
         type: 'checkbox',
         fieldsetId: 'institution_prefs',
-        helpText: `If this box is checked, this resource will only be visible to the Home Institution selected above.`
+        helpText: `If this box is checked, this resource will only be visible to the Home Institution selected above.`,
       }),
       'availabilities.institution_id': new FormField({
         formControl: new FormControl(),
@@ -379,7 +380,7 @@ export class ResourceFormComponent implements OnInit {
         service. These user groups will see this in their "resources you have access
         to" category tabs. User groups not selected here will only see this resource
         page when they select the "view all in category" tab.
-      `
+      `,
       }),
       website: new FormField({
         formControl: new FormControl(),
@@ -391,7 +392,7 @@ export class ResourceFormComponent implements OnInit {
         helpText: `
         Provide the primary URL associated with this resource. This is an optional
         field.
-      `
+      `,
       }),
       categories: new FormField({
         formGroup: new FormGroup({}),
@@ -399,15 +400,15 @@ export class ResourceFormComponent implements OnInit {
         placeholder: 'Select Categories',
         type: 'tree',
         apiSource: 'getCategories',
-        multiSelect: true
+        multiSelect: true,
       }),
       attachments: new FormField({
         formControl: new FormControl(),
         attachments: new Map<number | string, FileAttachment>(),
         required: false,
         placeholder: 'Attachments',
-        type: 'files'
-      })
+        type: 'files',
+      }),
     };
     if (this.resourceType !== 'Event') {
       delete this.fields['location'];
@@ -453,7 +454,7 @@ export class ResourceFormComponent implements OnInit {
 
         if (fieldName === 'categories') {
           const selectedCatIds = this.resourceCategories.map(
-            rc => rc.category.id
+            (rc) => rc.category.id
           );
 
           if (this.categoryId) {
@@ -487,10 +488,10 @@ export class ResourceFormComponent implements OnInit {
               field.formControl.patchValue(this.user.email.toLowerCase());
             } else if (fieldName === 'availabilities.institution_id') {
               const selectedInstitutions = this.resource.availabilities.filter(
-                av => av.available
+                (av) => av.available
               );
               const selectedInstitutionIds = selectedInstitutions.map(
-                i => i.institution_id
+                (i) => i.institution_id
               );
               field.formControl.patchValue(selectedInstitutionIds);
             } else if (!this.resource[fieldName] && field.defaultValue) {
@@ -520,8 +521,8 @@ export class ResourceFormComponent implements OnInit {
     } else if (this.router.url.includes('/resource/')) {
       this.resourceType = 'Resource';
     }
-    this.api.getSegments().subscribe(segments => {
-      segments.forEach(segment => {
+    this.api.getSegments().subscribe((segments) => {
+      segments.forEach((segment) => {
         if (segment.name === this.resourceType) {
           this.resource.segment_id = segment.id;
           this.resource.segment = segment;
@@ -570,19 +571,19 @@ export class ResourceFormComponent implements OnInit {
 
               this.api[fnName](this.resource)
                 .pipe(
-                  map(r => (this.resource = r)),
+                  map((r) => (this.resource = r)),
                   switchMap(() => this.updateCategories()),
                   switchMap(() => this.updateAvailabilities()),
                   switchMap(() => this.updateAttachments()),
-                  map(ras => {
-                    ras.subscribe(resourceAttachment => {
+                  map((ras) => {
+                    ras.subscribe((resourceAttachment) => {
                       numDone++;
 
                       if (numDone === numAttachments) {
                         if (submitForApproval) {
                           this.api
                             .sendApprovalRequestEmail(this.user, this.resource)
-                            .subscribe(result => (this.isDataLoaded = true));
+                            .subscribe((result) => (this.isDataLoaded = true));
                         } else {
                           this.close();
                         }
@@ -590,22 +591,22 @@ export class ResourceFormComponent implements OnInit {
                     });
                   })
                 )
-                .subscribe(result => console.log('result', result));
+                .subscribe((result) => console.log('result', result));
             } else {
               this.api[fnName](this.resource)
                 .pipe(
-                  map(r => (this.resource = r)),
+                  map((r) => (this.resource = r)),
                   switchMap(() => this.updateCategories()),
                   switchMap(() => this.updateAvailabilities())
                 )
                 .subscribe(
-                  result => console.log('result', result),
-                  error => console.error(error),
+                  (result) => console.log('result', result),
+                  (error) => console.error(error),
                   () => {
                     if (submitForApproval) {
                       this.api
                         .sendApprovalRequestEmail(this.user, this.resource)
-                        .subscribe(result => (this.isDataLoaded = true));
+                        .subscribe((result) => (this.isDataLoaded = true));
                     } else {
                       this.close();
                     }
@@ -657,7 +658,7 @@ export class ResourceFormComponent implements OnInit {
             )}`;
             this.snackBar.open(message, action, {
               duration: 2000,
-              panelClass: 'snackbar-warning'
+              panelClass: 'snackbar-warning',
             });
           }
         }
@@ -673,7 +674,7 @@ export class ResourceFormComponent implements OnInit {
       if (controls.hasOwnProperty(key) && controls[key].value) {
         selectedCategories.push({
           resource_id: this.resource.id,
-          category_id: parseInt(key, 10)
+          category_id: parseInt(key, 10),
         });
       }
     }
@@ -687,7 +688,7 @@ export class ResourceFormComponent implements OnInit {
       availabilities.push({
         resource_id: this.resource.id,
         institution_id: value,
-        available: true
+        available: true,
       });
     }
     return this.api.updateResourceAvailability(this.resource, availabilities);
@@ -696,14 +697,14 @@ export class ResourceFormComponent implements OnInit {
   updateAttachments() {
     if (this.hasAttachments()) {
       const attachments: FileAttachment[] = [];
-      this.fields.attachments.attachments.forEach(a => {
+      this.fields.attachments.attachments.forEach((a) => {
         if (this.resource) {
           a.resource_id = this.resource.id;
         }
         attachments.push(a);
       });
 
-      return attachments.map(a => this.api.updateFileAttachment(a));
+      return attachments.map((a) => this.api.updateFileAttachment(a));
     }
   }
 
@@ -732,10 +733,10 @@ export class ResourceFormComponent implements OnInit {
 
   onDelete() {
     this.api.deleteResource(this.resource).subscribe(
-      r => {
+      (r) => {
         this.close();
       },
-      error => (this.error = error)
+      (error) => (this.error = error)
     );
   }
 
@@ -744,7 +745,7 @@ export class ResourceFormComponent implements OnInit {
     if (this.resource && this.resource.id) {
       this.router.navigate(['resource', this.resource.id]);
     } else {
-      this.route.params.subscribe(params => {
+      this.route.params.subscribe((params) => {
         const resourceId = params['resource'];
         const categoryId = params['category'];
         if (resourceId) {
