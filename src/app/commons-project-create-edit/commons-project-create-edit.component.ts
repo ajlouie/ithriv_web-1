@@ -350,32 +350,29 @@ export class CommonsProjectCreateEditComponent implements OnInit {
                     this.loadPermisssions();
                   },
                   (error1) => {
-                    this.cas
-                      .addUserProjectPermission(
-                        this.user,
-                        this.project,
-                        userPermissionCurrent
-                      )
-                      .subscribe(
-                        (e1) => {
+                    this.cas.addUserProjectPermission(this.user, this.project, userPermissionCurrent).subscribe(
+                      (e1) => {
                           this.loadPermisssions();
                         },
-                        (error2) => {
-                          this.snackBar.open(error2, '', {
-                            duration: 5000,
-                            panelClass: 'snackbar-warning',
-                          });
-                          this.errorMessagePerm = error2;
-                        }
-                      );
+                      (error2) => {
+                        this.snackBar.open(error2, '', {
+                          duration: 5000,
+                          panelClass: 'snackbar-warning',
+                        });
+                        this.errorMessagePerm = error2;
+                      }
+                    );
+
                     this.snackBar.open(error1, '', {
                       duration: 5000,
                       panelClass: 'snackbar-warning',
                     });
+
                     this.errorMessagePerm = error1;
                   }
                 );
-            },
+              });
+          },
             (error1) => {
               this.snackBar.open(error1, '', {
                 duration: 5000,
