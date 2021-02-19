@@ -8,5 +8,8 @@ const localhost = navigator.platform.includes('Win') ? '10.0.2.2' : 'localhost';
 export const environment = {
   production: false,
   api: `http://${localhost}`,
-  ga_tracking_id: 'UA-138286052-1'
+  api_commons_adapter: `http://${localhost}/commons_adapter/api/`,
+  api_commons_adapter_private: `http://${localhost}/commons_adapter/api/private/`,
+  landing_service: [{ name: 'UVA', url: 'https://poc.commons.ithriv.org' }],
+  ga_tracking_id: 'UA-138286052-1',
 };

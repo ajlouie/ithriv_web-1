@@ -180,6 +180,11 @@ const routes: Routes = [
     component: UpgradeBrowserComponent,
     data: { title: 'Please upgrade your browser', hideHeader: true }
   },
+  {
+    path: 'commons',
+    loadChildren: () =>
+      import('../commons/commons.module').then(m => m.CommonsModule)
+  },
   { path: '**', component: NotFoundComponent }
 ];
 

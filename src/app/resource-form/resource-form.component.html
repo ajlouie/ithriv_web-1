@@ -1,4 +1,4 @@
-<div *ngIf="progress | async">
+<div *ngIf="progress">
   <h1>Uploading attachements...</h1>
   <h2>{{ progressMessage }}</h2>
 </div>
@@ -12,7 +12,7 @@
   fxLayoutGap="1em"
   fxLayoutAlign="center"
 >
-  <form [formGroup]="resourceForm" (ngSubmit)="onSubmit()" fxFlex="90%">
+  <form [formGroup]="resourceForm" (ngSubmit)="onSubmit($event)" fxFlex="90%">
     <h2>{{ resourceType }} Details</h2>
     <p>
       Minutes remaining before your login times out:

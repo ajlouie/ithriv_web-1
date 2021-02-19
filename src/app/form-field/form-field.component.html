@@ -10,7 +10,7 @@
     [errorStateMatcher]="errorMatcher"
     [placeholder]="field.placeholder"
     [required]="field.required"
-    [(colorPicker)]="field.formControl.value"
+    [colorPicker]="field.formControl.value"
     [style.background]="field.formControl.value"
     [value]="field.formControl.value"
     [cpOKButton]="true"
@@ -109,19 +109,31 @@
   [hideRequiredMarker]="formGroup && formGroup.value.hideRequired"
   [floatLabel]="formGroup && formGroup.value.floatLabel"
 >
-  <mat-label>{{ field.placeholder }}</mat-label>
-  <input
-    matInput
-    [formControl]="field.formControl"
-    [owlDateTime]="dt"
-    [selectMode]="field.selectMode"
-    [owlDateTimeFilter]="eventFilter"
-    [disabled]="true"
-    [owlDateTimeTrigger]="dt"
-    [placeholder]="field.placeholder"
-    [required]="field.required"
-  />
-  <owl-date-time [pickerMode]="'dialog'" #dt></owl-date-time>
+  <mat-label>
+    {{ field.placeholder }}
+  </mat-label>
+    <!--button class="btn btn-default" type="button" [owlDateTimeTrigger]="dt">
+      <i class="material-icons md-16">&#xE916;</i></button-->
+  <span class="input-group-addon">
+    <input
+      matInput
+      class="form-control"
+      [formControl]="field.formControl"
+      [owlDateTime]="dt"
+      [selectMode]="field.selectMode"
+      [owlDateTimeFilter]="eventFilter"
+      [disabled]="true"
+      [owlDateTimeTrigger]="dt"
+      [placeholder]="field.placeholder"
+      [required]="field.required"
+
+    />
+    <owl-date-time [pickerType]="'both'" #dt="owlDateTime">
+    </owl-date-time>
+    <button *ngIf="!field.required" class="btn btn-default" type="button" (click)="clearValue(field.formControl)">
+      <i class="material-icons md-16">&#xE14C;</i>
+    </button>
+  </span>
   <mat-hint *ngIf="field.helpText">
     <markdown>{{ field.helpText }}</markdown>
   </mat-hint>

@@ -21,20 +21,6 @@
           (ngSubmit)="onSubmit()"
           *ngIf="formStatus === 'form'"
         >
-          <!--
-          <h3>Request Context:</h3>
-          <p ng-hide="True" *ngIf="user.display_name">
-            {{ user.display_name }}
-          </p>
-          <p ng-hide="True" *ngIf="user.email">{{ user.email }}</p>
-          <p ng-hide="True" *ngIf="user.institution && user.institution.name">
-            {{ user.institution.name }}
-          </p>
-          <p ng-hide="True" *ngIf="user.institutional_role">
-            {{ user.institutional_role }}
-          </p>
-          <p ng-hide="True" *ngIf="user.division">{{ user.division }}</p>
-          -->
           <app-form-field
             *ngFor="let field of getFields()"
             [errors]="

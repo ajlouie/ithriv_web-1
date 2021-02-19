@@ -1,16 +1,19 @@
 /* Intercepts all calls to the backend and assigns an authorization code so we
-*  know who this nice person is.  */
+ *  know who this nice person is.  */
 
 // import { AuthService } from '../auth.service';
-import { HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
+import {
+  HttpHandler,
+  HttpInterceptor,
+  HttpRequest,
+} from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-  isS3 = new RegExp('^https?:\/\/s3.amazonaws.com.*');
-
+  isS3 = new RegExp('^https?://s3.amazonaws.com.*');
   //  constructor(private auth: AuthService) {}
-  constructor() { }
+  constructor() {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler) {
     // Get the auth token from the service.
@@ -22,8 +25,8 @@ export class AuthInterceptor implements HttpInterceptor {
     } else if (token) {
       req = req.clone({
         setHeaders: {
-          Authorization: `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       });
     }
 

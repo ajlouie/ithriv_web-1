@@ -262,6 +262,7 @@ export class ResourceFormComponent implements OnInit {
         placeholder: 'Event Starts ~ Event Ends',
         type: 'owldatetime',
         selectMode: 'range',
+        pickerMode: 'dialog',
         helpText: `
         Please provide event datetime
         `,

@@ -1,0 +1,34 @@
+<h1 mat-dialog-title>Project document upload</h1>
+<mat-list mat-dialog-content>
+  <mat-form-field>
+    <mat-label>Document Type</mat-label>
+    <mat-select
+      [(ngModel)]="projectDocumentMap.document.type"
+      [formControl]="documentTypeControl"
+      required
+    >
+      <mat-option *ngFor="let type of projectDocumentTypes" [value]="type">{{
+        type
+      }}</mat-option>
+    </mat-select>
+    <mat-error *ngIf="documentTypeControl.hasError('required')"
+      >Document type not selected</mat-error
+    >
+    <mat-hint>Document type select</mat-hint>
+  </mat-form-field>
+</mat-list>
+<mat-list mat-dialog-actions>
+  <ng-container *ngIf="projectDocumentMap.project.can_upload_data && !documentTypeControl.hasError('required')">
+    <app-commons-file-upload
+      matTooltip="Click here to upload project document"
+      color="primary"
+      text="UPLOAD"
+      (complete)="onFileComplete($event)"
+      [target]="uploadUrlDocument()"
+      [user]="projectDocumentMap.user"
+    ></app-commons-file-upload>
+  </ng-container>
+  <button mat-button (click)="onNoClick()">
+    <mat-icon>cancel</mat-icon>Cancel
+  </button>
+</mat-list>

@@ -1,0 +1,44 @@
+<ng-container *ngIf="user">
+  <button
+    mat-raised-button
+    color="primary"
+    style="height: 3em;"
+    (click)="showNext()"
+  >
+    <mat-icon>add</mat-icon>
+    CREATE PROJECT
+  </button>
+</ng-container>
+<!--
+<ng-container>
+  <form [formGroup]="fg" (ngSubmit)="doSearch()">
+    <app-form-field
+      *ngFor="let field of getFields()"
+      [errors]="
+        field.formControl ? field.formControl.errors : field.formGroup.errors
+      "
+      [field]="field"
+      [formGroup]="fg"
+      [errorMatcher]="errorMatcher"
+      appearance="fill"
+    ></app-form-field>
+    <div id="error_message" class="display mat-error" *ngIf="errorMessage">
+      {{ errorMessage }}
+    </div>
+
+    <footer appearance="fill">
+      <mat-toolbar>
+        <button
+          type="button"
+          color="primary"
+          mat-raised-button
+          (click)="doSearch()"
+        >
+          <mat-icon>search</mat-icon>
+          Search
+        </button>
+      </mat-toolbar>
+    </footer>
+  </form>
+</ng-container>
+-->

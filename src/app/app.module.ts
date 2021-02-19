@@ -36,12 +36,13 @@ import {
   MatTabsModule,
   MatToolbarModule,
   MatTooltipModule,
-  MatTreeModule
+  MatTreeModule,
+  MAT_FORM_FIELD_DEFAULT_OPTIONS,
 } from '@angular/material';
 import {
   OwlDateTimeModule,
   OwlNativeDateTimeModule,
-  OWL_DATE_TIME_FORMATS
+  OWL_DATE_TIME_FORMATS,
 } from 'ng-pick-datetime';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -54,6 +55,7 @@ import { ColorPickerModule } from 'ngx-color-picker';
 import { DeviceDetectorModule } from 'ngx-device-detector';
 import { FileDropModule } from 'ngx-file-drop';
 import { MarkdownModule } from 'ngx-markdown';
+import { CommonsMaterialModule } from './commons-material/commons-material.module';
 import { AddCategoryButtonComponent } from './add-category-button/add-category-button.component';
 import { AddResourceButtonComponent } from './add-resource-button/add-resource-button.component';
 import { AppRoutingModule } from './app-routing/app-routing.module';
@@ -111,6 +113,19 @@ import { UpgradeBrowserComponent } from './upgrade-browser/upgrade-browser.compo
 import { EventListComponent } from './event-list/event-list.component';
 import { RichTextEditorAllModule } from '@syncfusion/ej2-angular-richtexteditor';
 import { ButtonModule } from '@syncfusion/ej2-angular-buttons';
+import { CommonsMenuComponent } from './commons-menu/commons-menu.component';
+import { CommonsHomeComponent } from './commons-home/commons-home.component';
+import { CommonsProjectComponent } from './commons-project/commons-project.component';
+import { CommonsProjectListComponent } from './commons-project-list/commons-project-list.component';
+import { CommonsProjectCreateEditComponent } from './commons-project-create-edit/commons-project-create-edit.component';
+import { CommonsDatasetCreateEditComponent } from './commons-dataset-create-edit/commons-dataset-create-edit.component';
+import { CommonsProjectTileComponent } from './commons-project-tile/commons-project-tile.component';
+import { CommonsFileUploadComponent } from './commons-file-upload/commons-file-upload.component';
+import { CommonsDatasetComponent } from './commons-dataset/commons-dataset.component';
+import { AddPermissionComponent } from './add-permission/add-permission.component';
+import { CommonsProjectDocumentComponent } from './commons-project-document/commons-project-document.component';
+
+import { SpreadsheetAllModule } from '@syncfusion/ej2-angular-spreadsheet';
 // import { DropDownListComponent } from '@syncfusion/ej2-angular-dropdowns';
 
 export const MY_NATIVE_FORMATS = {
@@ -119,14 +134,15 @@ export const MY_NATIVE_FORMATS = {
     month: 'numeric',
     day: 'numeric',
     hour: 'numeric',
-    minute: 'numeric'
+    minute: 'numeric',
   },
   datePickerInput: { year: 'numeric', month: 'numeric', day: 'numeric' },
   timePickerInput: { hour: 'numeric', minute: 'numeric' },
   monthYearLabel: { year: 'numeric', month: 'short' },
   dateA11yLabel: { year: 'numeric', month: 'long', day: 'numeric' },
-  monthYearA11yLabel: { year: 'numeric', month: 'long' }
+  monthYearA11yLabel: { year: 'numeric', month: 'long' },
 };
+
 @NgModule({
   declarations: [
     AddCategoryButtonComponent,
@@ -139,6 +155,7 @@ export const MY_NATIVE_FORMATS = {
     CategoryComponent,
     CategoryFormComponent,
     CategoryTileComponent,
+    CommonsFileUploadComponent,
     ConsultRequestFormComponent,
     CsvExportButtonComponent,
     EditCategoryButtonComponent,
@@ -179,7 +196,17 @@ export const MY_NATIVE_FORMATS = {
     LoadingComponent,
     TimeLeftPipe,
     UpgradeBrowserComponent,
-    EventListComponent
+    EventListComponent,
+    CommonsMenuComponent,
+    CommonsHomeComponent,
+    CommonsProjectComponent,
+    CommonsProjectListComponent,
+    CommonsProjectCreateEditComponent,
+    CommonsDatasetCreateEditComponent,
+    CommonsProjectTileComponent,
+    CommonsDatasetComponent,
+    AddPermissionComponent,
+    CommonsProjectDocumentComponent,
     // DropDownListComponent
   ],
   imports: [
@@ -194,6 +221,7 @@ export const MY_NATIVE_FORMATS = {
     DeviceDetectorModule.forRoot(),
     FileDropModule,
     FlexLayoutModule,
+    FormsModule,
     HttpClientModule,
     InlineSVGModule.forRoot(),
     LayoutModule,
@@ -206,6 +234,7 @@ export const MY_NATIVE_FORMATS = {
     MatChipsModule,
     MatDatepickerModule,
     MatDialogModule,
+    CommonsMaterialModule,
     MatExpansionModule,
     MatFormFieldModule,
     MatGridListModule,
@@ -233,22 +262,28 @@ export const MY_NATIVE_FORMATS = {
     OwlNativeDateTimeModule,
     ReactiveFormsModule,
     RichTextEditorAllModule,
-    ScrollToModule.forRoot()
+    ScrollToModule.forRoot(),
+    SpreadsheetAllModule,
   ],
-  entryComponents: [CategoryFormComponent, ResourceFormComponent],
+  entryComponents: [
+    CategoryFormComponent,
+    ResourceFormComponent,
+    AddPermissionComponent,
+    CommonsProjectDocumentComponent,
+  ],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
-      multi: true
+      multi: true,
     },
     {
       provide: OWL_DATE_TIME_FORMATS,
-      useValue: MY_NATIVE_FORMATS
+      useValue: MY_NATIVE_FORMATS,
     },
     ResourceApiService,
-    IntervalService
+    IntervalService,
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
 export class AppModule {}

@@ -85,7 +85,7 @@
         Add a filter
       </li>
       <li *ngIf="resourceQuery.query">
-        <button mat-icon-button (click)="updateQuery()">
+        <button mat-icon-button (click)="updateQuery(resourceQuery.query)">
           <i class="material-icons">remove_circle_outline</i>
         </button>
         Search: {{ resourceQuery.query }}

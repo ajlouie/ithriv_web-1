@@ -1,0 +1,116 @@
+// Import theming functions
+@import '~@angular/material/theming';
+@import '../../ithriv_material';
+@include ithriv-theme($ithriv-theme);
+
+.ithriv-spacer {
+  flex: 1 2 auto;
+}
+mat-card-footer {
+  position: fixed;
+  bottom: 0em;
+  right: 5em;
+  height: 64px;
+  @include mat-elevation(2);
+  z-index: 7;
+}
+
+.dataset {
+  padding: 2em;
+  position: relative;
+
+  .category-color {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 10px;
+    background-size: 100% 10px;
+    background-repeat: no-repeat;
+  }
+
+  h1 {
+    color: mat-color($ithriv-primary, 800, 1);
+    font-size: 48px;
+    font-weight: bolder;
+    background: transparent;
+
+    &.mat-display-2 {
+      margin-bottom: 0px;
+    }
+  }
+
+  .button-row {
+    margin-bottom: 2em;
+
+    button,
+    a {
+      margin-right: 8px;
+    }
+  }
+}
+
+mat-card {
+  padding-top: 2em;
+}
+
+mat-card-title {
+  color: mat-color($ithriv-primary, 800, 1);
+}
+
+.mat-line.category {
+  mat-icon.mat-icon.category-separator {
+    font-size: 12px;
+    text-align: center;
+
+    ::ng-deep svg {
+      margin-bottom: 0px;
+    }
+  }
+
+  mat-icon.mat-icon.category-icon {
+    ::ng-deep svg {
+      margin-bottom: -6px;
+    }
+  }
+}
+
+mat-icon {
+  cursor: pointer;
+}
+
+table.datasetperms {
+  font-weight: 400;
+  text-align: center;
+  width: 50%;
+}
+
+table.datasetversions {
+  font-weight: 400;
+  text-align: center;
+  width: 100%;
+}
+
+.mat-row {
+  position: relative;
+}
+
+.mat-row-link {
+  position: absolute;
+}
+
+.reference-cell {
+  text-decoration: underline;
+}
+
+.gray {
+  background-color: #f5f5f5;
+}
+
+.mat-header-cell {
+  background-color: #4caf50;
+  color: white;
+  text-decoration: underline;
+  font-size: 14px;
+  text-align: center;
+}

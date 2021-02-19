@@ -111,6 +111,35 @@ export class ResourceApiService {
     return this.httpClient.delete<User>(this._apiUrl('session'));
   }
 
+  /** getSession */
+  // public getProjectsSession(): Observable<User> {
+  //   if (localStorage.getItem('token')) {
+  //     return this.httpClient
+  //       .get<User>(`http://localhost:5001/commons_adapter/api/session`, {
+  //         headers: {
+  //           Authorization: `Bearer None`
+  //         }
+  //       })
+  //       .pipe(catchError(this.handleError));
+  //   } else {
+  //     return observableOf(null);
+  //   }
+  // }
+
+  /** openSession */
+  // openProjectsSession(projectstoken: string): Observable<User> {
+  //   if (projectstoken) {
+  //     localStorage.setItem('projectstoken', projectstoken);
+  //   }
+  //   return this.getProjectsSession();
+  // }
+
+  public loginProjectsAdapter(): Observable<any> {
+    return this.httpClient
+      .get<any>(`http://localhost:5001/commons_adapter/api/login`)
+      .pipe(catchError(this.handleError));
+  }
+
   /** getSessionStatus */
   getSessionStatus(): Observable<number> {
     const token: string = localStorage.getItem('token');

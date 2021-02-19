@@ -69,10 +69,10 @@
   />
   <svg:image
     *ngIf="category.level === 0"
-    [attr.x]="-nodeImageSize('node') / 2"
-    [attr.y]="-nodeImageSize('node') / 2"
-    [attr.width]="nodeImageSize('node')"
-    [attr.height]="nodeImageSize('node')"
+    [attr.x]="-nodeImageSize() / 2"
+    [attr.y]="-nodeImageSize() / 2"
+    [attr.width]="nodeImageSize()"
+    [attr.height]="nodeImageSize()"
     [attr.xlink:href]="nodeImagePath(category)"
     preserveAspectRatio="xMidYMid slice"
   />

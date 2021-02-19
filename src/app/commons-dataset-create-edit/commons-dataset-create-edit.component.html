@@ -1,0 +1,339 @@
+<mat-card *ngIf="user">
+  <mat-card-content>
+    <mat-card *ngIf="user">
+      <mat-card-content *ngIf="user">
+        <mat-toolbar>
+          <mat-card-title>
+            Dataset Details
+          </mat-card-title>
+        </mat-toolbar>
+        <form
+          *ngIf="formStatus === 'form'"
+          [formGroup]="fg"
+          (ngSubmit)="submitDataset($event)"
+        >
+          <app-form-field
+            *ngFor="let field of getFields()"
+            [errors]="
+              field.formControl
+                ? field.formControl.errors
+                : field.formGroup.errors
+            "
+            [field]="field"
+            [formGroup]="fg"
+            [errorMatcher]="errorMatcher"
+          ></app-form-field>
+          <mat-card>
+            <mat-toolbar>
+              <mat-card-title>
+                Dataset Type
+              </mat-card-title>
+            </mat-toolbar>
+            <mat-list dense>
+              <mat-list>
+                <mat-list-item>
+                  <mat-radio-group name="opList" fxLayout="row" [(ngModel)]="dataset.dataset_type" [ngModelOptions]="{standalone: true}">
+                    <mat-radio-button *ngFor="let op of listOfOptions"
+                    [checked]="dataset.dataset_type === op.name" name="opList" [value]="op.name">{{op.name}}</mat-radio-button>
+                  </mat-radio-group>
+                </mat-list-item>
+              </mat-list>
+              <mat-list>
+                <ng-container *ngIf="dataset.dataset_type === 'DICOM'">
+                  <form>
+                    <mat-form-field class="full-width">
+                      <mat-label>De-Identified</mat-label>
+                      <mat-select [required]="true" [(value)]="dataset.dicom_de_identified" [(ngModel)]="dataset.dicom_de_identified" [ngModelOptions]="{standalone: true}">
+                        <mat-option [value]="false">false</mat-option>
+                        <mat-option [value]="true">true</mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                    <mat-form-field class="full-width">
+                      <mat-label>Bid Structure</mat-label>
+                      <mat-select [required]="true" [(value)]="dataset.dicom_bids_structure" [(ngModel)]="dataset.dicom_bids_structure" [ngModelOptions]="{standalone: true}">
+                        <mat-option [value]="false">false</mat-option>
+                        <mat-option [value]="true">true</mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                    <mat-form-field class="full-width">
+                      <mat-label>Quality</mat-label>
+                      <mat-select [required]="true" [(value)]="dataset.dicom_quality" [(ngModel)]="dataset.dicom_quality" [ngModelOptions]="{standalone: true}">
+                        <mat-option value="Unknown">Unknown</mat-option>
+                        <mat-option value="Good">Good</mat-option>
+                        <mat-option value="Medium">Medium</mat-option>
+                        <mat-option value="Poor">Poor</mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                    <mat-form-field class="full-width">
+                      <mat-label>Study Date</mat-label>
+                      <input matInput type="text" [readonly]="true" [(value)]="dataset.dicom_study_date">
+                    </mat-form-field>
+                    <mat-form-field class="full-width">
+                      <mat-label>Scanner Manufacturer Name</mat-label>
+                      <input matInput type="text" [readonly]="true" [(value)]="dataset.dicom_scanner_manufacturer_name">
+                    </mat-form-field>
+                    <mat-form-field class="full-width">
+                      <mat-label>Scanner Model Name</mat-label>
+                      <input matInput type="text" [readonly]="true" [(value)]="dataset.dicom_scanner_model_name">
+                    </mat-form-field>
+                    <mat-form-field class="full-width">
+                      <mat-label>Organ Name</mat-label>
+                      <input matInput type="text" [readonly]="true" [(value)]="dataset.dicom_organ_name">
+                    </mat-form-field>
+                    <mat-form-field class="full-width">
+                      <mat-label>Field of View</mat-label>
+                      <input matInput type="text" [readonly]="true" [(value)]="dataset.dicom_fieldof_view">
+                    </mat-form-field>
+                    <mat-form-field class="full-width">
+                      <mat-label>Field Strength</mat-label>
+                      <input matInput type="text" [readonly]="true" [(value)]="dataset.dicom_field_strength">
+                    </mat-form-field>
+                  </form>
+                </ng-container>
+                <ng-container *ngIf="dataset.dataset_type === 'REDCap'">
+                  <form>
+                    <mat-form-field class="full-width">
+                      <mat-label>Project URL</mat-label>
+                      <input matInput [required]="true" type="url" [formControl]="urlFormControl" [(value)]="dataset.redcap_project_url" [(ngModel)]="dataset.redcap_project_url">
+                      <mat-error *ngIf="urlFormControl.hasError('url') && !urlFormControl.hasError('required')">
+                        Please enter a valid Redcap Project URL
+                      </mat-error>
+                      <mat-error *ngIf="urlFormControl.hasError('required')">
+                        Redcap Project URL is <strong>required</strong>
+                      </mat-error>
+                    </mat-form-field>
+                    <mat-form-field class="full-width">
+                      <mat-label>Extract Data</mat-label>
+                      <mat-select [required]="true" [(value)]="dataset.redcap_extract_data" [(ngModel)]="dataset.redcap_extract_data" [ngModelOptions]="{standalone: true}">
+                        <mat-option [value]="false">false</mat-option>
+                        <mat-option [value]="true">true</mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                    <mat-form-field class="full-width">
+                      <mat-label>Refresh Rate</mat-label>
+                      <input matInput type="number" [required]="true" [formControl]="numberRangeControl" [(value)]="dataset.redcap_refresh_rate" [(ngModel)]="dataset.redcap_refresh_rate">
+                      <mat-error *ngIf="numberRangeControl.hasError('min') || numberRangeControl.hasError('max') && !numberRangeControl.hasError('required')">
+                        Redcap Refresh Rate needs to be between 1 and 365 only
+                      </mat-error>
+                      <mat-error *ngIf="numberRangeControl.hasError('required')">
+                        Redcap Refresh Rate is <strong>required</strong>
+                      </mat-error>
+                    </mat-form-field>
+                    <mat-form-field class="full-width">
+                      <mat-label>Report ID</mat-label>
+                      <input matInput type="text" [(value)]="dataset.redcap_report_id" [(ngModel)]="dataset.redcap_report_id" [ngModelOptions]="{standalone: true}">
+                    </mat-form-field>
+                    <mat-form-field class="full-width">
+                      <mat-label>Project Token</mat-label>
+                      <input matInput type="text" [(value)]="dataset.redcap_project_token" [(ngModel)]="dataset.redcap_project_token" [ngModelOptions]="{standalone: true}">
+                    </mat-form-field>
+                    <mat-form-field class="full-width">
+                      <mat-label>Project Title</mat-label>
+                      <input matInput type="text" [readonly]="dataset.redcap_extract_data" [(value)]="dataset.redcap_project_title" [(ngModel)]="dataset.redcap_project_title" [ngModelOptions]="{standalone: true}">
+                    </mat-form-field>
+                    <mat-form-field class="full-width">
+                      <mat-label>Project PI</mat-label>
+                      <input matInput type="text" [readonly]="dataset.redcap_extract_data" [(value)]="dataset.redcap_project_pi" [(ngModel)]="dataset.redcap_project_pi" [ngModelOptions]="{standalone: true}">
+                    </mat-form-field>
+                  </form>
+                </ng-container>
+              </mat-list>
+            </mat-list>
+          </mat-card>
+          <footer *ngIf="formStatus === 'form'">
+            <div
+              id="error_message"
+              class="display mat-error"
+              *ngIf="errorMessage"
+            >
+              <h4>{{ errorMessage }}</h4>
+            </div>
+            <button
+              type="button"
+              color="warn"
+              mat-raised-button
+              (click)="submitDataset($event)"
+            >
+              <mat-icon>save_alt</mat-icon>
+              Save
+            </button>
+            <button type="button" (click)="cancelDataset()" mat-button>
+              <mat-icon>cancel</mat-icon>
+              Cancel
+            </button>
+          </footer>
+        </form>
+        <ng-container *ngIf="formStatus !== 'form'">
+          <div
+            *ngIf="formStatus === 'submitting'"
+            fxLayout="column"
+            fxLayoutAlign="space-around center"
+          >
+            <mat-spinner [diameter]="48"></mat-spinner>
+            <button type="button" (click)="onCancel()" mat-button>
+              Cancel
+            </button>
+          </div>
+          <div *ngIf="formStatus === 'complete'">
+            <p>
+              <b>Commons dataset {{ dataset.name }} successfully created. </b>
+            </p>
+            <button
+              type="button"
+              color="primary"
+              mat-raised-button
+              (click)="showForm()"
+            >
+              <mat-icon>help</mat-icon>
+              Create another dataset
+            </button>
+            <button
+              type="button"
+              color="primary"
+              mat-button
+              (click)="cancelDataset()"
+            >
+              Continue
+            </button>
+          </div>
+        </ng-container>
+      </mat-card-content>
+    </mat-card>
+    <mat-divider [inset]="true"></mat-divider>
+    <mat-card
+      *ngIf="
+        user &&
+        formStatus === 'form' &&
+        dataset.id !== '' &&
+        dataset.can_manage_permission === true
+      "
+    >
+      <mat-card-content *ngIf="user">
+        <mat-toolbar>
+          <mat-card-title>
+            Dataset Permissions
+          </mat-card-title>
+        </mat-toolbar>
+        <mat-list dense>
+          <table
+            mat-table
+            [dataSource]="userPermissions$ | async"
+            class="mat-elevation-z8 datasetperms"
+          >
+            <ng-container matColumnDef="email">
+              <th mat-header-cell *matHeaderCellDef>EMAIL</th>
+              <td mat-cell *matCellDef="let userPermission">
+                <mat-label>
+                  {{ userPermission.user_email }}
+                </mat-label>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="role">
+              <th mat-header-cell *matHeaderCellDef>ROLE</th>
+              <td mat-cell *matCellDef="let userPermission">
+                {{ lookupRole(userPermission.user_role) }}
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="edit">
+              <th mat-header-cell *matHeaderCellDef>
+                EDIT
+              </th>
+              <td mat-cell *matCellDef="let userPermission">
+                <button
+                  type="button"
+                  (click)="editPermission(userPermission)"
+                  color="warn"
+                  mat-mini-fab
+                >
+                  <mat-icon
+                    matTooltip="Click here to edit dataset user permission"
+                  >
+                    edit
+                  </mat-icon>
+                </button>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="delete">
+              <th mat-header-cell *matHeaderCellDef>DELETE</th>
+              <td mat-cell *matCellDef="let userPermission">
+                <button
+                  type="button"
+                  (click)="deletePermission(userPermission)"
+                  color="primary"
+                  mat-mini-fab
+                >
+                  <mat-icon
+                    matTooltip="Click here to delete user's dataset permission"
+                  >
+                    delete
+                  </mat-icon>
+                </button>
+              </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedUserpermColumns"></tr>
+            <tr
+              mat-row
+              *matRowDef="
+                let row;
+                let even = even;
+                columns: displayedUserpermColumns
+              "
+              [ngClass]="{ gray: even }"
+            ></tr>
+          </table>
+        </mat-list>
+        <div
+          id="error_message"
+          class="display mat-error"
+          *ngIf="errorMessagePerm"
+        >
+          <h4>{{ errorMessagePerm }}</h4>
+        </div>
+        <span class="ithriv-spacer"></span>
+        <button
+          type="button"
+          color="warn"
+          mat-raised-button
+          (click)="addPermission()"
+        >
+          <mat-icon>security</mat-icon>
+          ADD PERMISSION
+        </button>
+      </mat-card-content>
+    </mat-card>
+  </mat-card-content>
+  <mat-card-footer>
+    <button mat-raised-button color="primary" (click)="showNext()">
+      <mat-icon>home</mat-icon>
+      {{ getNavLabel(previousForm) }}
+    </button>
+    <button
+      type="button"
+      mat-raised-button
+      *ngIf="
+        dataset.can_delete_meta === true &&
+        dataset.can_delete_data === true &&
+        !showConfirmDelete &&
+        dataset.id !== ''
+      "
+      (click)="showDelete()"
+      color="warn"
+    >
+      Delete Dataset
+    </button>
+    <button
+      *ngIf="showConfirmDelete"
+      type="button"
+      mat-raised-button
+      (click)="deleteDataset()"
+      color="warn"
+    >
+      <mat-icon>delete</mat-icon>
+      Permanently Delete This Dataset!!!
+    </button>
+
+    <div id="error_message" class="display mat-error" *ngIf="error">
+      {{ error }}
+    </div>
+  </mat-card-footer>
+</mat-card>

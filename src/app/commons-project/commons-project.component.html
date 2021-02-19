@@ -1,0 +1,537 @@
+<div class="mat-typography project">
+  <div
+    *ngIf="project"
+    fxLayout="row"
+    fxLayout.xs="column"
+    fxLayoutWrap
+    fxLayoutGap="1em"
+    fxLayoutAlign="center"
+  >
+    <div
+      fxFlex.xl="75%"
+      fxFlex.lg="75%"
+      fxFlex.md="75%"
+      fxFlex.sm="50%"
+      fxFlex.xs="100%"
+    >
+      <mat-card>
+        <mat-card-content>
+          <button
+            mat-flat-button
+            (click)="showProject()"
+            color="accent"
+            id="project-edit"
+            *ngIf="user && project.can_update_meta === true"
+          >
+            <mat-icon>edit</mat-icon>
+            EDIT PROJECT DETAILS
+          </button>
+          <h4>
+            <markdown [data]="project.description"></markdown>
+          </h4>
+        </mat-card-content>
+      </mat-card>
+      <mat-divider [inset]="true"></mat-divider>
+      <mat-card *ngIf="user && project.id !== '' && project.can_upload_data === true || project.can_download_data === true || project.can_delete_data === true">
+        <mat-card-content *ngIf="user">
+          <mat-toolbar>
+            <mat-card-title>
+              Documents
+            </mat-card-title>
+          </mat-toolbar>
+          <mat-list *ngIf="project.documents.length > 0">
+            <table
+              mat-table
+              [dataSource]="project.documents"
+              class="mat-elevation-z8 documents"
+            >
+              <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef>NAME</th>
+                <td mat-cell *matCellDef="let document">
+                  <mat-label>
+                    {{ document.filename }}
+                  </mat-label>
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="type">
+                <th mat-header-cell *matHeaderCellDef>TYPE</th>
+                <td mat-cell *matCellDef="let document">
+                  {{ document.type }}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="last_modified">
+                <th mat-header-cell *matHeaderCellDef>MODIFIED DATE/TIME</th>
+                <td mat-cell *matCellDef="let document">
+                  {{ document.last_modified | date: 'MM/d/y h:mm a' }}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="url">
+                <th mat-header-cell *matHeaderCellDef>
+                  DOWNLOAD
+                </th>
+                <td mat-cell *matCellDef="let document">
+                  <a
+                    *ngIf="
+                      user &&
+                      document.url !== '' &&
+                      project.can_download_data === true
+                    "
+                    (click)="
+                      cas.downloadFile(document.url, document.filename, user)
+                    "
+                  >
+                    <button type="button" color="primary" mat-mini-fab>
+                      <mat-icon
+                        matTooltip="Click here to download document ({{
+                          document.filename
+                        }})"
+                      >
+                        file_download
+                      </mat-icon>
+                    </button>
+                  </a>
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="update">
+                <th mat-header-cell *matHeaderCellDef>UPDATE</th>
+                <td mat-cell *matCellDef="let document">
+                  <button
+                    *ngIf="user && project.can_upload_data === true"
+                    type="button"
+                    color="warn"
+                    mat-mini-fab
+                    (click)="updateDocument(document.type)"
+                  >
+                    <mat-icon>update</mat-icon>
+                  </button>
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="delete">
+                <th mat-header-cell *matHeaderCellDef>DELETE</th>
+                <td mat-cell *matCellDef="let document">
+                  <button
+                    *ngIf="
+                      user &&
+                      document.url !== '' &&
+                      project.can_delete_data === true
+                    "
+                    type="button"
+                    (click)="deleteDocument(document)"
+                    color="warn"
+                    mat-mini-fab
+                  >
+                    <mat-icon
+                      matTooltip="Click here to delete document ({{
+                        document.filename
+                      }})"
+                    >
+                      delete
+                    </mat-icon>
+                  </button>
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="restore">
+                <th mat-header-cell *matHeaderCellDef>RESTORE</th>
+                <td mat-cell *matCellDef="let document">
+                  <button
+                    *ngIf="
+                      user &&
+                      document.url === '' &&
+                      project.can_upload_data === true
+                    "
+                    type="button"
+                    (click)="restoreDocument(document)"
+                    color="warn"
+                    mat-mini-fab
+                  >
+                    <mat-icon
+                      matTooltip="Click here to restore document ({{
+                        document.filename
+                      }})"
+                    >
+                      undo
+                    </mat-icon>
+                  </button>
+                </td>
+              </ng-container>
+              <tr
+                mat-header-row
+                *matHeaderRowDef="displayedDocumentColumns"
+              ></tr>
+              <tr
+                mat-row
+                *matRowDef="
+                  let row;
+                  let even = even;
+                  columns: displayedDocumentColumns
+                "
+                [ngClass]="{ gray: even }"
+              ></tr>
+            </table>
+          </mat-list>
+          <button
+            *ngIf="
+              user && project.id !== '' && project.can_upload_data === true
+            "
+            type="button"
+            color="primary"
+            mat-raised-button
+            (click)="addDocument()"
+          >
+            <mat-icon>add</mat-icon>
+            ADD DOCUMENT
+          </button>
+        </mat-card-content>
+      </mat-card>
+      <mat-divider [inset]="true"></mat-divider>
+      <mat-card
+        *ngIf="
+          user && project.id !== '' && project.can_manage_permission === true
+        "
+      >
+        <mat-toolbar>
+          <mat-card-title>
+            Project Team
+          </mat-card-title>
+        </mat-toolbar>
+        <mat-list dense>
+          <table
+            mat-table
+            [dataSource]="userPermissions$ | async"
+            class="mat-elevation-z8 projectperms"
+          >
+            <ng-container matColumnDef="email">
+              <th mat-header-cell *matHeaderCellDef>EMAIL</th>
+              <td mat-cell *matCellDef="let userPermission">
+                <mat-label>
+                  {{ userPermission.user_email }}
+                </mat-label>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="role">
+              <th mat-header-cell *matHeaderCellDef>ROLE</th>
+              <td mat-cell *matCellDef="let userPermission">
+                {{ lookupRole(userPermission.user_role) }}
+              </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedUserpermColumns"></tr>
+            <tr
+              mat-row
+              *matRowDef="
+                let row;
+                let even = even;
+                columns: displayedUserpermColumns
+              "
+              [ngClass]="{ gray: even }"
+            ></tr>
+          </table>
+        </mat-list>
+        <button
+          *ngIf="user && project.can_manage_permission === true"
+          matTooltip="Click here to edit project details/permissions"
+          mat-raised-button
+          color="primary"
+          (click)="showProject()"
+        >
+          <mat-icon>security</mat-icon>
+          EDIT PERMISSIONS
+        </button>
+      </mat-card>
+      <mat-divider [inset]="true"></mat-divider>
+      <mat-card>
+        <mat-card-content>
+          <mat-toolbar>
+            <mat-card-title>
+              Datasets
+            </mat-card-title>
+          </mat-toolbar>
+          <mat-list dense>
+            <ng-container *ngIf="datasetsPrivate && datasetsPublic && getDataSource().length > 0">
+              <table
+                mat-table
+                [dataSource]="getDataSource()"
+                class="mat-elevation-z8 datasets"
+              >
+                <ng-container matColumnDef="name">
+                  <th mat-header-cell *matHeaderCellDef>NAME</th>
+                  <td mat-cell *matCellDef="let projectDataset">
+                    <mat-label
+                      matTooltip="Click here to view dataset details"
+                      mat-button
+                      (click)="viewDataset(projectDataset)"
+                    >
+                      {{ projectDataset.name }}
+                    </mat-label>
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="last_modified">
+                  <th mat-header-cell *matHeaderCellDef>MODIFIED DATE/TIME</th>
+                  <td mat-cell *matCellDef="let projectDataset">
+                    {{ projectDataset.last_modified | date: 'MM/d/y h:mm a' }}
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="private">
+                  <th mat-header-cell *matHeaderCellDef>
+                    DETAILS VISIBILITY
+                  </th>
+                  <td mat-cell *matCellDef="let projectDataset">
+                    <ng-container
+                      *ngIf="
+                        projectDataset.private &&
+                        projectDataset.can_update_meta === true
+                      "
+                    >
+                      <mat-chip
+                        matTooltip="This Dataset is only visible to PI and collaborators on this dataset."
+                        (click)="
+                          toggleDatasetPrivate(
+                            projectDataset,
+                            !projectDataset.private
+                          )
+                        "
+                        id="button-not-private"
+                      >
+                        <mat-icon style="margin-right: 8px;"
+                          >visibility_off</mat-icon
+                        >
+                        PRIVATE
+                      </mat-chip>
+                    </ng-container>
+                    <ng-container
+                      *ngIf="
+                        !projectDataset.private &&
+                        projectDataset.can_update_meta === true
+                      "
+                    >
+                      <mat-chip
+                        (click)="
+                          toggleDatasetPrivate(
+                            projectDataset,
+                            !projectDataset.private
+                          )
+                        "
+                        matTooltip="This Dataset is visible to all iTHRIV users."
+                        id="button-private"
+                      >
+                        <mat-icon style="margin-right: 8px;"
+                          >visibility</mat-icon
+                        >
+                        PUBLIC
+                      </mat-chip>
+                    </ng-container>
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="can_update_meta">
+                  <th mat-header-cell *matHeaderCellDef>EDIT</th>
+                  <td mat-cell *matCellDef="let projectDataset">
+                    <button
+                      type="button"
+                      (click)="showDataset(projectDataset)"
+                      *ngIf="projectDataset.can_update_meta === true"
+                      color="warn"
+                      mat-mini-fab
+                    >
+                      <mat-icon
+                        matTooltip="Click here to edit dataset details/permissions "
+                      >
+                        edit
+                      </mat-icon>
+                    </button>
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="can_upload_data">
+                  <th mat-header-cell *matHeaderCellDef>UPLOAD</th>
+                  <td mat-cell *matCellDef="let projectDataset">
+                    <app-commons-file-upload
+                      *ngIf="
+                        user &&
+                        projectDataset.id !== '' &&
+                        projectDataset.can_upload_data === true
+                      "
+                      (complete)="onFileComplete($event)"
+                      [target]="uploadUrlDataset(projectDataset)"
+                      [user]="user"
+                    ></app-commons-file-upload>
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="can_download_data">
+                  <th mat-header-cell *matHeaderCellDef>DOWNLOAD</th>
+                  <td mat-cell *matCellDef="let projectDataset">
+                    <a
+                      *ngIf="
+                        (!projectDataset.private || user) &&
+                        projectDataset.url !== '' &&
+                        projectDataset.can_download_data === true
+                      "
+                      (click)="
+                        cas.downloadFile(
+                          projectDataset.url,
+                          projectDataset.filename,
+                          user
+                        )
+                      "
+                    >
+                      <button type="button" color="primary" mat-mini-fab>
+                        <mat-icon
+                          matTooltip="Click here to download dataset file ({{
+                            projectDataset.filename
+                          }})"
+                        >
+                          file_download
+                        </mat-icon>
+                      </button>
+                    </a>
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="can_delete_data">
+                  <th mat-header-cell *matHeaderCellDef>DELETE</th>
+                  <td mat-cell *matCellDef="let projectDataset">
+                    <button
+                      *ngIf="
+                        user &&
+                        projectDataset.url !== '' &&
+                        projectDataset.can_delete_data === true
+                      "
+                      type="button"
+                      (click)="deleteDatasetData(projectDataset)"
+                      color="warn"
+                      mat-mini-fab
+                    >
+                      <mat-icon
+                        matTooltip="Click here to delete dataset file ({{
+                          projectDataset.filename
+                        }})"
+                      >
+                        delete
+                      </mat-icon>
+                    </button>
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="can_restore_data">
+                  <th mat-header-cell *matHeaderCellDef>RESTORE</th>
+                  <td mat-cell *matCellDef="let projectDataset">
+                    <button
+                      *ngIf="
+                        user &&
+                        projectDataset.url === '' &&
+                        projectDataset.can_restore_data === true
+                      "
+                      type="button"
+                      (click)="restoreDatasetData(projectDataset)"
+                      color="warn"
+                      mat-mini-fab
+                    >
+                      <mat-icon
+                        matTooltip="Click here to restore dataset file ({{
+                          projectDataset.filename
+                        }})"
+                      >
+                        undo
+                      </mat-icon>
+                    </button>
+                  </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr
+                  mat-row
+                  *matRowDef="
+                    let row;
+                    let even = even;
+                    columns: displayedColumns
+                  "
+                  [ngClass]="{ gray: even }"
+                ></tr>
+              </table>
+            </ng-container>
+          </mat-list>
+          <button
+            mat-raised-button
+            *ngIf="
+              user && project.id !== '' && project.can_download_data === true
+            "
+            color="primary"
+            (click)="showDataset(dataset)"
+          >
+            <mat-icon>post_add</mat-icon>
+            ADD DATASET
+          </button>
+        </mat-card-content>
+      </mat-card>
+      <mat-divider [inset]="true"></mat-divider>
+      <mat-card-footer>
+        <button mat-raised-button color="primary" (click)="showNext()">
+          <mat-icon>home</mat-icon>
+          Commons Home
+        </button>
+      </mat-card-footer>
+    </div>
+    <mat-card
+      fxFlex.xl="25%"
+      fxFlex.lg="25%"
+      fxFlex.md="25%"
+      fxFlex.sm="50%"
+      fxFlex.xs="100%"
+    >
+      <mat-card-title>
+        PROJECT DETAILS
+      </mat-card-title>
+      <mat-chip-list *ngIf="user && project.can_manage_permission === true ">
+        <ng-container *ngIf="project.private">
+          <mat-chip
+            matTooltip="This project is only visible to owners and collaborators on this project."
+            (click)="togglePrivate(!project.private)"
+            id="button-not-private"
+          >
+            <mat-icon style="margin-right: 8px;"
+              >visibility_off</mat-icon
+            >
+            PRIVATE
+          </mat-chip>
+        </ng-container>
+        <ng-container *ngIf="!project.private">
+          <mat-chip
+            (click)="togglePrivate(!project.private)"
+            matTooltip="This project is visible to all iTHRIV users."
+            id="button-private"
+          >
+            <mat-icon style="margin-right: 8px;"
+              >visibility</mat-icon
+            >
+            PUBLIC
+          </mat-chip>
+        </ng-container>
+      </mat-chip-list>
+      <mat-card-content>
+        <mat-list dense>
+          <mat-list-item *ngIf="user">
+            <h4 mat-line>Principal Investigator(s):</h4>
+            <p mat-line>{{ project.pl_pi }}</p>
+          </mat-list-item>
+          <mat-list-item *ngIf="user">
+            <h4 mat-line>Home Institution:</h4>
+            <p mat-line>{{ project.institution.name }}</p>
+          </mat-list-item>
+          <mat-list-item>
+            <h4 mat-line>Partner Institutions:</h4>
+            <p mat-line>{{ project.partners }}</p>
+          </mat-list-item>
+          <mat-list-item>
+            <h4 mat-line>Funding Source(s):</h4>
+            <p mat-line>{{ project.funding_source }}</p>
+          </mat-list-item>
+          <mat-list-item>
+            <h4 mat-line></h4>
+          </mat-list-item>
+          <mat-list-item>
+            <h4 mat-line>KEYWORDS:</h4>
+            <mat-chip-list mat-line>
+              <mat-chip *ngFor="let keyword of keywords()">
+                {{ keyword }}
+              </mat-chip>
+            </mat-chip-list>
+          </mat-list-item>
+        </mat-list>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
