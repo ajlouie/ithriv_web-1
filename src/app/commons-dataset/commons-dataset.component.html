@@ -1,3 +1,11 @@
+<app-breadcrumbs *ngIf="user">
+  <section class="left">
+    <button mat-raised-button color="primary" (click)="showNext()">
+      <mat-icon>home</mat-icon>
+      Project Home
+    </button>
+  </section>
+</app-breadcrumbs>
 <div class="mat-typography dataset">
   <div
     *ngIf="dataset"
@@ -136,7 +144,7 @@
         </mat-card-content>
       </mat-card>
       <!--
-      <ejs-spreadsheet [saveUrl]="uploadUrl()" [openUrl]="dataset.url" allowSave='true'> 
+      <ejs-spreadsheet [saveUrl]="uploadUrl()" [openUrl]="dataset.url" allowSave='true'>
       </ejs-spreadsheet>
       -->
       <mat-card
@@ -417,12 +425,6 @@
         </div>
       </mat-card>
       <mat-divider [inset]="true"></mat-divider>
-      <mat-card-footer>
-        <button mat-raised-button color="primary" (click)="showNext()">
-          <mat-icon>home</mat-icon>
-          Project Home
-        </button>
-      </mat-card-footer>
     </div>
     <mat-card
       fxFlex.xl="25%"
