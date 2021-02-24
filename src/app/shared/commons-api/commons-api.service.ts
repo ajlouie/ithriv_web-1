@@ -392,7 +392,7 @@ export class CommonsApiService {
 
   testSSO(): Observable<Add> {
     return this.http
-      .get<Add>('https://apidemo.uvarc.io/add/130/170')
+      .get<Add>(`https://apidemo.uvarc.io/add/130/170`)
       .pipe(catchError(this.handleError));
   }
 
