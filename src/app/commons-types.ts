@@ -138,42 +138,9 @@ export interface Add {
 
 export interface IrbInvestigator {
   email: string;
-  type: IrbInvestigatorType;
-  type_full: IrbInvestigatorTypeLabel;
 }
 
 export interface IrbNumber {
   study_id: string;
 }
 
-/**
- * 1. Principal Investigator
- * 2. Study Coordinator I
- * 3. Study Coordinator II
- * 4. Additional Study Coordinator
- * 5. IRB Coordinator
- * 6. Sub-Investigator
- */
-export enum IrbInvestigatorType {
-  'PI' = 'PI',
-  'SI' = 'SI',
-  'DC' = 'DC',
-  'SC_I' = 'SC_I',
-  'SC_II' = 'SC_II',
-  'AS_C' = 'AS_C',
-  'DEPT_CH' = 'DEPT_CH',
-  'IRBC' = 'IRBC',
-  'SCI' = 'SCI',
-}
-
-export enum IrbInvestigatorTypeLabel {
-  'PI' = 'Primary Investigator',
-  'SI' = 'Sub Investigator',
-  'DC' = 'Department Contact',
-  'SC_I' = 'Study Coordinator 1',
-  'SC_II' = 'Study Coordinator 2',
-  'AS_C' = 'Additional Study Coordinators',
-  'DEPT_CH' = 'Department Chair',
-  'IRBC' = 'IRB Coordinator',
-  'SCI' = 'Scientific Contact',
-}
