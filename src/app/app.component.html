@@ -211,8 +211,30 @@
             *ngIf="!mobileQuery.matches"
             class="fill-remaining-space"
           ></span>
+
+          <button
+            [routerLink]="['/search']"
+            fxFlex.xs="calc(50% - 20px)"
+            id="search-button"
+            mat-stroked-button
+            [disabled]="isSearch"
+          >
+            <mat-icon>search</mat-icon>
+            Search Resources
+          </button>
+          <button
+            (click)="isExpanded = !isExpanded"
+            fxFlex.xs="calc(50% - 20px)"
+            id="expand-categories"
+            mat-stroked-button
+            *ngIf="!(isNetworkOrBrowseView() && isGraphViewSupported())"
+          >
+            Browse Resources
+            <mat-icon>{{isExpanded ? 'expand_less' : 'expand_more'}}</mat-icon>
+          </button>
+
           <ng-container
-            *ngIf="isNetworkOrBrowseview() && isGraphViewSupported(); else searchButton"
+            *ngIf="isNetworkOrBrowseView() && isGraphViewSupported()"
           >
             <div>Change View:</div>
             <mat-button-toggle-group #group="matButtonToggleGroup">
@@ -239,7 +261,7 @@
         </mat-toolbar-row>
       </mat-toolbar>
       <app-search-bar
-        *ngIf="!(isNetworkOrBrowseview() && isGraphViewSupported())"
+        *ngIf="!(isNetworkOrBrowseView() && isGraphViewSupported())"
         [isExpanded]="isExpanded"
       ></app-search-bar>
 
@@ -249,24 +271,3 @@
     </mat-sidenav-content>
   </mat-sidenav-container>
 </div>
-
-<ng-template #searchButton>
-  <button
-    [routerLink]="['/search']"
-    fxFlex.xs="calc(50% - 20px)"
-    id="search-button"
-    mat-stroked-button
-  >
-    <mat-icon>search</mat-icon>
-    Search Resources
-  </button>
-  <button
-    (click)="isExpanded = !isExpanded"
-    fxFlex.xs="calc(50% - 20px)"
-    id="expand-categories"
-    mat-stroked-button
-  >
-    Browse Resources
-    <mat-icon>{{isExpanded ? 'caret-up' : 'caret-down'}}</mat-icon>
-  </button>
-</ng-template>

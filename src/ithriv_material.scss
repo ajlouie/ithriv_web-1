@@ -273,4 +273,8 @@ $animationDuration: 500ms;
   :host >>> .content {
     height: -moz-available; /* WebKit-based browsers will ignore this. */
   }
+
+  .mat-tooltip {
+    font-size: 12px !important;
+  }
 }

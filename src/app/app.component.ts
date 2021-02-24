@@ -138,7 +138,18 @@ export class AppComponent implements OnInit, OnDestroy {
     }, 1000);
   }
 
-  // Warn the user if there session has less than 5 minutes remaining.
+  get isSearch(): boolean {
+    const pathArray = this.location.path().split('/');
+    return (
+      pathArray &&
+      pathArray.length > 1 &&
+      pathArray[1] === 'search'
+    );
+  }
+
+  /**
+   * Warn the user if there session has less than 5 minutes remaining.
+   */
   toolBarWarningClass() {
     if (this.session && this.timeLeftInSession < 300000) {
       return 'warning';
@@ -263,7 +274,7 @@ export class AppComponent implements OnInit, OnDestroy {
     return network;
   }
 
-  isNetworkOrBrowseview() {
+  isNetworkOrBrowseView() {
     const pathArray = this.location.path().split('/');
     if (
       pathArray &&
