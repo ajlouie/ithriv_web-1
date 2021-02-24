@@ -27,9 +27,10 @@ import {
   Project,
   UserPermission,
   DatasetFileVersion,
-} from 'src/app/commons-types';
-import { Dataset } from 'src/app/commons-types';
-import { ProjectDocument } from 'src/app/commons-types';
+} from '../../commons-types';
+import { Dataset } from '../../commons-types';
+import { ProjectDocument } from '../../commons-types';
+import { Add } from '../../commons-types';
 @Injectable({
   providedIn: 'root',
 })
@@ -386,6 +387,12 @@ export class CommonsApiService {
           responseType: 'json',
         }
       )
+      .pipe(catchError(this.handleError));
+  }
+
+  testSSO(): Observable<Add> {
+    return this.http
+      .get<Add>('https://apidemo.uvarc.io/add/130/170')
       .pipe(catchError(this.handleError));
   }
 

@@ -118,3 +118,7 @@ export interface UserPermission {
   user_email?: string;
   user_role?: any;
 }
+
+export interface Add {
+  sum?: string;
+}
