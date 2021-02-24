@@ -1,7 +1,5 @@
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { Dataset } from '../../commons-types';
-import { User } from '../../user';
 import { mockDataset } from '../fixtures/dataset';
 import { mockIrbInvestigators } from '../fixtures/investigators';
 import { mockIrbNumbers } from '../fixtures/irb';

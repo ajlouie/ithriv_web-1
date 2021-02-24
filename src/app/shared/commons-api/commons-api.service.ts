@@ -5,14 +5,15 @@ import { Observable, throwError } from 'rxjs';
 import { catchError, map, } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import {
+  Add,
   Dataset,
   DatasetFileVersion,
-  IrbInvestigator, IrbNumber,
+  IrbInvestigator,
+  IrbNumber,
   Project,
   ProjectDocument,
   UserPermission,
 } from '../../commons-types';
-import { Add } from '../../commons-types';
 import { User } from '../../user';
 
 @Injectable({
