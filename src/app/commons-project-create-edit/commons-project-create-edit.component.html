@@ -1,3 +1,48 @@
+<app-breadcrumbs *ngIf="user">
+  <section class="left">
+    <button
+      mat-raised-button
+      *ngIf="createNew === false"
+      color="primary"
+      (click)="showNext()"
+    >
+      <mat-icon>home</mat-icon>
+      Project Home
+    </button>
+  </section>
+  <section class="right">
+    <button
+      type="button"
+      mat-raised-button
+      *ngIf="
+        project.can_delete_meta &&
+        project.can_delete_data &&
+        !showConfirmDelete &&
+        createNew === false
+      "
+      (click)="showDelete()"
+      color="warn"
+    >
+      Delete Project
+    </button>
+    <button
+      *ngIf="
+        showConfirmDelete && project.can_delete_meta && project.can_delete_data
+      "
+      type="button"
+      mat-raised-button
+      (click)="deleteProject()"
+      color="warn"
+    >
+      <mat-icon>delete</mat-icon>
+      Permanently Delete This Project!!!
+    </button>
+  </section>
+
+  <div id="error_message" class="display mat-error" *ngIf="error">
+    {{ error }}
+  </div>
+</app-breadcrumbs>
 <mat-card *ngIf="user">
   <mat-card-content>
     <mat-card *ngIf="user">
@@ -187,45 +232,4 @@
       </mat-card-content>
     </mat-card>
   </mat-card-content>
-  <mat-card-footer>
-    <button
-      mat-raised-button
-      *ngIf="createNew === false"
-      color="primary"
-      (click)="showNext()"
-    >
-      <mat-icon>home</mat-icon>
-      Project Home
-    </button>
-    <button
-      type="button"
-      mat-raised-button
-      *ngIf="
-        project.can_delete_meta &&
-        project.can_delete_data &&
-        !showConfirmDelete &&
-        createNew === false
-      "
-      (click)="showDelete()"
-      color="warn"
-    >
-      Delete Project
-    </button>
-    <button
-      *ngIf="
-        showConfirmDelete && project.can_delete_meta && project.can_delete_data
-      "
-      type="button"
-      mat-raised-button
-      (click)="deleteProject()"
-      color="warn"
-    >
-      <mat-icon>delete</mat-icon>
-      Permanently Delete This Project!!!
-    </button>
-
-    <div id="error_message" class="display mat-error" *ngIf="error">
-      {{ error }}
-    </div>
-  </mat-card-footer>
 </mat-card>

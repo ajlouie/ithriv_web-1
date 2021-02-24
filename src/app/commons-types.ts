@@ -132,6 +132,10 @@ export interface UserPermission {
   user_role?: any;
 }
 
+export interface Add {
+  sum?: string;
+}
+
 export interface IrbInvestigator {
   email: string;
   type: IrbInvestigatorType;

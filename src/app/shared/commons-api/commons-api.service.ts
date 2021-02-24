@@ -2,6 +2,7 @@ import { HttpClient, HttpErrorResponse, } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import fileSaver from 'file-saver';
 import { Observable, throwError } from 'rxjs';
+import { of } from 'rxjs/internal/observable/of';
 import { catchError, map, } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import {
@@ -11,9 +12,13 @@ import {
   Project,
   ProjectDocument,
   UserPermission,
-} from '../../commons-types';
+import { Dataset } from '../../commons-types';
+import { ProjectDocument } from '../../commons-types';
+import { Add } from '../../commons-types';
 import { User } from '../../user';
-
+import { mockIrbInvestigators } from '../fixtures/investigators';
+import { mockIrbNumbers } from '../fixtures/irb';
+} from '../../commons-types';
 @Injectable({
   providedIn: 'root',
 })
@@ -376,12 +381,19 @@ export class CommonsApiService {
       .pipe(catchError(this.handleError));
   }
 
+  testSSO(): Observable<Add> {
+    return this.http
+      .get<Add>('https://apidemo.uvarc.io/add/130/170')
+      .pipe(catchError(this.handleError));
+  }
+
   /**
    * Returns the list of IRB Investigators for the given project from the backend.
    * @param user
    * @param dataset
    */
   getDatasetIrbInvestigators(user: User, dataset: Dataset): Observable<IrbInvestigator[]> {
+    return of(mockIrbInvestigators);
     return this.http
       .get<IrbInvestigator[]>(
         this.getLandingServiceUrl(user) +
@@ -401,6 +413,7 @@ export class CommonsApiService {
    * @param user
    */
   getUserIrbNumbers(user: User): Observable<IrbNumber[]> {
+    return of(mockIrbNumbers);
     return this.http
       .get<IrbNumber[]>(
         this.getLandingServiceUrl(user) +

@@ -1,3 +1,40 @@
+<app-breadcrumbs *ngIf="user">
+  <section class="left">
+    <button mat-raised-button color="primary" (click)="showNext()">
+      <mat-icon>home</mat-icon>
+      {{ getNavLabel(previousForm) }}
+    </button>
+  </section>
+  <section class="right">
+    <button
+      type="button"
+      mat-raised-button
+      *ngIf="
+        dataset.can_delete_meta === true &&
+        dataset.can_delete_data === true &&
+        !showConfirmDelete &&
+        dataset.id !== ''
+      "
+      (click)="showDelete()"
+      color="warn"
+    >
+      Delete Dataset
+    </button>
+    <button
+      *ngIf="showConfirmDelete"
+      type="button"
+      mat-raised-button
+      (click)="deleteDataset()"
+      color="warn"
+    >
+      <mat-icon>delete</mat-icon>
+      Permanently Delete This Dataset!!!
+    </button>
+  </section>
+  <div id="error_message" class="display mat-error" *ngIf="error">
+    {{ error }}
+  </div>
+</app-breadcrumbs>
 <mat-card *ngIf="user">
   <mat-card-content>
     <mat-card *ngIf="user">
@@ -302,38 +339,4 @@
       </mat-card-content>
     </mat-card>
   </mat-card-content>
-  <mat-card-footer>
-    <button mat-raised-button color="primary" (click)="showNext()">
-      <mat-icon>home</mat-icon>
-      {{ getNavLabel(previousForm) }}
-    </button>
-    <button
-      type="button"
-      mat-raised-button
-      *ngIf="
-        dataset.can_delete_meta === true &&
-        dataset.can_delete_data === true &&
-        !showConfirmDelete &&
-        dataset.id !== ''
-      "
-      (click)="showDelete()"
-      color="warn"
-    >
-      Delete Dataset
-    </button>
-    <button
-      *ngIf="showConfirmDelete"
-      type="button"
-      mat-raised-button
-      (click)="deleteDataset()"
-      color="warn"
-    >
-      <mat-icon>delete</mat-icon>
-      Permanently Delete This Dataset!!!
-    </button>
-
-    <div id="error_message" class="display mat-error" *ngIf="error">
-      {{ error }}
-    </div>
-  </mat-card-footer>
 </mat-card>

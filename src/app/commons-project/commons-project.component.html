@@ -1,3 +1,11 @@
+<app-breadcrumbs *ngIf="user">
+  <section class="left">
+    <button mat-raised-button color="primary" (click)="showNext()">
+      <mat-icon>home</mat-icon>
+      Commons Home
+    </button>
+  </section>
+</app-breadcrumbs>
 <div class="mat-typography project">
   <div
     *ngIf="project"
@@ -464,12 +472,6 @@
         </mat-card-content>
       </mat-card>
       <mat-divider [inset]="true"></mat-divider>
-      <mat-card-footer>
-        <button mat-raised-button color="primary" (click)="showNext()">
-          <mat-icon>home</mat-icon>
-          Commons Home
-        </button>
-      </mat-card-footer>
     </div>
     <mat-card
       fxFlex.xl="25%"

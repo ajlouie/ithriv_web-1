@@ -1,0 +1,23 @@
+.breadcrumbs {
+  margin: 10px 10px 10px 0px;
+  position: relative;
+}
+
+@mixin column-vertical-align-middle {
+  width: 50%;
+  display: flex;
+  align-content: center;
+  align-items: center;
+}
+
+:host ::ng-deep .left {
+  @include column-vertical-align-middle;
+  justify-items: flex-start;
+  justify-content: flex-start;
+}
+
+:host ::ng-deep .right {
+  @include column-vertical-align-middle;
+  justify-items: flex-end;
+  justify-content: flex-end;
+}

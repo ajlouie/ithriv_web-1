@@ -1,3 +1,11 @@
+<app-breadcrumbs *ngIf="user">
+  <section class="left">
+    <button mat-raised-button color="primary" (click)="showNext()">
+      <mat-icon>home</mat-icon>
+      Project Home
+    </button>
+  </section>
+</app-breadcrumbs>
 <div class="mat-typography dataset">
   <div
     *ngIf="dataset"
@@ -132,11 +140,15 @@
               <h4 mat-line>Project PI:</h4>
               <p mat-line>{{ dataset.redcap_project_pi }}</p>
             </mat-list-item>
+            <mat-list-item>
+              <h4 mat-line>SSO TEST:</h4>
+              <p mat-line>{{ isConnected }}</p>
+            </mat-list-item>
           </mat-list>
         </mat-card-content>
       </mat-card>
       <!--
-      <ejs-spreadsheet [saveUrl]="uploadUrl()" [openUrl]="dataset.url" allowSave='true'> 
+      <ejs-spreadsheet [saveUrl]="uploadUrl()" [openUrl]="dataset.url" allowSave='true'>
       </ejs-spreadsheet>
       -->
       <mat-card
@@ -328,7 +340,7 @@
               class="mat-elevation-z8 datasetversions"
             >
               <ng-container matColumnDef="file_version">
-                <th mat-header-cell *matHeaderCellDef>FILE VERSION</th>
+                <th mat-header-cell *matHeaderCellDef>FILE NAME</th>
                 <td mat-cell *matCellDef="let fileVersionDetail">
                   <mat-label>
                     {{ fileVersionDetail.fileName }}
@@ -417,12 +429,6 @@
         </div>
       </mat-card>
       <mat-divider [inset]="true"></mat-divider>
-      <mat-card-footer>
-        <button mat-raised-button color="primary" (click)="showNext()">
-          <mat-icon>home</mat-icon>
-          Project Home
-        </button>
-      </mat-card-footer>
     </div>
     <mat-card
       fxFlex.xl="25%"
