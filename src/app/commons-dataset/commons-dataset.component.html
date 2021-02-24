@@ -140,10 +140,6 @@
               <h4 mat-line>Project PI:</h4>
               <p mat-line>{{ dataset.redcap_project_pi }}</p>
             </mat-list-item>
-            <mat-list-item>
-              <h4 mat-line>SSO TEST:</h4>
-              <p mat-line>{{ isConnected }}</p>
-            </mat-list-item>
           </mat-list>
         </mat-card-content>
       </mat-card>
@@ -512,6 +508,10 @@
                 {{ keyword }}
               </mat-chip>
             </mat-chip-list>
+          </mat-list-item>
+          <mat-list-item>
+            <h4 mat-line>SSO TEST:</h4>
+            <p mat-line>{{ isConnected }}</p>
           </mat-list-item>
         </mat-list>
       </mat-card-content>
