@@ -255,7 +255,7 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
       study_irb_number: new FormField({
         formControl: new FormControl(),
         required: false,
-        placeholder: 'Study IRB Number:',
+        placeholder: 'IRB Protocol Number:',
         type: 'select',
         multiSelect: false,
         selectOptionsMap: this.irbNumberOptions,
@@ -263,7 +263,7 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
       approved_irb_link: new FormField({
         formControl: new FormControl(),
         required: false,
-        placeholder: 'IRB Protocol Number (required for highly sensitive data):',
+        placeholder: 'Select Corresponding IRB Approval Document from Project Documents',
         type: 'select',
         multiSelect: false,
         selectOptionsMap: irbDocumentOptions,
