@@ -17,6 +17,7 @@ import { ColorPickerModule } from 'ngx-color-picker';
 import { FileDropModule } from 'ngx-file-drop';
 import { MarkdownModule } from 'ngx-markdown';
 import { NgProgressModule } from 'ngx-progressbar';
+import { BreadcrumbsComponent } from '../breadcrumbs/breadcrumbs.component';
 import { CategoryColorBorderDirective } from '../category-color-border.directive';
 import { CommonsDatasetCreateEditComponent } from '../commons-dataset-create-edit/commons-dataset-create-edit.component';
 import { CommonsDatasetComponent } from '../commons-dataset/commons-dataset.component';
@@ -41,6 +42,7 @@ describe('CommonsHomeComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
+        BreadcrumbsComponent,
         CategoryColorBorderDirective,
         CommonsDatasetComponent,
         CommonsDatasetCreateEditComponent,

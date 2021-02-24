@@ -9,6 +9,7 @@ import {
   MatToolbarModule, MatTooltipModule
 } from '@angular/material';
 import { MarkdownModule, MarkdownService } from 'ngx-markdown';
+import { BreadcrumbsComponent } from '../breadcrumbs/breadcrumbs.component';
 import { CommonsFileUploadComponent } from '../commons-file-upload/commons-file-upload.component';
 import { mockDataset } from '../shared/fixtures/dataset';
 import { mockProject } from '../shared/fixtures/project';
@@ -24,6 +25,7 @@ describe('CommonsProjectComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
+        BreadcrumbsComponent,
         CommonsFileUploadComponent,
         CommonsProjectComponent,
       ],

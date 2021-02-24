@@ -28,6 +28,7 @@ import { ColorPickerModule } from 'ngx-color-picker';
 import { FileDropModule } from 'ngx-file-drop';
 import { MarkdownModule } from 'ngx-markdown';
 import { NgProgressModule } from 'ngx-progressbar';
+import { BreadcrumbsComponent } from '../breadcrumbs/breadcrumbs.component';
 import { UserPermission } from '../commons-types';
 import { FileUploadComponent } from '../file-upload/file-upload.component';
 import { FormFieldLabelComponent } from '../form-field-label/form-field-label.component';
@@ -54,6 +55,7 @@ describe('CommonsDatasetCreateEditComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
+        BreadcrumbsComponent,
         CommonsDatasetCreateEditComponent,
         FileUploadComponent,
         FormFieldComponent,

@@ -11,6 +11,7 @@ import {
 import { FileDropModule } from 'ngx-file-drop';
 import { MarkdownModule, MarkdownService } from 'ngx-markdown';
 import { NgProgressModule } from 'ngx-progressbar';
+import { BreadcrumbsComponent } from '../breadcrumbs/breadcrumbs.component';
 import { mockDataset } from '../shared/fixtures/dataset';
 import { CommonsFileUploadComponent } from '../commons-file-upload/commons-file-upload.component';
 import { FileUploadComponent } from '../file-upload/file-upload.component';
@@ -25,6 +26,7 @@ describe('CommonsDatasetComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
+        BreadcrumbsComponent,
         CommonsDatasetComponent,
         CommonsFileUploadComponent,
         FileUploadComponent,
