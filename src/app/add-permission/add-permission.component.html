@@ -26,7 +26,6 @@
     >
       <mat-option *ngFor="let investigator of irbInvestigators" [value]="investigator.email">
         {{investigator.email}}
-        ({{investigator.type_full}})
       </mat-option>
     </mat-select>
     <mat-error *ngIf="emailControl.hasError('required')"
