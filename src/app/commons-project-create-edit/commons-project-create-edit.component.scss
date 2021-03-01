@@ -44,8 +44,8 @@ mat-card-footer {
 fieldset {
   border: none;
   outline: none;
-  padding: none;
-  margin: none;
+  padding: 0;
+  margin: 0;
   &.show {
     padding: 2em;
     margin-bottom: 2em;

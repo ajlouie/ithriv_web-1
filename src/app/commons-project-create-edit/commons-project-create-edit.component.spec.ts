@@ -3,17 +3,24 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   MatBadgeModule,
-  MatCardModule, MatCheckboxModule, MatDialogModule,
+  MatCardModule,
+  MatCheckboxModule,
+  MatDialogModule,
   MatDividerModule,
   MatIconModule,
   MatInputModule,
   MatListModule,
-  MatProgressSpinnerModule, MatSelectModule, MatSlideToggleModule, MatSnackBarModule,
+  MatProgressSpinnerModule,
+  MatSelectModule,
+  MatSlideToggleModule,
+  MatSnackBarModule,
   MatTableModule,
-  MatToolbarModule, MatTreeModule
+  MatToolbarModule,
+  MatTreeModule
 } from '@angular/material';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 import { RichTextEditorModule } from '@syncfusion/ej2-angular-richtexteditor';
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 import { ColorPickerModule } from 'ngx-color-picker';
@@ -21,7 +28,6 @@ import { FileDropModule } from 'ngx-file-drop';
 import { MarkdownModule } from 'ngx-markdown';
 import { NgProgressModule } from 'ngx-progressbar';
 import { BreadcrumbsComponent } from '../breadcrumbs/breadcrumbs.component';
-import { Project } from '../commons-types';
 import { FileUploadComponent } from '../file-upload/file-upload.component';
 import { FormFieldLabelComponent } from '../form-field-label/form-field-label.component';
 import { FormFieldComponent } from '../form-field/form-field.component';
@@ -29,7 +35,6 @@ import { mockProject } from '../shared/fixtures/project';
 import { mockUser } from '../shared/fixtures/user';
 import { ResourceApiService } from '../shared/resource-api/resource-api.service';
 import { TreeSelectComponent } from '../tree-select/tree-select.component';
-import { User } from '../user';
 
 import { CommonsProjectCreateEditComponent } from './commons-project-create-edit.component';
 
@@ -79,6 +84,7 @@ describe('CommonsProjectCreateEditComponent', () => {
         OwlNativeDateTimeModule,
         ReactiveFormsModule,
         RichTextEditorModule,
+        RouterTestingModule,
       ],
       providers: [
         ResourceApiService,

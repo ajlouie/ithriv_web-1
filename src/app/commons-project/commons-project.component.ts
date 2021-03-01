@@ -12,7 +12,7 @@ import {
   Dataset,
   ProjectDocumentMap,
   ProjectDocument,
-  UserPermission,
+  UserPermission, CommonsState,
 } from '../commons-types';
 import { CommonsApiService } from '../shared/commons-api/commons-api.service';
 import { Observable } from 'rxjs';
@@ -32,7 +32,7 @@ import { CommonsProjectCreateEditComponent } from '../commons-project-create-edi
 export class CommonsProjectComponent implements OnInit {
   @Input() user: User;
   @Input() currentForm: String;
-  @Output() currentFormChange = new EventEmitter();
+  @Output() currentFormChange = new EventEmitter<CommonsState>();
   @Input() project: Project;
   @Input() datasetsPrivate: Dataset[];
   @Input() datasetsPublic: Dataset[];
@@ -156,8 +156,8 @@ export class CommonsProjectComponent implements OnInit {
 
   onFileComplete(data: any) {
     this.cas.updateProject(this.project).subscribe(
-      (e) => {
-        this.project = e;
+      (project) => {
+        this.project = project;
         this.currentFormChange.emit({
           currentProject: this.project,
           previousForm: 'commons-project',
@@ -285,10 +285,10 @@ export class CommonsProjectComponent implements OnInit {
 
   restoreDatasetData(dataset) {
     this.cas.restoreDatasetData(dataset, this.user).subscribe(
-      (e) => {
+      () => {
         this.cas.updateProject(this.project).subscribe(
-          (e) => {
-            this.project = e;
+          (project) => {
+            this.project = project;
             this.currentFormChange.emit({
               currentProject: this.project,
               previousForm: 'commons-project',
@@ -309,10 +309,10 @@ export class CommonsProjectComponent implements OnInit {
 
   deleteDatasetData(dataset) {
     this.cas.deleteDatasetData(dataset, this.user).subscribe(
-      (e) => {
+      () => {
         this.cas.updateProject(this.project).subscribe(
-          (e) => {
-            this.project = e;
+          (project) => {
+            this.project = project;
             this.currentFormChange.emit({
               currentProject: this.project,
               previousForm: 'commons-project',
@@ -333,10 +333,10 @@ export class CommonsProjectComponent implements OnInit {
 
   restoreDocument(document) {
     this.cas.restoreDocument(this.project, document, this.user).subscribe(
-      (e) => {
+      () => {
         this.cas.updateProject(this.project).subscribe(
-          (e) => {
-            this.project = e;
+          (project) => {
+            this.project = project;
             this.currentFormChange.emit({
               currentProject: this.project,
               previousForm: 'commons-project',
@@ -353,10 +353,10 @@ export class CommonsProjectComponent implements OnInit {
 
   deleteDocument(document) {
     this.cas.deleteDocument(document, this.user).subscribe(
-      (e) => {
+      () => {
         this.cas.updateProject(this.project).subscribe(
-          (e) => {
-            this.project = e;
+          (project) => {
+            this.project = project;
             this.currentFormChange.emit({
               currentProject: this.project,
               previousForm: 'commons-project',

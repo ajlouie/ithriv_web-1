@@ -1,4 +1,13 @@
-import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChanges,
+} from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators, } from '@angular/forms';
 import { MatSnackBar } from '@angular/material';
 import { MatDialog } from '@angular/material/dialog';
@@ -21,7 +30,7 @@ import { User } from '../user';
   templateUrl: './commons-project-create-edit.component.html',
   styleUrls: ['./commons-project-create-edit.component.scss'],
 })
-export class CommonsProjectCreateEditComponent implements OnInit {
+export class CommonsProjectCreateEditComponent implements OnInit, OnChanges {
   public static PROJECT_ROLE_MAP_STATIC = [
     {key: '1', value: 'PROJECT OWNER'},
     {key: '2', value: 'PROJECT COLLABORATOR'},
@@ -31,6 +40,7 @@ export class CommonsProjectCreateEditComponent implements OnInit {
   @Input() previousForm: String;
   @Output() currentFormChange = new EventEmitter();
   @Input() project: Project;
+  @Input() projectAction: string;
   errorMessage: string;
   errorMatcher = new ErrorMatcher();
   errorMessagePerm: string;
@@ -44,7 +54,6 @@ export class CommonsProjectCreateEditComponent implements OnInit {
   createNew = false;
   institutionOptions = ['Virginia Tech', 'Carilion', 'Inova', 'UVA'];
   error: String;
-  showConfirmDelete = false;
   userPermission: UserPermission;
   userPermissions$: Observable<UserPermission[]> | undefined;
   displayedUserpermColumns: string[] = ['email', 'role', 'edit', 'delete'];
@@ -64,6 +73,10 @@ export class CommonsProjectCreateEditComponent implements OnInit {
 
   ngOnInit() {
     this.loadData();
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    console.log('changes', changes);
   }
 
   loadFields() {
@@ -580,10 +593,6 @@ export class CommonsProjectCreateEditComponent implements OnInit {
     this.currentFormChange.emit({
       displayForm: this.previousForm,
     });
-  }
-
-  showDelete() {
-    this.showConfirmDelete = true;
   }
 
   deleteProject() {

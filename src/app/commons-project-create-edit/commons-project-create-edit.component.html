@@ -1,48 +1,6 @@
-<app-breadcrumbs *ngIf="user">
-  <section class="left">
-    <button
-      mat-raised-button
-      *ngIf="createNew === false"
-      color="primary"
-      (click)="showNext()"
-    >
-      <mat-icon>home</mat-icon>
-      Project Home
-    </button>
-  </section>
-  <section class="right">
-    <button
-      type="button"
-      mat-raised-button
-      *ngIf="
-        project.can_delete_meta &&
-        project.can_delete_data &&
-        !showConfirmDelete &&
-        createNew === false
-      "
-      (click)="showDelete()"
-      color="warn"
-    >
-      Delete Project
-    </button>
-    <button
-      *ngIf="
-        showConfirmDelete && project.can_delete_meta && project.can_delete_data
-      "
-      type="button"
-      mat-raised-button
-      (click)="deleteProject()"
-      color="warn"
-    >
-      <mat-icon>delete</mat-icon>
-      Permanently Delete This Project!!!
-    </button>
-  </section>
-
-  <div id="error_message" class="display mat-error" *ngIf="error">
-    {{ error }}
-  </div>
-</app-breadcrumbs>
+<div id="delete_error_message" class="display mat-error" *ngIf="error">
+  {{ error }}
+</div>
 <mat-card *ngIf="user">
   <mat-card-content>
     <mat-card *ngIf="user">
@@ -70,7 +28,7 @@
           ></app-form-field>
           <footer *ngIf="formStatus === 'form'">
             <div
-              id="error_message"
+              id="create_error_message"
               class="display mat-error"
               *ngIf="errorMessage"
             >
@@ -213,7 +171,7 @@
           </table>
         </mat-list>
         <div
-          id="error_message"
+          id="perm_error_message"
           class="display mat-error"
           *ngIf="errorMessagePerm"
         >

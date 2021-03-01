@@ -1,34 +1,88 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { User } from '../user';
-import { Project, Dataset } from '../commons-types';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { Observable } from 'rxjs';
+import { CommonsState, CommonsStateForm, Dataset, NavItem, Project } from '../commons-types';
 import { CommonsApiService } from '../shared/commons-api/commons-api.service';
+import { User } from '../user';
 
 @Component({
   selector: 'app-commons-home',
   templateUrl: './commons-home.component.html',
   styleUrls: ['./commons-home.component.scss'],
 })
-export class CommonsHomeComponent implements OnInit {
+export class CommonsHomeComponent implements OnInit, OnChanges {
   @Input() user: User;
-  @Input() formStatus;
-  projectCreateEditPrevForm = 'commons-projects-list';
-  datasetCreateEditPrevForm = 'commons-project';
+  @Input() formStatus: CommonsStateForm;
+  @Input() tabIndex: number;
+  @Output() formStatusChange = new EventEmitter<string>();
+  projectCreateEditPrevForm: CommonsStateForm = 'commons-projects-list';
+  datasetCreateEditPrevForm: CommonsStateForm = 'commons-project';
   currentProject: Project;
   currentDataset: Dataset;
   projectDataPrivate$: Observable<Project[]> | undefined;
   projectDataPublic$: Observable<Project[]> | undefined;
   datasetDataPrivate$: Observable<Dataset[]> | undefined;
   datasetDataPublic$: Observable<Dataset[]> | undefined;
+  navItems: NavItem[] = [];
+  private statusNavItems: { [key in CommonsStateForm]: NavItem };
+  projectAction: string;
 
-  constructor(private cas: CommonsApiService) {}
+  constructor(private cas: CommonsApiService) {
+  }
+
+  get commonsHomeToolbarTitle(): string {
+    switch (this.formStatus) {
+      case 'commons-project':
+        return `Project${this.currentProject ? ': ' + this.currentProject.name : ''}`;
+      case 'commons-project-create-edit':
+        return 'Edit Project Details/Permissions';
+      case 'commons-dataset':
+        return `Dataset${this.currentDataset ? ': ' + this.currentDataset.name : ''}`;
+      case 'commons-dataset-create-edit':
+        return 'Edit Dataset Details/Permissions';
+      default:
+        return '';
+    }
+  }
 
   ngOnInit() {
     this.projectDataPrivate$ = this.cas.loadPrivateProjects();
     this.projectDataPublic$ = this.cas.loadPublicProjects();
+
+    this.statusNavItems = {
+      'commons-projects-list': {
+        title: 'Commons Home',
+        routerLink: '/home',
+        queryParams: {tabIndex: this.tabIndex},
+        onClick: () => this.updateStatus({displayForm: 'commons-projects-list'})
+      },
+      'commons-project': {
+        title: 'Project Home',
+        onClick: () => this.updateStatus({displayForm: 'commons-project'})
+      },
+      'commons-project-create-edit': {
+        title: 'Edit Project',
+        onClick: () => this.updateStatus({displayForm: 'commons-project-create-edit'})
+      },
+      'commons-dataset': {
+        title: 'View Dataset',
+        onClick: () => this.updateStatus({displayForm: 'commons-dataset'})
+      },
+      'commons-dataset-create-edit': {
+        title: 'Edit Dataset',
+        onClick: () => this.updateStatus({displayForm: 'commons-dataset-create-edit'})
+      },
+    };
+
+    this.navItems = [this.statusNavItems['commons-projects-list']];
   }
 
-  updateStatus(event) {
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes) {
+      console.log('changes', changes);
+    }
+  }
+
+  updateStatus(event: CommonsState) {
     this.formStatus = event.displayForm;
     if (event.currentProject !== undefined) {
       this.currentProject = event.currentProject;
@@ -52,5 +106,45 @@ export class CommonsHomeComponent implements OnInit {
       this.projectCreateEditPrevForm = 'commons-projects-list';
       this.datasetCreateEditPrevForm = 'commons-project';
     }
+
+    // Update breadcrumbs items
+    if (this.formStatus === 'commons-dataset-create-edit') {
+      // Home > Commons Home > Project Home > View Dataset > Edit Dataset
+      this.navItems = [
+        this.statusNavItems['commons-projects-list'],
+        this.statusNavItems['commons-project'],
+        this.statusNavItems['commons-dataset'],
+        this.statusNavItems['commons-dataset-create-edit'],
+      ];
+    } else if (this.formStatus === 'commons-dataset') {
+      // Home > Commons Home > Project Home > View Dataset
+      this.navItems = [
+        this.statusNavItems['commons-projects-list'],
+        this.statusNavItems['commons-project'],
+        this.statusNavItems['commons-dataset'],
+      ];
+    } else if (this.formStatus === 'commons-project-create-edit') {
+      // Home > Commons Home > Project Home > Edit Project
+      this.navItems = [
+        this.statusNavItems['commons-projects-list'],
+        this.statusNavItems['commons-project'],
+        this.statusNavItems['commons-project-create-edit'],
+      ];
+    } else if (this.formStatus === 'commons-project') {
+      // Home > Commons Home > Project Home
+      this.navItems = [
+        this.statusNavItems['commons-projects-list'],
+        this.statusNavItems['commons-project'],
+      ];
+    } else {
+      // Home > Commons Home
+      this.navItems = [
+        this.statusNavItems['commons-projects-list'],
+      ];
+    }
+  }
+
+  handleProjectDelete($event: boolean) {
+    // Inform the commons-project.component that the project has been deleted.
   }
 }

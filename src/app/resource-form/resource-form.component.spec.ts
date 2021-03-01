@@ -2,17 +2,17 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
-import { of as observableOf } from 'rxjs';
-import { TimeLeftPipe } from '../shared/filters/time-left.pipe';
-import { mockUser } from '../shared/fixtures/user';
-import { MockResourceApiService } from '../shared/mocks/resource-api.service.mock';
-import { ResourceApiService } from '../shared/resource-api/resource-api.service';
-import { ResourceFormComponent } from './resource-form.component';
-import { RouterTestingModule } from '@angular/router/testing';
 import { MatSnackBarModule } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ActivatedRoute } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
+import { of as observableOf } from 'rxjs';
+import { TimeLeftPipe } from '../shared/filters/time-left.pipe';
 import { getDummyCategory } from '../shared/fixtures/category';
+import { mockInstitution } from '../shared/fixtures/institution';
+import { mockUser } from '../shared/fixtures/user';
+import { ResourceApiService } from '../shared/resource-api/resource-api.service';
+import { ResourceFormComponent } from './resource-form.component';
 
 describe('ResourceFormComponent', () => {
   let httpMock: HttpTestingController;
@@ -39,7 +39,7 @@ describe('ResourceFormComponent', () => {
           {
             provide: ActivatedRoute,
             useValue: {
-              params: observableOf({ email_token: 'skhjdfklhafljkhljkhafdkadshfk' }),
+              params: observableOf({email_token: 'skhjdfklhafljkhljkhafdkadshfk'}),
             }
           },
           ResourceApiService,
@@ -50,19 +50,18 @@ describe('ResourceFormComponent', () => {
   }));
 
   beforeEach(() => {
+    localStorage.setItem('token', 'MOCK_TOKEN_VALUE');
+    sessionStorage.setItem('institution_id', `${mockInstitution.id}`);
+
     httpMock = TestBed.get(HttpTestingController);
     fixture = TestBed.createComponent(ResourceFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
 
-    localStorage.setItem('token', 'MOCK_TOKEN_VALUE');
-
-    const userReqs = httpMock.match('http://localhost:5000/api/session');
-    userReqs.forEach(userReq => {
-      expect(userReq.request.method).toEqual('GET');
-      userReq.flush(mockUser);
-      expect(component.user).toEqual(mockUser);
-    });
+    const userReq1 = httpMock.expectOne('http://localhost:5000/api/session');
+    expect(userReq1.request.method).toEqual('GET');
+    userReq1.flush(mockUser);
+    expect(component.user).toEqual(mockUser);
 
     const categoryReq = httpMock.expectOne('http://localhost:5000/api/category');
     expect(categoryReq.request.method).toEqual('GET');
@@ -75,12 +74,20 @@ describe('ResourceFormComponent', () => {
     const sessionStatusReq = httpMock.expectOne('http://localhost:5000/api/session_status');
     expect(sessionStatusReq.request.method).toEqual('GET');
     sessionStatusReq.flush(mockUser);
+
+    expect(component.user).toEqual(mockUser);
+    const userReq2 = httpMock.expectOne('http://localhost:5000/api/session');
+    expect(userReq2.request.method).toEqual('GET');
+    userReq2.flush(mockUser);
     expect(component.user).toEqual(mockUser);
   });
 
   afterEach(() => {
     fixture.destroy();
-    // httpMock.verify();
+    httpMock.verify();
+
+    sessionStorage.clear();
+    localStorage.clear();
   });
 
   it('should create', () => {

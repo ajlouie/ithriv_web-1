@@ -128,6 +128,7 @@ import { CommonsProjectDocumentComponent } from './commons-project-document/comm
 import { SpreadsheetAllModule } from '@syncfusion/ej2-angular-spreadsheet';
 import { BreadcrumbsComponent } from './breadcrumbs/breadcrumbs.component';
 import { SearchBarComponent } from './search-bar/search-bar.component';
+import { CommonsProjectActionsComponent } from './commons-project-actions/commons-project-actions.component';
 // import { DropDownListComponent } from '@syncfusion/ej2-angular-dropdowns';
 
 export const MY_NATIVE_FORMATS = {
@@ -211,6 +212,7 @@ export const MY_NATIVE_FORMATS = {
     CommonsProjectDocumentComponent,
     BreadcrumbsComponent,
     SearchBarComponent,
+    CommonsProjectActionsComponent,
     // DropDownListComponent
   ],
   imports: [

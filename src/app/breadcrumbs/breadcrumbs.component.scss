@@ -1,6 +1,15 @@
 .breadcrumbs {
   margin: 10px 10px 10px 0px;
   position: relative;
+
+  a {
+    cursor: pointer;
+
+    &:last-of-type {
+      color: black;
+      cursor: default;
+    }
+  }
 }
 
 @mixin column-vertical-align-middle {

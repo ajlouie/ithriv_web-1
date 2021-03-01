@@ -12,6 +12,7 @@ import { MatCard } from '@angular/material/card';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MarkdownModule, MarkdownService } from 'ngx-markdown';
 import { ApprovedBadgeComponent } from '../approved-badge/approved-badge.component';
+import { BreadcrumbsComponent } from '../breadcrumbs/breadcrumbs.component';
 import { CategoryColorBorderDirective } from '../category-color-border.directive';
 import { CsvExportButtonComponent } from '../csv-export-button/csv-export-button.component';
 import { FavoriteResourceButtonComponent } from '../favorite-resource-button/favorite-resource-button.component';
@@ -29,6 +30,7 @@ describe('EventListComponent', () => {
     TestBed.configureTestingModule({
       declarations: [
         ApprovedBadgeComponent,
+        BreadcrumbsComponent,
         CategoryColorBorderDirective,
         CsvExportButtonComponent,
         EventListComponent,

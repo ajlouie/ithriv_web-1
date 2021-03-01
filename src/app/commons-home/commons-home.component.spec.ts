@@ -11,6 +11,7 @@ import {
   MatTabsModule,
   MatToolbarModule, MatTooltipModule, MatTreeModule
 } from '@angular/material';
+import { RouterTestingModule } from '@angular/router/testing';
 import { RichTextEditorModule } from '@syncfusion/ej2-angular-richtexteditor';
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 import { ColorPickerModule } from 'ngx-color-picker';
@@ -23,6 +24,7 @@ import { CommonsDatasetCreateEditComponent } from '../commons-dataset-create-edi
 import { CommonsDatasetComponent } from '../commons-dataset/commons-dataset.component';
 import { CommonsFileUploadComponent } from '../commons-file-upload/commons-file-upload.component';
 import { CommonsMenuComponent } from '../commons-menu/commons-menu.component';
+import { CommonsProjectActionsComponent } from '../commons-project-actions/commons-project-actions.component';
 import { CommonsProjectCreateEditComponent } from '../commons-project-create-edit/commons-project-create-edit.component';
 import { CommonsProjectListComponent } from '../commons-project-list/commons-project-list.component';
 import { CommonsProjectTileComponent } from '../commons-project-tile/commons-project-tile.component';
@@ -32,7 +34,6 @@ import { FileUploadComponent } from '../file-upload/file-upload.component';
 import { FormFieldLabelComponent } from '../form-field-label/form-field-label.component';
 import { FormFieldComponent } from '../form-field/form-field.component';
 import { TreeSelectComponent } from '../tree-select/tree-select.component';
-
 import { CommonsHomeComponent } from './commons-home.component';
 
 describe('CommonsHomeComponent', () => {
@@ -49,6 +50,7 @@ describe('CommonsHomeComponent', () => {
         CommonsFileUploadComponent,
         CommonsHomeComponent,
         CommonsMenuComponent,
+        CommonsProjectActionsComponent,
         CommonsProjectComponent,
         CommonsProjectCreateEditComponent,
         CommonsProjectListComponent,
@@ -88,6 +90,7 @@ describe('CommonsHomeComponent', () => {
         NgProgressModule,
         ReactiveFormsModule,
         RichTextEditorModule,
+        RouterTestingModule,
       ],
     })
       .compileComponents();

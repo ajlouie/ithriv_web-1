@@ -8,6 +8,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { MarkdownModule, MarkdownService } from 'ngx-markdown';
 import { CategoryColorBorderDirective } from '../category-color-border.directive';
 import { getDummyCategory } from '../shared/fixtures/category';
+import { mockInstitution } from '../shared/fixtures/institution';
 import { getDummyResource } from '../shared/fixtures/resource';
 import { getDummyUser, mockUser } from '../shared/fixtures/user';
 import { MockMarkdownService } from '../shared/mocks/markdown.service.mock';
@@ -26,6 +27,9 @@ describe('ResourceComponent', () => {
   let fixture: ComponentFixture<ResourceComponent>;
 
   const getDummyData = (options: ComponentOptions) => {
+    localStorage.setItem('token', 'MOCK_TOKEN_VALUE');
+    sessionStorage.setItem('institution_id', `${mockInstitution.id}`);
+
     httpMock = TestBed.get(HttpTestingController);
     fixture = TestBed.createComponent(ResourceComponent);
     component = fixture.componentInstance;
@@ -92,6 +96,9 @@ describe('ResourceComponent', () => {
   afterEach(() => {
     fixture.destroy();
     httpMock.verify();
+
+    sessionStorage.clear();
+    localStorage.clear();
   });
 
   it('should create', () => {

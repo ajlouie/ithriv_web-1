@@ -22,6 +22,7 @@ import {
 } from '@angular/material';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 import { RichTextEditorModule } from '@syncfusion/ej2-angular-richtexteditor';
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 import { ColorPickerModule } from 'ngx-color-picker';
@@ -40,7 +41,6 @@ import { mockProject } from '../shared/fixtures/project';
 import { mockUser } from '../shared/fixtures/user';
 import { ResourceApiService } from '../shared/resource-api/resource-api.service';
 import { TreeSelectComponent } from '../tree-select/tree-select.component';
-
 import { CommonsDatasetCreateEditComponent } from './commons-dataset-create-edit.component';
 
 describe('CommonsDatasetCreateEditComponent', () => {
@@ -91,6 +91,7 @@ describe('CommonsDatasetCreateEditComponent', () => {
         OwlNativeDateTimeModule,
         ReactiveFormsModule,
         RichTextEditorModule,
+        RouterTestingModule,
       ],
       providers: [
         ResourceApiService,

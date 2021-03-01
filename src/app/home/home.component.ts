@@ -1,5 +1,6 @@
 import { Component, HostBinding, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { MatTab, MatTabGroup } from '@angular/material/tabs';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Institution } from '../institution';
@@ -28,6 +29,7 @@ export class HomeComponent implements OnInit {
   institution: Institution;
   url = 'http://localhost:4200/#/commons';
   urlSafe: SafeResourceUrl;
+  tabIndex = 0;
 
   constructor(
     private api: ResourceApiService,
@@ -35,6 +37,15 @@ export class HomeComponent implements OnInit {
     private route: ActivatedRoute,
     public sanitizer: DomSanitizer
   ) {
+    this.route.queryParamMap.subscribe(queryParamMap => {
+      if (queryParamMap.has('tabIndex')) {
+        const tabIndex = queryParamMap.get('tabIndex');
+        if (/^[0-9]+$/.test(tabIndex)) {
+          this.tabIndex = parseInt(tabIndex, 10);
+        }
+      }
+    });
+
     this.loadUser();
 
     this.api.getResources().subscribe(resources => {
@@ -93,5 +104,12 @@ export class HomeComponent implements OnInit {
           this.institution = inst;
         });
     }
+  }
+
+  updateRouteTabIndex(selectedIndex: number) {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {tabIndex: selectedIndex},
+    });
   }
 }

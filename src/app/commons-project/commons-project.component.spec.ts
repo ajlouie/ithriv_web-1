@@ -1,13 +1,19 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import {
-  MatCardModule, MatChipsModule, MatDialogModule,
+  MatCardModule,
+  MatChipsModule,
+  MatDialogModule,
   MatDividerModule,
   MatIconModule,
-  MatInputModule, MatListModule, MatProgressBarModule,
+  MatInputModule,
+  MatListModule,
+  MatProgressBarModule,
   MatTableModule,
-  MatToolbarModule, MatTooltipModule
+  MatToolbarModule,
+  MatTooltipModule
 } from '@angular/material';
+import { RouterTestingModule } from '@angular/router/testing';
 import { MarkdownModule, MarkdownService } from 'ngx-markdown';
 import { BreadcrumbsComponent } from '../breadcrumbs/breadcrumbs.component';
 import { CommonsFileUploadComponent } from '../commons-file-upload/commons-file-upload.component';
@@ -15,7 +21,6 @@ import { mockDataset } from '../shared/fixtures/dataset';
 import { mockProject } from '../shared/fixtures/project';
 import { mockUser } from '../shared/fixtures/user';
 import { MockMarkdownService } from '../shared/mocks/markdown.service.mock';
-
 import { CommonsProjectComponent } from './commons-project.component';
 
 describe('CommonsProjectComponent', () => {
@@ -43,13 +48,14 @@ describe('CommonsProjectComponent', () => {
         MatTableModule,
         MatToolbarModule,
         MatTooltipModule,
+        RouterTestingModule,
       ],
       providers: [
-        { provide: MarkdownService, useClass: MockMarkdownService },
+        {provide: MarkdownService, useClass: MockMarkdownService},
       ]
 
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

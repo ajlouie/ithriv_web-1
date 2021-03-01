@@ -17,6 +17,9 @@ import { CategoryTileComponent } from '../category-tile/category-tile.component'
 import { GradientBorderDirective } from '../gradient-border.directive';
 import { ResourceListComponent } from '../resource-list/resource-list.component';
 import { ResourceQuery } from '../resource-query';
+import { mockInstitution } from '../shared/fixtures/institution';
+import { getDummyResource } from '../shared/fixtures/resource';
+import { mockUser } from '../shared/fixtures/user';
 import { ResourceApiService } from '../shared/resource-api/resource-api.service';
 import { HomeComponent } from './home.component';
 
@@ -55,6 +58,7 @@ describe('HomeComponent', () => {
   }));
 
   beforeEach(() => {
+    const institutionId = mockInstitution.id;
     httpMock = TestBed.get(HttpTestingController);
     fixture = TestBed.createComponent(HomeComponent);
     component = fixture.componentInstance;
@@ -68,23 +72,35 @@ describe('HomeComponent', () => {
       sort: '',
       resources: [],
     });
+
+    localStorage.setItem('token', `MOCK_TOKEN_VALUE`);
+    sessionStorage.setItem('institution_id', `${institutionId}`);
     fixture.detectChanges();
 
-    const categoriesReq = httpMock.expectOne(`http://localhost:5000/api/category/root`);
-    expect(categoriesReq.request.method).toEqual('GET');
-    categoriesReq.flush([]);
+    const userReq = httpMock.expectOne(`http://localhost:5000/api/session`);
+    expect(userReq.request.method).toEqual('GET');
+    userReq.flush(mockUser);
+    expect(component.user).toEqual(mockUser);
 
-    const resourcesReqs = httpMock.match(`http://localhost:5000/api/resource`);
-    resourcesReqs.forEach(resourcesReq => {
-      console.log('resourcesReq', resourcesReq);
-      expect(resourcesReq.request.method).toEqual('GET');
-      resourcesReq.flush([]);
-    });
+    const institutionReq = httpMock.expectOne(`http://localhost:5000/api/institution/${institutionId}`);
+    expect(institutionReq.request.method).toEqual('GET');
+    institutionReq.flush(mockInstitution);
+    expect(component.institution).toEqual(mockInstitution);
+
+    const mockResource1 = getDummyResource();
+    const resourceReq1 = httpMock.expectOne(`http://localhost:5000/api/resource`);
+    expect(resourceReq1.request.method).toEqual('GET');
+    resourceReq1.flush([mockResource1]);
+
+    const mockResource2 = getDummyResource({id: 1, name: 'Event'});
+    const resourceReq2 = httpMock.expectOne(`http://localhost:5000/api/resource?segment=Event`);
+    expect(resourceReq2.request.method).toEqual('GET');
+    resourceReq2.flush([mockResource2]);
   });
 
   afterEach(() => {
     fixture.destroy();
-    // httpMock.verify();
+    httpMock.verify();
   });
 
   it('should create', () => {

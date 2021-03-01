@@ -14,6 +14,7 @@ export class UserResourceListComponent implements OnInit {
   resources: Resource[];
   @Input() user: User;
   @Input() institution: Institution;
+  @Input() tabIndex: number;
 
   constructor(
     private api: ResourceApiService,

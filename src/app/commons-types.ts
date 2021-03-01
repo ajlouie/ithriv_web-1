@@ -144,3 +144,24 @@ export interface IrbNumber {
   study_id: string;
 }
 
+export interface NavItem {
+  title: string;
+  routerLink?: any[] | string;
+  queryParams?: { [key: string]: any };
+  onClick?: () => void;
+}
+
+export type CommonsStateForm =
+  | 'commons-projects-list'
+  | 'commons-project'
+  | 'commons-project-create-edit'
+  | 'commons-dataset'
+  | 'commons-dataset-create-edit';
+
+export interface CommonsState {
+  currentDataset?: Dataset;
+  currentProject?: Project;
+  previousForm?: CommonsStateForm;
+  displayForm: CommonsStateForm;
+}
+

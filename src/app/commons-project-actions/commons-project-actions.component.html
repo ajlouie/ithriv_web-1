@@ -1,0 +1,26 @@
+<button
+  *ngIf="
+    project.can_delete_meta &&
+    project.can_delete_data &&
+    !showConfirmDelete &&
+    createNew === false
+  "
+  (click)="showConfirmDelete = true"
+  color="warn"
+  mat-raised-button
+  type="button"
+  ngClass="show-confirm-delete"
+>
+  Delete Project
+</button>
+<button
+  *ngIf="showConfirmDelete && project.can_delete_meta && project.can_delete_data"
+  (click)="deleteClicked.emit(true)"
+  color="warn"
+  mat-raised-button
+  type="button"
+  ngClass="confirm-delete"
+>
+  <mat-icon>delete</mat-icon>
+  Permanently Delete This Project!!!
+</button>

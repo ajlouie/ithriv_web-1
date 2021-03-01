@@ -1,4 +1,11 @@
 <div class="breadcrumbs" fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="space-between">
+  <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="4px" style="padding-left: 40px; padding-top: 20px;">
+    <a href="/">Home</a>
+    <ng-container *ngFor="let item of navItems; let i = index">
+      <mat-icon *ngIf="i < navItems.length">chevron_right</mat-icon>
+      <a [routerLink]="item.routerLink" [queryParams]="item.queryParams" (click)="item.onClick && item.onClick()">{{item.title}}</a>
+    </ng-container>
+  </div>
   <ng-content select="section.left"></ng-content>
   <ng-content select="section.right"></ng-content>
 </div>
