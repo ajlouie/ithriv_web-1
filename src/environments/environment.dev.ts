@@ -1,6 +1,8 @@
+import { AppEnvironment } from '../app/environment';
+
 const servicehost = 'dev.ithriv.org';
 
-export const environment = {
+export const environment: AppEnvironment = {
   envName: 'dev',
   production: false,
   api: `https://${servicehost}`,
