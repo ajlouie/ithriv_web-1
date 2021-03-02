@@ -1,8 +1,6 @@
-// Import theming functions
-@import "~@angular/material/theming";
-@import "~ng-pick-datetime/assets/style/picker.min.css";
-@import "../../ithriv_material";
-@include ithriv-theme($ithriv-theme);
+@import "../../config";
+@import "../../mixins";
+
 form {
   width: 100%;
   min-height: 100%;
@@ -30,8 +28,8 @@ footer {
 fieldset {
   border: none;
   outline: none;
-  padding: none;
-  margin: none;
+  padding: 0;
+  margin: 0;
   &.show {
     padding: 2em;
     margin-bottom: 2em;
@@ -40,7 +38,7 @@ fieldset {
 }
 
 ::ng-deep snack-bar-container.snackbar-warning {
-  background-color: mat-color($ithriv-warn, default, 1);
+  background-color: $brand-warning;
 }
 
 mat-toolbar.mat-toolbar {

@@ -1,7 +1,5 @@
-// Import theming functions
-@import '~@angular/material/theming';
-@import '../../ithriv_material';
-@include ithriv-theme($ithriv-theme);
+@import "../../config";
+@import "../../mixins";
 
 mat-card-footer {
   position: fixed;
@@ -27,7 +25,7 @@ mat-card-footer {
   }
 
   h1 {
-    color: mat-color($ithriv-primary, 800, 1);
+    color: $brand-primary;
     font-size: 48px;
     font-weight: bolder;
     background: transparent;
@@ -52,7 +50,7 @@ mat-card {
 }
 
 mat-card-title {
-  color: mat-color($ithriv-primary, 800, 1);
+  color: $brand-primary;
 }
 
 .mat-line.category {

@@ -1,7 +1,4 @@
-// Import theming functions
-@import '~@angular/material/theming';
-@import '../../ithriv_material';
-@include ithriv-theme($ithriv-theme);
+@import "../../config";
 
 .center {
   display: flex;
@@ -13,7 +10,7 @@
 #fileQueueContainer {
   padding-top: 1em;
   padding-bottom: 1em;
-  transition: $animationDuration ease opacity;
+  transition: $animation-duration ease opacity;
 
   table {
     width: 100%;

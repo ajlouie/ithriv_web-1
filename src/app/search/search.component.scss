@@ -1,8 +1,4 @@
-// Import theming functions
-@import '~@angular/material/theming';
-@import '../../ithriv_material';
-// Load the UVA Theme
-@include ithriv-theme($ithriv-theme);
+@import "../../config";
 
 form.search-box {
   background: transparent;
@@ -10,7 +6,7 @@ form.search-box {
   padding-top: 1em;
   padding-bottom: 1em;
   display: flex;
-  transition: $animationDuration ease-in-out padding-top;
+  transition: $animation-duration ease-in-out padding-top;
 
   &.hidden-results {
     padding-top: 100px;
@@ -59,7 +55,7 @@ form.search-box {
   }
 
   mat-list-item:hover {
-    background-color: mat-color($uva-primary, 100)
+    background-color: $brand-primary-light-100;
   }
 
   button {

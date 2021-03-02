@@ -1,10 +1,7 @@
 <app-breadcrumbs [navItems]="navItems">
   <section class="right" *ngIf="user">
     <ng-container *ngIf="formStatus === 'commons-project'">
-      <app-commons-project-actions
-        [project]="currentProject"
-        (deleteClicked)="projectAction = 'delete'"
-      ></app-commons-project-actions>
+
     </ng-container>
     <ng-container *ngIf="formStatus === 'commons-project-create-edit'">
     
@@ -15,7 +12,6 @@
     <ng-container *ngIf="formStatus === 'commons-dataset-create-edit'">
     
     </ng-container>
-    
   </section>
 </app-breadcrumbs>
 <h1 class="commons-home-toolbar" *ngIf="commonsHomeToolbarTitle">{{commonsHomeToolbarTitle}}</h1>

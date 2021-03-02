@@ -1,8 +1,10 @@
-import { Component, HostBinding, Input, OnInit } from '@angular/core';
+import { Component, HostBinding, Input, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatTab, MatTabGroup } from '@angular/material/tabs';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
+import { CommonsHomeComponent } from '../commons-home/commons-home.component';
+import { CommonsStateForm } from '../commons-types';
 import { Institution } from '../institution';
 import { Resource } from '../resource';
 import { ResourceQuery } from '../resource-query';
@@ -30,6 +32,10 @@ export class HomeComponent implements OnInit {
   url = 'http://localhost:4200/#/commons';
   urlSafe: SafeResourceUrl;
   tabIndex = 0;
+  formStatus: CommonsStateForm = 'commons-projects-list';
+
+  @ViewChild('commonsHome', { static: false }) commonsHomeComponent: CommonsHomeComponent;
+
 
   constructor(
     private api: ResourceApiService,
@@ -49,12 +55,10 @@ export class HomeComponent implements OnInit {
     this.loadUser();
 
     this.api.getResources().subscribe(resources => {
-      console.log('getResources -> resources', resources);
       this.resources = resources;
     });
 
     this.api.getResources('Event').subscribe(events => {
-      console.log('getResources -> events', events);
       events.forEach(event => {
         event.availabilities.forEach(availability => {
           if (this.user !== undefined && this.user !== null) {
@@ -111,5 +115,11 @@ export class HomeComponent implements OnInit {
       relativeTo: this.route,
       queryParams: {tabIndex: selectedIndex},
     });
+  }
+
+  handleFormStatusTabChange() {
+    if (this.commonsHomeComponent && this.tabIndex === 3) {
+      this.commonsHomeComponent.updateStatus({displayForm: 'commons-projects-list'});
+    }
   }
 }

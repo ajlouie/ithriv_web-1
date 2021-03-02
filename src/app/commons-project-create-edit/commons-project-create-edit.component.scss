@@ -1,8 +1,4 @@
-// Import theming functions
-@import '~@angular/material/theming';
-@import '~ng-pick-datetime/assets/style/picker.min.css';
-@import '../../ithriv_material';
-@include ithriv-theme($ithriv-theme);
+@import '../../config';
 
 form {
   width: 100%;
@@ -12,27 +8,26 @@ form {
   padding-bottom: 0em;
 }
 
+mat-card-header {
+  background-color: $brand-gray-light;
+
+  .mat-card-title {
+    font-weight: bold;
+    font-size: $font-size-larger-7;
+  }
+}
+
 mat-card-footer {
   position: fixed;
   bottom: 0em;
   right: 5em;
   height: 64px;
-  @include mat-elevation(2);
   z-index: 7;
 }
 
 .ithriv-spacer {
   flex: 1 1 auto;
 }
-
-// footer {
-//   position: fixed;
-//   bottom: 2em;
-//   right: 2em;
-//   height: 64px;
-//   @include mat-elevation(2);
-//   z-index: 7;
-// }
 
 #spinnerContainer {
   display: flex;
@@ -49,12 +44,11 @@ fieldset {
   &.show {
     padding: 2em;
     margin-bottom: 2em;
-    @include mat-elevation(1);
   }
 }
 
 ::ng-deep snack-bar-container.snackbar-warning {
-  background-color: mat-color($ithriv-warn, default, 1);
+  background-color: $brand-warning-dark;
 }
 
 table.projectperms {

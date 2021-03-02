@@ -1,3 +1,5 @@
+@import "../../config";
+
 $breadcrumb-size: 90px;
 $breadcrumb-padding: 10px;
 $breadcrumb-border-width: 4px;
@@ -131,3 +133,8 @@ $breadcrumb-inner-border-width: 1px;
   padding: 2em;
   text-align: center;
 }
+
+::ng-deep .mat-tab-group.LEARN .mat-ink-bar { background-color: $brand-category-learn; }
+::ng-deep .mat-tab-group.PROPOSE .mat-ink-bar { background-color: $brand-category-propose; }
+::ng-deep .mat-tab-group.CONDUCT .mat-ink-bar { background-color: $brand-category-conduct; }
+::ng-deep .mat-tab-group.CONNECT .mat-ink-bar { background-color: $brand-category-connect; }

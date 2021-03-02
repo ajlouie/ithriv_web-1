@@ -5,11 +5,38 @@
   <mat-card-content>
     <mat-card *ngIf="user">
       <mat-card-content *ngIf="user">
-        <mat-toolbar>
-          <mat-card-title>
-            Project Details
-          </mat-card-title>
-        </mat-toolbar>
+        <mat-card-header>
+          <h2 mat-card-title>Project Details</h2>
+            <span fxFlex></span>
+            <div>
+              <button
+                *ngIf="
+                  project.can_delete_meta &&
+                  project.can_delete_data &&
+                  !showConfirmDelete &&
+                  createNew === false
+                "
+                (click)="showConfirmDelete = true"
+                color="warn"
+                mat-raised-button
+                type="button"
+                ngClass="show-confirm-delete"
+              >
+                Delete Project
+              </button>
+              <button
+                *ngIf="showConfirmDelete && project.can_delete_meta && project.can_delete_data"
+                (click)="deleteProject()"
+                color="warn"
+                mat-raised-button
+                type="button"
+                ngClass="confirm-delete"
+              >
+                <mat-icon>delete</mat-icon>
+                Permanently Delete This Project!!!
+              </button>
+            </div>
+        </mat-card-header>
         <form
           *ngIf="formStatus === 'form'"
           [formGroup]="fg"

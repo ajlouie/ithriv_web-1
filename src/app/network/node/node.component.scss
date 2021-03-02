@@ -1,10 +1,7 @@
-// Import theming functions
-@import '~@angular/material/theming';
-@import '../../../ithriv_material';
-@include ithriv-theme($ithriv-theme);
+@import "../../../config";
 
 g, circle, rect, text, image, g > svg {
-  transition: $animationDuration ease-in-out all;
+  transition: $animation-duration ease-in-out all;
 }
 
 circle, rect {

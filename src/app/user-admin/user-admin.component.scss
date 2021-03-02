@@ -1,7 +1,4 @@
-// Import theming functions
-@import '~@angular/material/theming';
-@import '../../ithriv_material';
-@include ithriv-theme($ithriv-theme);
+@import "../../config";
 
 .userList {
   text-align: center;
@@ -40,7 +37,7 @@
 
 mat-row:hover {
   cursor: pointer;
-  background: mat-color($ithriv-accent, 100, 1.0);
+  background: $brand-accent-light-100;
 }
 
 .mat-column-eppn {

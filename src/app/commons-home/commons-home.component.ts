@@ -9,7 +9,7 @@ import { User } from '../user';
   templateUrl: './commons-home.component.html',
   styleUrls: ['./commons-home.component.scss'],
 })
-export class CommonsHomeComponent implements OnInit, OnChanges {
+export class CommonsHomeComponent implements OnInit {
   @Input() user: User;
   @Input() formStatus: CommonsStateForm;
   @Input() tabIndex: number;
@@ -76,12 +76,6 @@ export class CommonsHomeComponent implements OnInit, OnChanges {
     this.navItems = [this.statusNavItems['commons-projects-list']];
   }
 
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes) {
-      console.log('changes', changes);
-    }
-  }
-
   updateStatus(event: CommonsState) {
     this.formStatus = event.displayForm;
     if (event.currentProject !== undefined) {
@@ -142,6 +136,8 @@ export class CommonsHomeComponent implements OnInit, OnChanges {
         this.statusNavItems['commons-projects-list'],
       ];
     }
+
+    this.formStatusChange.emit(this.formStatus);
   }
 
   handleProjectDelete($event: boolean) {

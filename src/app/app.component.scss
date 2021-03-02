@@ -1,23 +1,20 @@
-// Import theming functions
-@import '../ithriv_material';
-@import '~@angular/material/theming';
-@include ithriv-theme($ithriv-theme);
+@import "../config";
 
 mat-toolbar {
 
   @keyframes glowing {
-    0% { background-color:  mat-color($ithriv-warn, default, 0.5); }
-    20% { background-color: mat-color($ithriv-warn, default, 0.6); }
-    40% { background-color: mat-color($ithriv-warn, default, 0.7); }
-    60% { background-color: mat-color($ithriv-warn, default, 0.8); }
-    80% { background-color: mat-color($ithriv-warn, default, 0.9); }
-    100% { background-color: mat-color($ithriv-warn, default, 1); }
+    0% { background-color:  rgba($brand-warning, 0.5); }
+    20% { background-color: rgba($brand-warning, 0.6); }
+    40% { background-color: rgba($brand-warning, 0.7); }
+    60% { background-color: rgba($brand-warning, 0.8); }
+    80% { background-color: rgba($brand-warning, 0.9); }
+    100% { background-color: rgba($brand-warning, 1); }
   }
 
   mat-toolbar-row.warning {
     //  box-shadow: -1px -1px #888;
     //  box-shadow: 0 0 0 rgba(204,169,44, 0.4);
-    background-color:  mat-color($ithriv-warn, default, 1);
+    background-color:  $brand-warning;
     animation: glowing 1000ms 10 500ms;
   }
 
@@ -29,7 +26,7 @@ mat-toolbar {
 
 
     a:hover {
-      color: mat-color($ithriv-accent, default, 1.0);
+      color: $brand-accent;
     }
 
     .fill-remaining-space {
@@ -45,7 +42,7 @@ mat-toolbar {
     color: white;
     height: 30px;
     font-size: 12px;
-    background-color: mat-color($ithriv-primary, 900, 1.0);
+    background-color: $brand-primary-dark;
 
     &.logged-in {
       background-color: red;
@@ -70,7 +67,7 @@ mat-toolbar {
     padding-top: 60px;
     padding-bottom: 50px;
     background-color: white;
-    border-bottom: 8px solid mat-color($ithriv-primary, 800, 1.0);
+    border-bottom: 8px solid $brand-primary;
 
     @media screen and (max-width: 959px) {
       height: 48px;
@@ -82,8 +79,8 @@ mat-toolbar {
     button.mat-stroked-button {
       border-width: 1px;
       border-style: solid;
-      border-color: mat-color($ithriv-primary, 800, 1.0);
-      color: mat-color($ithriv-primary, 800, 1.0);
+      border-color: $brand-primary;
+      color: $brand-primary;
     }
 
     img {
@@ -110,7 +107,7 @@ mat-toolbar {
 
 
     h1 {
-      color: mat-color($ithriv-primary, 800, 1.0);
+      color: $brand-primary;
       font-size: 32px;
 
       @media screen and (max-width: 959px) {
@@ -149,23 +146,23 @@ mat-toolbar {
     background: white;
 
     h1 {
-      color: mat-color($ithriv-primary, 800, 1.0);
+      color: $brand-primary;
       font-size: 32px;
       background: transparent;
     }
 
-    color: mat-color($ithriv-primary, 900, 1.0);
+    color: $brand-primary-dark;
   }
 
   .secondary-nav {
     mat-button-toggle-group {
       mat-button-toggle {
-        color: mat-color($ithriv-primary, 800, 1.0);
+        color: $brand-primary;
         background-color: #CCC;
 
         &.mat-button-toggle-checked {
           color: white;
-          background-color: mat-color($ithriv-primary, 800, 1.0);
+          background-color: $brand-primary;
         }
       }
     }
@@ -179,7 +176,7 @@ mat-sidenav, mat-sidenav-container {
   z-index: 10;
 
   mat-list-item button {
-    color: mat-color($ithriv-primary, 800, 1.0);
+    color: $brand-primary;
   }
 }
 

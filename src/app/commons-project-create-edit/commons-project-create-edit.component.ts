@@ -51,6 +51,7 @@ export class CommonsProjectCreateEditComponent implements OnInit, OnChanges {
   iThrivForm: IThrivForm;
   formStatus = 'form';
   isDataLoaded = false;
+  showConfirmDelete = false;
   createNew = false;
   institutionOptions = ['Virginia Tech', 'Carilion', 'Inova', 'UVA'];
   error: String;

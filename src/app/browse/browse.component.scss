@@ -1,7 +1,5 @@
-// Import theming functions
-@import '~@angular/material/theming';
-@import '../../ithriv_material';
-@include ithriv-theme($ithriv-theme);
+@import "../../config";
+@import "../../mixins";
 
 h1, h2 {
   padding: 10px 10px;
@@ -178,13 +176,13 @@ h1, h2 {
     position: relative;
 
     &:hover {
-      outline: 1px solid mat-color($ithriv-primary, 200, 1);
-      background-color: mat-color($ithriv-primary, 100, 1);
+      outline: 1px solid $brand-primary-light-200;
+      background-color: $brand-primary-light-100;
     }
 
     &:active {
-      outline: 1px solid mat-color($ithriv-accent, 200, 1);
-      background-color: mat-color($ithriv-accent, 100, 1);
+      outline: 1px solid $brand-accent-light-200;
+      background-color: $brand-accent-light-100;
     }
 
     mat-card-header {

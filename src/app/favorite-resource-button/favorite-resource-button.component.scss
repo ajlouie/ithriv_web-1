@@ -1,9 +1,5 @@
-// Import theming functions
-@import '~@angular/material/theming';
-// Import your custom theme
-@import '../../ithriv_material';
-// Load the UVA Theme
-@include ithriv-theme($ithriv-theme);
+@import "../../config";
+@import "../../mixins";
 
 button.mat-mini-fab.mat-accent {
   background-color: transparent;
@@ -11,17 +7,17 @@ button.mat-mini-fab.mat-accent {
   @include mat-elevation(0);
 
   mat-icon {
-   -webkit-text-stroke: 1px mat-color($ithriv-accent, default, 1);
+   -webkit-text-stroke: 1px $brand-accent;
    color: white;
    text-shadow:
-     -1px -1px 0 mat-color($ithriv-accent, default, 1),
-      1px -1px 0 mat-color($ithriv-accent, default, 1),
-      -1px 1px 0 mat-color($ithriv-accent, default, 1),
-       1px 1px 0 mat-color($ithriv-accent, default, 1);
+     -1px -1px 0 $brand-accent,
+      1px -1px 0 $brand-accent,
+      -1px 1px 0 $brand-accent,
+       1px 1px 0 $brand-accent;
 
     &.active {
       -webkit-text-stroke: none;
-      color: mat-color($ithriv-accent, default, 1);
+      color: $brand-accent;
       text-shadow: none;
     }
   }

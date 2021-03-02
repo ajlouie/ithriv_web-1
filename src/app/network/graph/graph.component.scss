@@ -1,7 +1,4 @@
-// Import theming functions
-@import '~@angular/material/theming';
-@import '../../../ithriv_material';
-@include ithriv-theme($ithriv-theme);
+@import "../../../config";
 
 .container {
   display: flex;
@@ -21,7 +18,7 @@
     g {
       &.level-0-menu,
       &.level-0 {
-        transition: $animationDuration ease-in-out all;
+        transition: $animation-duration ease-in-out all;
       }
     }
 
@@ -30,7 +27,7 @@
 
       &.level-1-line,
       &.level-2-line {
-        transition: $animationDuration ease-in-out all;
+        transition: $animation-duration ease-in-out all;
       }
     }
   }
