@@ -12,7 +12,6 @@ mat-card-footer {
 }
 
 .dataset {
-  padding: 2em;
   position: relative;
 
   .category-color {
@@ -75,18 +74,6 @@ mat-icon {
   cursor: pointer;
 }
 
-table.datasetperms {
-  font-weight: 400;
-  text-align: center;
-  width: 50%;
-}
-
-table.datasetversions {
-  font-weight: 400;
-  text-align: center;
-  width: 100%;
-}
-
 .mat-row {
   position: relative;
 }
@@ -101,12 +88,4 @@ table.datasetversions {
 
 .gray {
   background-color: $brand-gray-light;
-}
-
-.mat-header-cell {
-  background-color: $brand-primary-light;
-  color: white;
-  text-decoration: underline;
-  font-size: 14px;
-  text-align: center;
 }

@@ -19,21 +19,6 @@
       ></app-event-list>
     </div>
   </mat-tab>
-  <!--
-  <mat-tab>
-    <ng-template mat-tab-label>
-      <span>Research Commons</span>
-    </ng-template>
-    <ng-template matTabContent>
-      <ng-container class="example-small-box mat-elevation-z4">
-        <app-commons-home
-          [user]="user"
-          formStatus="commons-projects-list"
-        ></app-commons-home>
-      </ng-container>
-    </ng-template>
-  </mat-tab>
-  -->
 </mat-tab-group>
 
 <h1 *ngIf="user" class="mat-h1 page-title">myTHRIV Workspace</h1>
@@ -93,15 +78,13 @@
       <span class="tab-click-area" (click)="handleFormStatusTabChange()">Research Commons</span>
     </ng-template>
     <ng-template matTabContent>
-      <ng-container class="example-small-box mat-elevation-z4">
-        <app-commons-home
-          #commonsHome
-          [user]="user"
-          color="primary"
-          [formStatus]="formStatus"
-          [tabIndex]="3"
-        ></app-commons-home>
-      </ng-container>
+      <app-commons-home
+        #commonsHome
+        [user]="user"
+        color="primary"
+        [formStatus]="formStatus"
+        [tabIndex]="3"
+      ></app-commons-home>
     </ng-template>
   </mat-tab>
   <mat-tab label="Recently Updated Resources and Events" [tabindex]="4">

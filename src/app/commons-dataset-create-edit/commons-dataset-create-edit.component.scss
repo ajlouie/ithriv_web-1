@@ -13,15 +13,6 @@ form {
   flex: 1 1 auto;
 }
 
-mat-card-footer {
-  position: fixed;
-  bottom: 0;
-  right: 5em;
-  height: 64px;
-  @include mat-elevation(2);
-  z-index: 7;
-}
-
 #spinnerContainer {
   display: flex;
   align-items: center;
@@ -45,12 +36,6 @@ fieldset {
   background-color: $brand-warning;
 }
 
-table.datasetperms {
-  font-weight: 400;
-  text-align: center;
-  width: 50%;
-}
-
 .mat-row {
   position: relative;
 }
@@ -67,18 +52,18 @@ table.datasetperms {
   background-color: $brand-gray-light;
 }
 
-.mat-header-cell {
-  background-color: $brand-primary-light;
-  color: white;
-  text-decoration: underline;
-  font-size: 14px;
-  text-align: center;
-}
-
 .full-width {
   width: 100%;
 }
 
 .mat-radio-button ~ .mat-radio-button {
   margin-left: 16px;
+}
+
+fieldset.dataset-type {
+  border: 1px solid $brand-gray;
+  border-radius: 2px;
+  margin-top: 1em;
+  margin-bottom: 1em;
+  padding: 1em;
 }

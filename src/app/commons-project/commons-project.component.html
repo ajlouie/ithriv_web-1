@@ -14,8 +14,9 @@
       fxFlex.sm="50%"
       fxFlex.xs="100%"
     >
-      <mat-card>
-        <mat-card-content>
+      <mat-card ngClass="view">
+        <mat-card-header>
+          <span fxFlex></span>
           <button
             mat-flat-button
             (click)="showProject()"
@@ -26,24 +27,26 @@
             <mat-icon>edit</mat-icon>
             EDIT PROJECT DETAILS
           </button>
+        </mat-card-header>
+        <mat-card-content>
           <h4>
             <markdown [data]="project.description"></markdown>
           </h4>
         </mat-card-content>
       </mat-card>
       <mat-divider [inset]="true"></mat-divider>
-      <mat-card *ngIf="user && project.id !== '' && project.can_upload_data === true || project.can_download_data === true || project.can_delete_data === true">
+      <mat-card ngClass="view" *ngIf="user && project.id !== '' && project.can_upload_data === true || project.can_download_data === true || project.can_delete_data === true">
+        <mat-card-header>
+          <mat-card-title>
+            Documents
+          </mat-card-title>
+        </mat-card-header>
         <mat-card-content *ngIf="user">
-          <mat-toolbar>
-            <mat-card-title>
-              Documents
-            </mat-card-title>
-          </mat-toolbar>
           <mat-list *ngIf="project.documents.length > 0">
             <table
               mat-table
               [dataSource]="project.documents"
-              class="mat-elevation-z8 documents"
+              class="documents"
             >
               <ng-container matColumnDef="name">
                 <th mat-header-cell *matHeaderCellDef>NAME</th>
@@ -169,6 +172,8 @@
               ></tr>
             </table>
           </mat-list>
+        </mat-card-content>
+        <mat-card-actions>
           <button
             *ngIf="
               user && project.id !== '' && project.can_upload_data === true
@@ -181,24 +186,26 @@
             <mat-icon>add</mat-icon>
             ADD DOCUMENT
           </button>
-        </mat-card-content>
+        </mat-card-actions>
       </mat-card>
       <mat-divider [inset]="true"></mat-divider>
       <mat-card
+        ngClass="view"
         *ngIf="
           user && project.id !== '' && project.can_manage_permission === true
         "
       >
-        <mat-toolbar>
+        <mat-card-header>
           <mat-card-title>
             Project Team
           </mat-card-title>
-        </mat-toolbar>
+        </mat-card-header>
+        <mat-card-content>
         <mat-list dense>
           <table
             mat-table
             [dataSource]="userPermissions$ | async"
-            class="mat-elevation-z8 projectperms"
+            class="projectperms"
           >
             <ng-container matColumnDef="email">
               <th mat-header-cell *matHeaderCellDef>EMAIL</th>
@@ -226,31 +233,34 @@
             ></tr>
           </table>
         </mat-list>
-        <button
-          *ngIf="user && project.can_manage_permission === true"
-          matTooltip="Click here to edit project details/permissions"
-          mat-raised-button
-          color="primary"
-          (click)="showProject()"
-        >
-          <mat-icon>security</mat-icon>
-          EDIT PERMISSIONS
-        </button>
+        </mat-card-content>
+        <mat-card-actions>
+          <button
+            *ngIf="user && project.can_manage_permission === true"
+            matTooltip="Click here to edit project details/permissions"
+            mat-raised-button
+            color="primary"
+            (click)="showProject()"
+          >
+            <mat-icon>security</mat-icon>
+            EDIT PERMISSIONS
+          </button>
+        </mat-card-actions>
       </mat-card>
       <mat-divider [inset]="true"></mat-divider>
-      <mat-card>
+      <mat-card ngClass="view">
+        <mat-card-header>
+          <mat-card-title>
+            Datasets
+          </mat-card-title>
+        </mat-card-header>
         <mat-card-content>
-          <mat-toolbar>
-            <mat-card-title>
-              Datasets
-            </mat-card-title>
-          </mat-toolbar>
           <mat-list dense>
             <ng-container *ngIf="datasetsPrivate && datasetsPublic && getDataSource().length > 0">
               <table
                 mat-table
                 [dataSource]="getDataSource()"
-                class="mat-elevation-z8 datasets"
+                class="datasets"
               >
                 <ng-container matColumnDef="name">
                   <th mat-header-cell *matHeaderCellDef>NAME</th>
@@ -450,6 +460,8 @@
               </table>
             </ng-container>
           </mat-list>
+        </mat-card-content>
+        <mat-card-actions>
           <button
             mat-raised-button
             *ngIf="
@@ -461,7 +473,7 @@
             <mat-icon>post_add</mat-icon>
             ADD DATASET
           </button>
-        </mat-card-content>
+        </mat-card-actions>
       </mat-card>
       <mat-divider [inset]="true"></mat-divider>
     </div>
@@ -480,7 +492,7 @@
           <mat-chip
             matTooltip="This project is only visible to owners and collaborators on this project."
             (click)="togglePrivate(!project.private)"
-            id="button-not-private"
+            id="button-not-private-sidebar"
           >
             <mat-icon style="margin-right: 8px;"
               >visibility_off</mat-icon
@@ -492,7 +504,7 @@
           <mat-chip
             (click)="togglePrivate(!project.private)"
             matTooltip="This project is visible to all iTHRIV users."
-            id="button-private"
+            id="button-private-sidebar"
           >
             <mat-icon style="margin-right: 8px;"
               >visibility</mat-icon

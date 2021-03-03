@@ -1,3 +1,10 @@
 h1.commons-home-toolbar {
-  padding: 0px 32px;
+  margin-top: 2em;
+  padding: 0;
+}
+
+.commons-project-list {
+  ::ng-deep .mat-tab-body-content {
+    padding: 0;
+  }
 }

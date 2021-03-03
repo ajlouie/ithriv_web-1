@@ -169,4 +169,46 @@
   .mat-tooltip {
     font-size: 12px !important;
   }
+
+  .mat-card.create-edit, .mat-card.view {
+    .mat-card-header {
+      padding-bottom: 1em;
+
+      .mat-card-header-text {
+        padding: 0;
+        margin: 0;
+      }
+
+      .mat-card-title {
+        font-size: $font-size-larger-4;
+        color: $brand-primary;
+        text-transform: uppercase;
+        margin-top: 0;
+        margin-bottom: 0;
+      }
+    }
+
+    .mat-card-actions {
+      padding: 0;
+      margin: 0;
+      margin-bottom: 4px !important;
+    }
+  }
+
+  .mat-table {
+    @include mat-elevation(2);
+    
+    .mat-cell {
+      padding-left: 1em;
+      padding-right: 1em;
+    }
+
+    .mat-header-cell {
+      padding-left: 1em;
+      padding-right: 1em;
+      background-color: $brand-gray;
+      color: white;
+      font-size: $base-font-size;
+    }
+  }
 }

@@ -26,7 +26,7 @@
 </ng-container>
 <ng-container *ngIf="user">
   <ng-container *ngIf="formStatus === 'commons-projects-list'">
-    <mat-tab-group mat-stretch-tabs dynamicHeight>
+    <mat-tab-group mat-stretch-tabs dynamicHeight ngClass="commons-project-list">
       <mat-tab label="Projects available to {{ user.display_name }}" *ngIf="user">
         <ng-template matTabContent>
           <ng-container class="example-small-box mat-elevation-z4">

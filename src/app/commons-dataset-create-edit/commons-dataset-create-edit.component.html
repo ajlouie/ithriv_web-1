@@ -1,49 +1,39 @@
-<app-breadcrumbs *ngIf="user">
-  <section class="left">
-    <button mat-raised-button color="primary" (click)="showNext()">
-      <mat-icon>home</mat-icon>
-      {{ getNavLabel(previousForm) }}
-    </button>
-  </section>
-  <section class="right">
-    <button
-      type="button"
-      mat-raised-button
-      *ngIf="
-        dataset.can_delete_meta === true &&
-        dataset.can_delete_data === true &&
-        !showConfirmDelete &&
-        dataset.id !== ''
-      "
-      (click)="showDelete()"
-      color="warn"
-    >
-      Delete Dataset
-    </button>
-    <button
-      *ngIf="showConfirmDelete"
-      type="button"
-      mat-raised-button
-      (click)="deleteDataset()"
-      color="warn"
-    >
-      <mat-icon>delete</mat-icon>
-      Permanently Delete This Dataset!!!
-    </button>
-  </section>
-  <div id="error_message" class="display mat-error" *ngIf="error">
-    {{ error }}
-  </div>
-</app-breadcrumbs>
-<mat-card *ngIf="user">
-  <mat-card-content>
-    <mat-card *ngIf="user">
+<div id="error_message_delete" class="display mat-error" *ngIf="error">
+  {{ error }}
+</div>
+<ng-container *ngIf="user">
+    <mat-card *ngIf="user" ngClass="create-edit">
+      <mat-card-header>
+        <mat-card-title>
+          Dataset Details
+        </mat-card-title>
+        <span fxFlex></span>
+        <button
+          type="button"
+          mat-raised-button
+          *ngIf="
+            dataset.can_delete_meta === true &&
+            dataset.can_delete_data === true &&
+            !showConfirmDelete &&
+            dataset.id !== ''
+          "
+          (click)="showDelete()"
+          color="warn"
+        >
+          Delete Dataset
+        </button>
+        <button
+          *ngIf="showConfirmDelete"
+          type="button"
+          mat-raised-button
+          (click)="deleteDataset()"
+          color="warn"
+        >
+          <mat-icon>delete</mat-icon>
+          Permanently Delete This Dataset!!!
+        </button>
+      </mat-card-header>
       <mat-card-content *ngIf="user">
-        <mat-toolbar>
-          <mat-card-title>
-            Dataset Details
-          </mat-card-title>
-        </mat-toolbar>
         <form
           *ngIf="formStatus === 'form'"
           [formGroup]="fg"
@@ -60,12 +50,8 @@
             [formGroup]="fg"
             [errorMatcher]="errorMatcher"
           ></app-form-field>
-          <mat-card>
-            <mat-toolbar>
-              <mat-card-title>
-                Dataset Type
-              </mat-card-title>
-            </mat-toolbar>
+          <fieldset class="dataset-type">
+            <legend>Dataset Type</legend>
             <mat-list dense>
               <mat-list>
                 <mat-list-item>
@@ -176,7 +162,7 @@
                 </ng-container>
               </mat-list>
             </mat-list>
-          </mat-card>
+          </fieldset>
           <footer *ngIf="formStatus === 'form'">
             <div
               id="error_message"
@@ -244,18 +230,19 @@
         dataset.id !== '' &&
         dataset.can_manage_permission === true
       "
+      ngClass="create-edit"
     >
+      <mat-card-header>
+        <mat-card-title>
+          Dataset Permissions
+        </mat-card-title>
+      </mat-card-header>
       <mat-card-content *ngIf="user">
-        <mat-toolbar>
-          <mat-card-title>
-            Dataset Permissions
-          </mat-card-title>
-        </mat-toolbar>
         <mat-list dense>
           <table
             mat-table
             [dataSource]="userPermissions$ | async"
-            class="mat-elevation-z8 datasetperms"
+            class="datasetperms"
           >
             <ng-container matColumnDef="email">
               <th mat-header-cell *matHeaderCellDef>EMAIL</th>
@@ -320,13 +307,14 @@
           </table>
         </mat-list>
         <div
-          id="error_message"
+          id="error_message_permission"
           class="display mat-error"
           *ngIf="errorMessagePerm"
         >
           <h4>{{ errorMessagePerm }}</h4>
         </div>
-        <span class="ithriv-spacer"></span>
+      </mat-card-content>
+      <mat-card-actions>
         <button
           type="button"
           color="warn"
@@ -336,7 +324,6 @@
           <mat-icon>security</mat-icon>
           ADD PERMISSION
         </button>
-      </mat-card-content>
+      </mat-card-actions>
     </mat-card>
-  </mat-card-content>
-</mat-card>
+</ng-container>

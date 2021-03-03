@@ -81,3 +81,7 @@ button {
   justify-content: center;
   flex-direction: row;
 }
+
+::ng-deep .mat-tab-body-content {
+  padding: $padding-size;
+}
