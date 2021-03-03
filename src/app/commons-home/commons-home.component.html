@@ -1,29 +1,14 @@
 <app-breadcrumbs [navItems]="navItems">
-  <section class="right" *ngIf="user">
-    <ng-container *ngIf="formStatus === 'commons-project'">
-
-    </ng-container>
-    <ng-container *ngIf="formStatus === 'commons-project-create-edit'">
-    
-    </ng-container>
-    <ng-container *ngIf="formStatus === 'commons-dataset'">
-    
-    </ng-container>
-    <ng-container *ngIf="formStatus === 'commons-dataset-create-edit'">
-    
-    </ng-container>
-  </section>
-</app-breadcrumbs>
-<h1 class="commons-home-toolbar" *ngIf="commonsHomeToolbarTitle">{{commonsHomeToolbarTitle}}</h1>
-<ng-container *ngIf="user">
-  <ng-container *ngIf="formStatus === 'commons-projects-list'">
+  <section class="right">
     <app-commons-menu
       [user]="user"
       [currentForm]="formStatus"
       (currentFormChange)="updateStatus($event)"
+      *ngIf="user && formStatus === 'commons-projects-list'"
     ></app-commons-menu>
-  </ng-container>
-</ng-container>
+  </section>
+</app-breadcrumbs>
+<h1 class="commons-home-toolbar" *ngIf="commonsHomeToolbarTitle">{{commonsHomeToolbarTitle}}</h1>
 <ng-container *ngIf="user">
   <ng-container *ngIf="formStatus === 'commons-projects-list'">
     <mat-tab-group mat-stretch-tabs dynamicHeight ngClass="commons-project-list">
