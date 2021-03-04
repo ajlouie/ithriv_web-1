@@ -1,5 +1,4 @@
-import { Component, Inject, Input, OnInit } from '@angular/core';
-import { MAT_SNACK_BAR_DATA, MatSnackBarRef } from '@angular/material/snack-bar';
+import { Component, Input, OnInit } from '@angular/core';
 
 interface ErrorMessage {
   title: string;
@@ -17,13 +16,7 @@ export class ErrorMessageComponent implements OnInit {
   message: string;
   errors: ErrorMessage[] = [];
 
-  constructor(
-    public snackBarRef: MatSnackBarRef<ErrorMessageComponent>,
-    @Inject(MAT_SNACK_BAR_DATA) public data?: any
-  ) {
-    if (this.data && this.data.hasOwnProperty('errorString')) {
-      this.errorString = data.errorString;
-    }
+  constructor() {
   }
 
   ngOnInit() {

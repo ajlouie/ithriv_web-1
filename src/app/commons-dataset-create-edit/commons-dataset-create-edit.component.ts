@@ -105,6 +105,7 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
     Validators.max(365)
   ]);
   datasetTypeSelected: string;
+  irbNumbers: IrbNumber[];
   irbNumberOptions: FormSelectOption[] = [];
   irbInvestigators: IrbInvestigator[] = [];
 
@@ -120,9 +121,6 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
 
   ngOnInit() {
     this.loadFields();
-    // this.fg = fb.group(this.fields);
-    this.iThrivForm = new IThrivForm(this.fields, this.fg);
-    this.loadData();
   }
 
   showNext() {
@@ -147,143 +145,146 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
   loadFields() {
     // TODO: Populate options with IRB Protocol numbers from IRB API
     this.cas.getUserIrbNumbers(this.user).subscribe((irbNumbers: IrbNumber[]) => {
-      this.irbNumberOptions = irbNumbers.map((irbNumber: IrbNumber) => {
-        return new FormSelectOption({id: irbNumber.study_id, name: irbNumber.study_id});
+      this.irbNumbers = irbNumbers;
+
+      const irbDocumentOptions: FormSelectOption[] = [];
+      this.project.documents.forEach(document => {
+        if ((document.type === 'IRB_Approval' || document.type === 'IRB Approval') && document.url !== '') {
+          irbDocumentOptions.push(new FormSelectOption({id: document.url, name: document.filename}));
+        }
       });
-    });
+      const contractDocumentOptions = [];
+      this.project.documents.forEach(document => {
+        if (document.type === 'Contract' && document.url !== '') {
+          contractDocumentOptions.push(new FormSelectOption({id: document.url, name: document.filename}));
+        }
+      });
 
-    const irbDocumentOptions: FormSelectOption[] = [];
-    this.project.documents.forEach(document => {
-      if ((document.type === 'IRB_Approval' || document.type === 'IRB Approval') && document.url !== '') {
-        irbDocumentOptions.push(new FormSelectOption({id: document.url, name: document.filename}));
-      }
-    });
-    const contractDocumentOptions = [];
-    this.project.documents.forEach(document => {
-      if (document.type === 'Contract' && document.url !== '') {
-        contractDocumentOptions.push(new FormSelectOption({id: document.url, name: document.filename}));
-      }
-    });
+      this.fields = {
+        name: new FormField({
+          formControl: new FormControl(),
+          required: true,
+          placeholder: 'Dataset Name:',
+          type: 'text',
+          options: {
+            status: ['words'],
+          },
+        }),
+        description: new FormField({
+          formControl: new FormControl(),
+          required: true,
+          placeholder: 'Brief Description:',
+          type: 'textarea',
+          options: {
+            status: ['words'],
+          },
+        }),
+        keywords: new FormField({
+          formControl: new FormControl(),
+          required: true,
+          placeholder: 'Key Words:',
+          type: 'text',
+          options: {
+            status: ['words'],
+          },
+        }),
+        identifiers_hipaa: new FormField({
+          formControl: new FormControl(),
+          required: true,
+          placeholder: 'HIPAA options:',
+          type: 'select',
+          multiSelect: true,
+          selectOptions: this.hipaaOptions,
+        }),
+        other_sensitive_data: new FormField({
+          formControl: new FormControl(),
+          required: true,
+          placeholder: 'Other sensitive data:',
+          type: 'text',
+          options: {
+            status: ['words'],
+          },
+        }),
+        // based_on_dataset_id: new FormField({
+        //   formControl: new FormControl(),
+        //   required: false,
+        //   placeholder: 'Basedon Dataset:',
+        //   type: 'select',
+        //   multiSelect: true,
+        //   selectOptions: [],
+        // }),
+        variable_measured: new FormField({
+          formControl: new FormControl(),
+          required: false,
+          placeholder: 'Variable Measured:',
+          type: 'text',
+          options: {
+            status: ['words'],
+          },
+        }),
+        license: new FormField({
+          formControl: new FormControl(),
+          required: false,
+          placeholder: 'License:',
+          type: 'text',
+          options: {
+            status: ['words'],
+          },
+        }),
+        spatial_coverage_address: new FormField({
+          formControl: new FormControl(),
+          required: false,
+          placeholder: 'Geographic Coverage Description:',
+          type: 'text',
+          options: {
+            status: ['words'],
+          },
+        }),
+        temporal_coverage_date: new FormField({
+          formControl: new FormControl(),
+          required: false,
+          placeholder: 'Temporal Coverage of Dataset',
+          type: 'owldatetime',
+          selectMode: 'range',
+          pickerMode: 'dialog',
+        }),
+        study_irb_number: new FormField({
+          formControl: new FormControl(),
+          required: false,
+          placeholder: 'IRB Protocol Number:',
+          type: 'select',
+          multiSelect: false,
+          selectOptionsMap: this.irbNumbers.map((irbNumber: IrbNumber) => {
+            return new FormSelectOption({id: irbNumber.study_id, name: irbNumber.study_id});
+          }),
+        }),
+        approved_irb_link: new FormField({
+          formControl: new FormControl(),
+          required: false,
+          placeholder: 'Select Corresponding IRB Approval Document from Project Documents',
+          type: 'select',
+          multiSelect: false,
+          selectOptionsMap: irbDocumentOptions,
+        }),
+        contract_link: new FormField({
+          formControl: new FormControl(),
+          required: false,
+          placeholder: 'Related Contract:',
+          type: 'select',
+          multiSelect: false,
+          selectOptionsMap: contractDocumentOptions,
+        }),
+        link_to_external_dataset: new FormField({
+          formControl: new FormControl(),
+          required: false,
+          placeholder: 'Link to Data (if stored elsewhere):',
+          type: 'url',
+        }),
+      };
 
-    this.fields = {
-      name: new FormField({
-        formControl: new FormControl(),
-        required: true,
-        placeholder: 'Dataset Name:',
-        type: 'text',
-        options: {
-          status: ['words'],
-        },
-      }),
-      description: new FormField({
-        formControl: new FormControl(),
-        required: true,
-        placeholder: 'Brief Description:',
-        type: 'textarea',
-        options: {
-          status: ['words'],
-        },
-      }),
-      keywords: new FormField({
-        formControl: new FormControl(),
-        required: true,
-        placeholder: 'Key Words:',
-        type: 'text',
-        options: {
-          status: ['words'],
-        },
-      }),
-      identifiers_hipaa: new FormField({
-        formControl: new FormControl(),
-        required: true,
-        placeholder: 'HIPAA options:',
-        type: 'select',
-        multiSelect: true,
-        selectOptions: this.hipaaOptions,
-      }),
-      other_sensitive_data: new FormField({
-        formControl: new FormControl(),
-        required: true,
-        placeholder: 'Other sensitive data:',
-        type: 'text',
-        options: {
-          status: ['words'],
-        },
-      }),
-      // based_on_dataset_id: new FormField({
-      //   formControl: new FormControl(),
-      //   required: false,
-      //   placeholder: 'Basedon Dataset:',
-      //   type: 'select',
-      //   multiSelect: true,
-      //   selectOptions: [],
-      // }),
-      variable_measured: new FormField({
-        formControl: new FormControl(),
-        required: false,
-        placeholder: 'Variable Measured:',
-        type: 'text',
-        options: {
-          status: ['words'],
-        },
-      }),
-      license: new FormField({
-        formControl: new FormControl(),
-        required: false,
-        placeholder: 'License:',
-        type: 'text',
-        options: {
-          status: ['words'],
-        },
-      }),
-      spatial_coverage_address: new FormField({
-        formControl: new FormControl(),
-        required: false,
-        placeholder: 'Geographic Coverage Description:',
-        type: 'text',
-        options: {
-          status: ['words'],
-        },
-      }),
-      temporal_coverage_date: new FormField({
-        formControl: new FormControl(),
-        required: false,
-        placeholder: 'Temporal Coverage of Dataset',
-        type: 'owldatetime',
-        selectMode: 'range',
-        pickerMode: 'dialog',
-      }),
-      study_irb_number: new FormField({
-        formControl: new FormControl(),
-        required: false,
-        placeholder: 'IRB Protocol Number:',
-        type: 'select',
-        multiSelect: false,
-        selectOptionsMap: this.irbNumberOptions,
-      }),
-      approved_irb_link: new FormField({
-        formControl: new FormControl(),
-        required: false,
-        placeholder: 'Select Corresponding IRB Approval Document from Project Documents',
-        type: 'select',
-        multiSelect: false,
-        selectOptionsMap: irbDocumentOptions,
-      }),
-      contract_link: new FormField({
-        formControl: new FormControl(),
-        required: false,
-        placeholder: 'Related Contract:',
-        type: 'select',
-        multiSelect: false,
-        selectOptionsMap: contractDocumentOptions,
-      }),
-      link_to_external_dataset: new FormField({
-        formControl: new FormControl(),
-        required: false,
-        placeholder: 'Link to Data (if stored elsewhere):',
-        type: 'url',
-      }),
-    };
+      this.iThrivForm = new IThrivForm(this.fields, this.fg);
+      this.loadData();
+    });
   }
 
   loadFieldsets() {
@@ -748,8 +749,12 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
   }
 
   private displayError(errorString: string) {
-    this.snackBar.openFromComponent(ErrorMessageComponent, {
-      data: { errorString },
+    // this.snackBar.openFromComponent(ErrorMessageComponent, {
+    //   data: { errorString },
+    //   duration: 5000,
+    //   panelClass: 'snackbar-warning',
+    // });
+    this.snackBar.open(errorString, '', {
       duration: 5000,
       panelClass: 'snackbar-warning',
     });

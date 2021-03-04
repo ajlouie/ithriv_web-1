@@ -21,7 +21,7 @@
     padding: 0 !important;
     max-width: 100vw;
     overflow-x: hidden;
-    background-color: mat-color($primary, 50);
+    background-color: $brand-primary-light-25;
     min-height: 100vh;
   }
 
@@ -94,12 +94,12 @@
   }
 
   .mat-tab-body-content {
-    background-color: mat-color($primary, 50);
+    background-color: $brand-primary-light-25;
   }
 
   ::ng-deep .mat-tab-group.mat-primary.mat-background-primary .mat-ink-bar,
   ::ng-deep .mat-tab-nav-bar.mat-primary.mat-background-primary .mat-ink-bar {
-    background-color: mat-color($ithriv-primary, 500, 1);
+    background-color: $brand-primary-light;
   }
 
   #fileUpload {
@@ -201,8 +201,8 @@
     .mat-header-cell {
       padding-left: 1em;
       padding-right: 1em;
-      background-color: $brand-gray;
-      color: white;
+      background-color: $brand-primary-light-25;
+      color: $brand-text-dark;
       font-size: $base-font-size;
     }
   }

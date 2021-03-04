@@ -109,14 +109,11 @@ export class CommonsProjectComponent implements OnInit {
     this.loadPermisssions();
   }
   userCanEditHsd(dataset: Dataset): boolean {
-    return true;
-
-    // TODO: Uncomment this when Ravi adds the is_hsd flag to the backend.
-    // if (!dataset.hasOwnProperty('is_hsd')) {
-    //   return dataset.is_hsd;
-    // } else {
-    //   return true;
-    // }
+    if (dataset.hasOwnProperty('is_locked_for_user')) {
+      return !dataset.is_locked_for_user;
+    } else {
+      return true;
+    }
   }
 
   showNext() {

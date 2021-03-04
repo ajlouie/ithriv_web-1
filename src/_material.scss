@@ -90,16 +90,16 @@ $mat-orange: (
 // Light Tan: #FAF9F8 (this is background on section panels and at the top of home page)
 
 $mat-green: (
-  50: #e8f5e9,
-  100: #c8e6c9,
-  200: #a5d6a7,
+  50: $brand-primary-light-50,
+  100: $brand-primary-light-100,
+  200: $brand-primary-light-200,
   300: #81c784,
   400: #66bb6a,
-  500: #4caf50,
+  500: $brand-primary-light,
   600: #43a047,
   700: #388e3c,
-  800: #007a3c, // Modified, was #2e7d32
-  900: #005424, // Modified, was #1b5e20
+  800: $brand-primary,
+  900: $brand-primary-dark,
   A100: #b9f6ca,
   A200: #69f0ae,
   A400: #00e676,

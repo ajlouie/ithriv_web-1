@@ -393,9 +393,8 @@ export class CommonsApiService {
     return this.http
       .get<IrbInvestigator[]>(
         this.getLandingServiceUrl(user) +
-        `/commons/meta/datasets/` +
-        dataset.id +
-        `/investigators`,
+        `/commons/permissions/datasets/investigators/` +
+        dataset.id,
         {
           headers: {REMOTE_USER: user.eppn},
           responseType: 'json',
@@ -412,7 +411,7 @@ export class CommonsApiService {
     return this.http
       .get<IrbNumber[]>(
         this.getLandingServiceUrl(user) +
-        `/commons/meta/user/${user.email}/irb_protocols`,
+        `/commons/permissions/user/irb_protocols`,
         {
           headers: {REMOTE_USER: user.eppn},
           responseType: 'json',

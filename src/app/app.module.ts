@@ -278,6 +278,7 @@ export const MY_NATIVE_FORMATS = {
     ResourceFormComponent,
     AddPermissionComponent,
     CommonsProjectDocumentComponent,
+    ErrorMessageComponent,
   ],
   providers: [
     {

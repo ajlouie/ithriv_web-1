@@ -165,10 +165,10 @@
                 mat-row
                 *matRowDef="
                   let row;
-                  let even = even;
+                  let oddodd = oddodd;
                   columns: displayedDocumentColumns
                 "
-                [ngClass]="{ gray: even }"
+                [ngClass]="{ gray: odd }"
               ></tr>
             </table>
           </mat-list>
@@ -226,10 +226,10 @@
               mat-row
               *matRowDef="
                 let row;
-                let even = even;
+                let odd = odd;
                 columns: displayedUserpermColumns
               "
-              [ngClass]="{ gray: even }"
+              [ngClass]="{ gray: odd }"
             ></tr>
           </table>
         </mat-list>
@@ -452,10 +452,10 @@
                   mat-row
                   *matRowDef="
                     let row;
-                    let even = even;
+                    let odd = odd;
                     columns: displayedColumns
                   "
-                  [ngClass]="{ gray: even }"
+                  [ngClass]="{ gray: odd }"
                 ></tr>
               </table>
             </ng-container>

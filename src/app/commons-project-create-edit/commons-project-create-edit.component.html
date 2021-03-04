@@ -198,10 +198,10 @@
           <tr
             *matRowDef="
                 let row;
-                let even = even;
+                let odd = odd;
                 columns: displayedUserpermColumns
               "
-            [ngClass]="{ gray: even }"
+            [ngClass]="{ gray: odd }"
             mat-row
           ></tr>
         </table>
