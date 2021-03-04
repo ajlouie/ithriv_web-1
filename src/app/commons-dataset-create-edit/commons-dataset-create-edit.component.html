@@ -1,5 +1,5 @@
 <div id="error_message_delete" class="display mat-error" *ngIf="error">
-  {{ error }}
+  <app-error-message [errorString]="error"></app-error-message>
 </div>
 <ng-container *ngIf="user">
     <mat-card *ngIf="user" ngClass="create-edit">
@@ -169,7 +169,7 @@
               class="display mat-error"
               *ngIf="errorMessage"
             >
-              <h4>{{ errorMessage }}</h4>
+              <app-error-message [errorString]="errorMessage"></app-error-message>
             </div>
             <button
               type="button"
@@ -311,7 +311,7 @@
           class="display mat-error"
           *ngIf="errorMessagePerm"
         >
-          <h4>{{ errorMessagePerm }}</h4>
+          <app-error-message [errorString]="errorMessagePerm"></app-error-message>
         </div>
       </mat-card-content>
       <mat-card-actions>
