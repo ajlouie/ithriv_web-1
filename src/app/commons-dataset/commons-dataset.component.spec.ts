@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import {
   MatButtonModule,
   MatCardModule,
-  MatChipsModule,
+  MatChipsModule, MatDialogModule,
   MatDividerModule,
   MatIconModule,
   MatInputModule,
@@ -46,6 +46,7 @@ describe('CommonsDatasetComponent', () => {
         MatButtonModule,
         MatCardModule,
         MatChipsModule,
+        MatDialogModule,
         MatDividerModule,
         MatIconModule,
         MatInputModule,
