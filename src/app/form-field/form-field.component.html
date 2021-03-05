@@ -2,6 +2,7 @@
   *ngIf="isNormalField(field)"
   [hideRequiredMarker]="formGroup && formGroup.value.hideRequired"
   [floatLabel]="formGroup && formGroup.value.floatLabel"
+  [attr.app-form-field-name]="field.name"
 >
   <input
     *ngIf="field.formControl && field.type === 'color'"
@@ -108,6 +109,7 @@
   *ngIf="field.type === 'owldatetime'"
   [hideRequiredMarker]="formGroup && formGroup.value.hideRequired"
   [floatLabel]="false"
+  [attr.app-form-field-name]="field.name"
 >
   <mat-label>
     {{ field.placeholder }}
@@ -151,14 +153,23 @@
   </mat-error>
 </mat-form-field>
 
-<div *ngIf="field.type === 'tree'" class="mat-typography">
+<div
+  *ngIf="field.type === 'tree'"
+  class="mat-typography"
+  [attr.app-form-field-name]="field.name"
+>
   <app-form-field-label
     [field]="field"
     [errors]="errors"
   ></app-form-field-label>
   <app-tree-select [field]="field"></app-tree-select>
 </div>
-<div *ngIf="field.type === 'richtexteditor'" class="mat-typography">
+
+<div
+  *ngIf="field.type === 'richtexteditor'"
+  class="mat-typography"
+  [attr.app-form-field-name]="field.name"
+>
   <app-form-field-label
     [field]="field"
     [errors]="errors"
@@ -204,13 +215,18 @@
   ></td-text-editor-->
 </div>
 
-<div *ngIf="field.type === 'toggle'" class="toggle mat-typography">
+<div
+  *ngIf="field.type === 'toggle'" class="toggle mat-typography">
   <mat-slide-toggle color="primary" [formControl]="field.formControl">
     {{ field.placeholder }}
   </mat-slide-toggle>
 </div>
 
-<div *ngIf="field.type === 'files'" class="mat-typography">
+<div
+  *ngIf="field.type === 'files'"
+  class="mat-typography"
+  [attr.app-form-field-name]="field.name"
+>
   <app-form-field-label
     [field]="field"
     [errors]="errors"
@@ -218,7 +234,11 @@
   <app-file-upload [field]="field"></app-file-upload>
 </div>
 
-<div *ngIf="field.type === 'checkbox'" class="checkbox-container">
+<div
+  *ngIf="field.type === 'checkbox'"
+  class="checkbox-container"
+  [attr.app-form-field-name]="field.name"
+>
   <app-form-field-label
     [field]="field"
     [errors]="errors"

@@ -413,7 +413,8 @@ export class CommonsApiService {
         this.getLandingServiceUrl(user) +
         `/commons/permissions/user/irb_protocols`,
         {
-          headers: {REMOTE_USER: user.eppn},
+          // headers: {REMOTE_USER: user.eppn},
+          headers: {REMOTE_USER: 'jjl4d@virginia.edu'},
           responseType: 'json',
         }
       )

@@ -1,8 +1,12 @@
 <ng-container *ngIf="errorString">
   <h4>{{title}}</h4>
   <p>{{message}}</p>
-  <p *ngFor="let error of errors">
-    <strong>{{error.title}}</strong>:
-    <span *ngFor="let errorMessage of error.messages; let i = index">{{errorMessage}}{{i + 1 < error.messages.length ? ', ' : ''}}</span>
-  </p>
+  <div fxLayout="row wrap" fxLayoutAlign="start start" fxLayoutGap="10px">
+    <ng-container *ngFor="let error of errors">
+      <div class="error-item-title" fxFlex="calc(40% - 20px)">{{error.title}}</div>
+      <div class="error-item-description" fxFlex="calc(60% - 20px)">
+        <div *ngFor="let errorMessage of error.messages; let i = index">{{errorMessage}}</div>
+      </div>
+    </ng-container>
+  </div>
 </ng-container>

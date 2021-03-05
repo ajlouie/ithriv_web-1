@@ -20,6 +20,7 @@ import {
   MatToolbarModule,
   MatTreeModule
 } from '@angular/material';
+import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -31,6 +32,7 @@ import { MarkdownModule } from 'ngx-markdown';
 import { NgProgressModule } from 'ngx-progressbar';
 import { BreadcrumbsComponent } from '../breadcrumbs/breadcrumbs.component';
 import { UserPermission } from '../commons-types';
+import { ErrorMessageComponent } from '../error-message/error-message.component';
 import { FileUploadComponent } from '../file-upload/file-upload.component';
 import { FormFieldLabelComponent } from '../form-field-label/form-field-label.component';
 import { FormFieldComponent } from '../form-field/form-field.component';
@@ -57,6 +59,7 @@ describe('CommonsDatasetCreateEditComponent', () => {
       declarations: [
         BreadcrumbsComponent,
         CommonsDatasetCreateEditComponent,
+        ErrorMessageComponent,
         FileUploadComponent,
         FormFieldComponent,
         FormFieldLabelComponent,
@@ -114,13 +117,15 @@ describe('CommonsDatasetCreateEditComponent', () => {
 
     fixture.detectChanges();
 
-    const irbNumbersReq = httpMock.expectOne(`undefined/commons/meta/user/${mockUser.email}/irb_protocols`);
+    const irbNumbersReq = httpMock.expectOne(`undefined/commons/permissions/user/irb_protocols`);
     expect(irbNumbersReq.request.method).toEqual('GET');
     irbNumbersReq.flush(mockIrbNumbers);
+    expect(component.irbNumbers).toEqual(mockIrbNumbers);
 
-    const irbInvestigatorsReq = httpMock.expectOne(`undefined/commons/meta/datasets/${mockDataset.id}/investigators`);
+    const irbInvestigatorsReq = httpMock.expectOne(`undefined/commons/permissions/datasets/investigators/${mockDataset.id}`);
     expect(irbInvestigatorsReq.request.method).toEqual('GET');
     irbInvestigatorsReq.flush(mockIrbInvestigators);
+    expect(component.irbInvestigators).toEqual(mockIrbInvestigators);
   });
 
   afterEach(() => {
@@ -132,17 +137,9 @@ describe('CommonsDatasetCreateEditComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should populate list of investigators', () => {
-    expect(component.irbInvestigators).toEqual(mockIrbInvestigators);
-  });
-
   it('should populate list of IRB study numbers', () => {
-    expect(component.irbNumberOptions.length).toEqual(mockIrbNumbers.length);
-
-    for (let i = 0; i < mockIrbNumbers.length; i++) {
-      expect(component.irbNumberOptions[i].id).toEqual(mockIrbNumbers[i].study_id);
-      expect(component.irbNumberOptions[i].name).toEqual(mockIrbNumbers[i].study_id);
-    }
+    const optionsElements = component.fields.study_irb_number.selectOptionsMap;
+    expect(optionsElements.length).toEqual(mockIrbNumbers.length);
   });
 
   it('should build user permission map', () => {

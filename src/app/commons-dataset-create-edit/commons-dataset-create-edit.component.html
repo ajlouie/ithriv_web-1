@@ -32,10 +32,19 @@
           <mat-icon>delete</mat-icon>
           Permanently Delete This Dataset!!!
         </button>
+          <button
+            (click)="showConfirmDelete = false"
+            *ngIf="showConfirmDelete && dataset.can_delete_meta && dataset.can_delete_data"
+            mat-button
+            ngClass="cancel-delete"
+          >
+            <mat-icon>cancel</mat-icon>
+            Cancel
+          </button>
       </mat-card-header>
       <mat-card-content *ngIf="user">
         <form
-          *ngIf="formStatus === 'form'"
+          *ngIf="formStatus === 'form' && iThrivForm"
           [formGroup]="fg"
           (ngSubmit)="submitDataset($event)"
         >

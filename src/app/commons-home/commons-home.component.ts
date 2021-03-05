@@ -103,13 +103,28 @@ export class CommonsHomeComponent implements OnInit {
 
     // Update breadcrumbs items
     if (this.formStatus === 'commons-dataset-create-edit') {
-      // Home > Commons Home > Project Home > View Dataset > Edit Dataset
-      this.navItems = [
-        this.statusNavItems['commons-projects-list'],
-        this.statusNavItems['commons-project'],
-        this.statusNavItems['commons-dataset'],
-        this.statusNavItems['commons-dataset-create-edit'],
-      ];
+      if (
+        this.currentDataset === undefined ||
+        this.currentDataset.id === undefined ||
+        this.currentDataset.id === ''
+      ) {
+        // New dataset. Leave out the "View Dataset" item.
+        // Home > Commons Home > Project Home > Edit Dataset
+        this.navItems = [
+          this.statusNavItems['commons-projects-list'],
+          this.statusNavItems['commons-project'],
+          this.statusNavItems['commons-dataset-create-edit'],
+        ];
+      } else {
+        // Home > Commons Home > Project Home > View Dataset > Edit Dataset
+        this.navItems = [
+          this.statusNavItems['commons-projects-list'],
+          this.statusNavItems['commons-project'],
+          this.statusNavItems['commons-dataset'],
+          this.statusNavItems['commons-dataset-create-edit'],
+        ];
+      }
+
     } else if (this.formStatus === 'commons-dataset') {
       // Home > Commons Home > Project Home > View Dataset
       this.navItems = [
@@ -118,12 +133,25 @@ export class CommonsHomeComponent implements OnInit {
         this.statusNavItems['commons-dataset'],
       ];
     } else if (this.formStatus === 'commons-project-create-edit') {
-      // Home > Commons Home > Project Home > Edit Project
-      this.navItems = [
-        this.statusNavItems['commons-projects-list'],
-        this.statusNavItems['commons-project'],
-        this.statusNavItems['commons-project-create-edit'],
-      ];
+      if (
+        this.currentProject === undefined ||
+        this.currentProject.id === undefined ||
+        this.currentProject.id === ''
+      ) {
+        // New project. Leave out the "View Project" item.
+        // Home > Commons Home > Edit Project
+        this.navItems = [
+          this.statusNavItems['commons-projects-list'],
+          this.statusNavItems['commons-project-create-edit'],
+        ];
+      } else {
+        // Home > Commons Home > Project Home > Edit Project
+        this.navItems = [
+          this.statusNavItems['commons-projects-list'],
+          this.statusNavItems['commons-project'],
+          this.statusNavItems['commons-project-create-edit'],
+        ];
+      }
     } else if (this.formStatus === 'commons-project') {
       // Home > Commons Home > Project Home
       this.navItems = [

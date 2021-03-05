@@ -14,7 +14,8 @@ import { Observable } from 'rxjs';
 import { AddPermissionComponent } from '../add-permission/add-permission.component';
 import { Dataset, IrbInvestigator, IrbNumber, Project, UserPermission, UserPermissionMap } from '../commons-types';
 import { ErrorMatcher } from '../error-matcher';
-import { ErrorMessageComponent } from '../error-message/error-message.component';
+import { ErrorMessageComponent, ParsedError } from '../error-message/error-message.component';
+import { ErrorSnackbarComponent } from '../error-snackbar/error-snackbar.component';
 import { Fieldset } from '../fieldset';
 import { FormField } from '../form-field';
 import { FormSelectOption } from '../form-select-option';
@@ -143,7 +144,6 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
   }
 
   loadFields() {
-    // TODO: Populate options with IRB Protocol numbers from IRB API
     this.cas.getUserIrbNumbers(this.user).subscribe((irbNumbers: IrbNumber[]) => {
       this.irbNumbers = irbNumbers;
 
@@ -623,11 +623,7 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
           },
           (error1) => {
             if (error1) {
-              this.snackBar.openFromComponent(ErrorMessageComponent, {
-                data: { errorString: error1 },
-                duration: 5000,
-                panelClass: 'snackbar-warning',
-              });
+              this.displayError(error1);
               this.errorMessage = error1;
             } else {
               this.errorMessage =
@@ -642,7 +638,10 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
 
       this.formStatus = 'submitting';
     } else {
-      const messages: string[] = [];
+      const messages: ParsedError = {
+        title: 'Please double-check the following fields:',
+        errors: [],
+      };
       const controls = this.fg.controls;
       for (const fieldName in controls) {
         if (controls.hasOwnProperty(fieldName)) {
@@ -653,37 +652,33 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
             if (errors.hasOwnProperty(errorName)) {
               switch (errorName) {
                 case 'dateTimeRange':
-                  messages.push(
-                    `${label} is not a valid start and end date/time.`
-                  );
+                  messages.errors.push({title: label, messages: [`Not a valid start and end date/time.`]});
                   break;
                 case 'email':
-                  messages.push(`${label} is not a valid email address.`);
+                  messages.errors.push({title: label, messages: [`Not a valid email address.`]});
                   break;
                 case 'maxlength':
-                  messages.push(`${label} is not long enough.`);
+                  messages.errors.push({title: label, messages: [`Not long enough.`]});
                   break;
                 case 'minlength':
-                  messages.push(`${label} is too short.`);
+                  messages.errors.push({title: label, messages: [`Too short.`]});
                   break;
                 case 'required':
-                  messages.push(`${label} is empty.`);
+                  messages.errors.push({title: label, messages: [`This field is required. It is currently empty.`]});
                   break;
                 case 'url':
-                  messages.push(`${label} is not a valid URL.`);
+                  messages.errors.push({title: label, messages: [`Not a valid URL.`]});
                   break;
                 default:
-                  messages.push(`${label} has an error.`);
+                  messages.errors.push({title: label, messages: [`Has an error.`]});
                   break;
               }
             }
           }
         }
       }
-      const message = `Please double-check the following fields: ${messages.join(
-        ' '
-      )}`;
-      this.displayError(message);
+
+      this.displayError(JSON.stringify(messages));
     }
   }
 
@@ -749,13 +744,9 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
   }
 
   private displayError(errorString: string) {
-    // this.snackBar.openFromComponent(ErrorMessageComponent, {
-    //   data: { errorString },
-    //   duration: 5000,
-    //   panelClass: 'snackbar-warning',
-    // });
-    this.snackBar.open(errorString, '', {
-      duration: 5000,
+    this.snackBar.openFromComponent(ErrorSnackbarComponent, {
+      data: { errorString, action: 'Ok' },
+      duration: 50000,
       panelClass: 'snackbar-warning',
     });
   }

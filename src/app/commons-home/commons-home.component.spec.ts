@@ -30,6 +30,7 @@ import { CommonsProjectListComponent } from '../commons-project-list/commons-pro
 import { CommonsProjectTileComponent } from '../commons-project-tile/commons-project-tile.component';
 import { CommonsProjectComponent } from '../commons-project/commons-project.component';
 import { CsvExportButtonComponent } from '../csv-export-button/csv-export-button.component';
+import { ErrorMessageComponent } from '../error-message/error-message.component';
 import { FileUploadComponent } from '../file-upload/file-upload.component';
 import { FormFieldLabelComponent } from '../form-field-label/form-field-label.component';
 import { FormFieldComponent } from '../form-field/form-field.component';
@@ -56,6 +57,7 @@ describe('CommonsHomeComponent', () => {
         CommonsProjectListComponent,
         CommonsProjectTileComponent,
         CsvExportButtonComponent,
+        ErrorMessageComponent,
         FileUploadComponent,
         FormFieldComponent,
         FormFieldLabelComponent,

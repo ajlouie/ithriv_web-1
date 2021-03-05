@@ -9,6 +9,7 @@ export class IThrivForm {
 
     for (const fieldName in this.fields) {
       if (this.fields.hasOwnProperty(fieldName)) {
+        this.fields[fieldName].name = fieldName;
         fields.push(this.fields[fieldName]);
       }
     }

@@ -40,6 +40,7 @@ export class CategoryFormComponent implements OnInit {
       },
     }),
     brief_description: new FormField({
+      name: 'brief_description',
       formControl: new FormControl(),
       required: true,
       maxLength: 140,

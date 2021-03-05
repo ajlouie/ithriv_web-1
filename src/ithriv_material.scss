@@ -206,4 +206,8 @@
       font-size: $base-font-size;
     }
   }
+
+  .mat-snack-bar-container.snackbar-warning {
+    background-color: $brand-warning;
+  }
 }

@@ -1,6 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
 
-interface ErrorMessage {
+export interface ParsedError {
+  title: string;
+  errors: ErrorMessage[];
+}
+
+export interface ErrorMessage {
   title: string;
   messages: string[];
 }
@@ -25,10 +30,15 @@ export class ErrorMessageComponent implements OnInit {
 
   parseError() {
     if (typeof this.errorString === 'string') {
+      const patternJson = /^{"title":"([^"]+)","errors":\[(.*)]}]}$/;
       const patternMulti = /^([^{]+): {"message":"(.*) Error:(.*)"}\W+$/;
       const patternShort = /^([^{]+): {"message":"(.*)"}\W+$/;
 
-      if (patternMulti.test(this.errorString)) {
+      if (patternJson.test(this.errorString)) {
+        const parsedError: ParsedError = JSON.parse(this.errorString);
+        this.title = parsedError.title;
+        this.errors = parsedError.errors;
+      } else if (patternMulti.test(this.errorString)) {
         patternMulti.lastIndex = 0; // Reset the regex
         const results = patternMulti.exec(this.errorString);
         if (results && results.length === 4) {
@@ -73,4 +83,11 @@ export class ErrorMessageComponent implements OnInit {
     }
   }
 
+  addColon(title: string): string {
+    if (title.charAt(title.length - 1) !== ':') {
+      return title + ':';
+    } else {
+      return title;
+    }
+  }
 }
