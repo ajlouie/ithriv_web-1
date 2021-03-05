@@ -284,6 +284,7 @@ export const MY_NATIVE_FORMATS = {
     CommonsProjectDocumentComponent,
     ErrorMessageComponent,
     ErrorSnackbarComponent,
+    HsdDownloadDialogComponent,
   ],
   providers: [
     {

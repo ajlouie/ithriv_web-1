@@ -1,9 +1,14 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { User } from '../user';
-import { Dataset, UserPermission, DatasetFileVersion, CommonsState } from '../commons-types';
-import { CommonsApiService } from '../shared/commons-api/commons-api.service';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { MatDialog } from '@angular/material';
 import { Observable } from 'rxjs';
 import { CommonsDatasetCreateEditComponent } from '../commons-dataset-create-edit/commons-dataset-create-edit.component';
+import { CommonsState, Dataset, DatasetFileVersion, UserPermission } from '../commons-types';
+import {
+  HsdDownloadDialogComponent,
+  HsdDownloadDialogData
+} from '../hsd-download-dialog/hsd-download-dialog.component';
+import { CommonsApiService } from '../shared/commons-api/commons-api.service';
+import { User } from '../user';
 
 @Component({
   selector: 'app-commons-dataset',
@@ -27,7 +32,8 @@ export class CommonsDatasetComponent implements OnInit {
     'download',
   ];
 
-  constructor(public cas: CommonsApiService) {}
+  constructor(public cas: CommonsApiService, private dialog: MatDialog) {
+  }
 
   ngOnInit() {
     this.loadPermisssions();
@@ -40,7 +46,7 @@ export class CommonsDatasetComponent implements OnInit {
   }
 
   showNext() {
-    this.currentFormChange.emit({ displayForm: 'commons-project' });
+    this.currentFormChange.emit({displayForm: 'commons-project'});
   }
 
   showDataset() {
@@ -96,7 +102,7 @@ export class CommonsDatasetComponent implements OnInit {
       ) {
         return CommonsDatasetCreateEditComponent.DATASET_ROLE_MAP_STATIC[i][
           'value'
-        ];
+          ];
       }
     }
   }
@@ -107,7 +113,8 @@ export class CommonsDatasetComponent implements OnInit {
       (e) => {
         this.dataset = e;
       },
-      (error1) => {}
+      (error1) => {
+      }
     );
   }
 
@@ -124,5 +131,45 @@ export class CommonsDatasetComponent implements OnInit {
   keywords() {
     const keyswordsArray = this.dataset.keywords.split(',');
     return keyswordsArray;
+  }
+
+  downloadFile(url: string, filename: string, user: User) {
+    const doIt = () => {
+      this.cas.downloadFile(
+        url,
+        filename,
+        user,
+      );
+    };
+
+    if (this.userCanEditHsd(this.dataset)) {
+      if (this.dataset.is_hsd) {
+        // Open confirmation dialog first.
+        const dialogRef = this.dialog.open(HsdDownloadDialogComponent, {
+          height: '300px',
+          width: '500px',
+          data: {
+            dataset: this.dataset,
+            confirm: false,
+          },
+        });
+
+        dialogRef.afterClosed().subscribe((data: HsdDownloadDialogData) => {
+          if (data.confirm) {
+            doIt();
+          }
+        });
+      } else {
+        doIt();
+      }
+    }
+  }
+
+  private userCanEditHsd(dataset: Dataset) {
+    if (dataset.hasOwnProperty('is_locked_for_user')) {
+      return !dataset.is_locked_for_user;
+    } else {
+      return true;
+    }
   }
 }

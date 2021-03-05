@@ -6,6 +6,10 @@ import {
   Output,
   ChangeDetectorRef,
 } from '@angular/core';
+import {
+  HsdDownloadDialogComponent,
+  HsdDownloadDialogData
+} from '../hsd-download-dialog/hsd-download-dialog.component';
 import { User } from '../user';
 import {
   Project,
@@ -368,5 +372,37 @@ export class CommonsProjectComponent implements OnInit {
       (error1) => {}
     );
     // console.log(document);
+  }
+
+  downloadFile(projectDataset: Dataset) {
+    const doIt = () => {
+      this.cas.downloadFile(
+        projectDataset.url,
+        projectDataset.filename,
+        this.user,
+      );
+    };
+
+    if (this.userCanEditHsd(projectDataset)) {
+      if (this.dataset.is_hsd) {
+        // Open confirmation dialog first.
+        const dialogRef = this.dialog.open(HsdDownloadDialogComponent, {
+          height: '300px',
+          width: '500px',
+          data: {
+            dataset: projectDataset,
+            confirm: false,
+          },
+        });
+
+        dialogRef.afterClosed().subscribe((data: HsdDownloadDialogData) => {
+          if (data.confirm) {
+            doIt();
+          }
+        });
+      } else {
+        doIt();
+      }
+    }
   }
 }

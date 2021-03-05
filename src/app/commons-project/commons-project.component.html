@@ -370,32 +370,26 @@
                 <ng-container matColumnDef="can_download_data">
                   <th mat-header-cell *matHeaderCellDef>DOWNLOAD</th>
                   <td mat-cell *matCellDef="let projectDataset">
-                    <a
+                    <button
                       *ngIf="
                         (!projectDataset.private || user) &&
                         projectDataset.url !== '' &&
                         projectDataset.can_download_data === true &&
                         userCanEditHsd(projectDataset)
                       "
-                      (click)="
-                        userCanEditHsd(projectDataset) &&
-                        cas.downloadFile(
-                          projectDataset.url,
-                          projectDataset.filename,
-                          user
-                        )
-                      "
+                      type="button"
+                      color="primary"
+                      mat-mini-fab
+                      (click)="downloadFile(projectDataset)"
                     >
-                      <button type="button" color="primary" mat-mini-fab>
-                        <mat-icon
-                          matTooltip="Click here to download dataset file ({{
-                            projectDataset.filename
-                          }})"
-                        >
-                          file_download
-                        </mat-icon>
-                      </button>
-                    </a>
+                      <mat-icon
+                        matTooltip="Click here to download dataset file ({{
+                          projectDataset.filename
+                        }})"
+                      >
+                        file_download
+                      </mat-icon>
+                    </button>
                   </td>
                 </ng-container>
                 <ng-container matColumnDef="can_delete_data">
