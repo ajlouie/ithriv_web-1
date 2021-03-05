@@ -99,8 +99,8 @@ describe('CommonsProjectCreateEditComponent', () => {
     fixture = TestBed.createComponent(CommonsProjectCreateEditComponent);
     component = fixture.componentInstance;
     component.user = mockUser;
-    component.currentForm = '';
-    component.previousForm = '';
+    component.currentForm = 'commons-projects-list';
+    component.previousForm = 'commons-projects-list';
     component.project = mockProject;
 
     fixture.detectChanges();

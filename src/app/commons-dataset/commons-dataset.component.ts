@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { User } from '../user';
-import { Dataset, UserPermission, DatasetFileVersion } from '../commons-types';
+import { Dataset, UserPermission, DatasetFileVersion, CommonsState } from '../commons-types';
 import { CommonsApiService } from '../shared/commons-api/commons-api.service';
 import { Observable } from 'rxjs';
 import { CommonsDatasetCreateEditComponent } from '../commons-dataset-create-edit/commons-dataset-create-edit.component';
@@ -13,7 +13,7 @@ import { CommonsDatasetCreateEditComponent } from '../commons-dataset-create-edi
 export class CommonsDatasetComponent implements OnInit {
   @Input() user: User;
   @Input() currentForm: String;
-  @Output() currentFormChange = new EventEmitter();
+  @Output() currentFormChange = new EventEmitter<CommonsState>();
   @Input() dataset: Dataset;
   userPermissionsTeam$: Observable<UserPermission[]> | undefined;
   userPermissionsCustomer$: Observable<UserPermission[]> | undefined;

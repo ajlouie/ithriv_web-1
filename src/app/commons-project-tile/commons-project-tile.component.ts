@@ -1,9 +1,10 @@
-import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { CommonsState, Project } from '../commons-types';
 import { Institution } from '../institution';
-import { Project } from '../commons-types';
 import { ResourceType } from '../resourceType';
 import { User } from '../user';
+
 declare const addeventatc: any;
 
 @Component({
@@ -14,12 +15,13 @@ declare const addeventatc: any;
 export class CommonsProjectTileComponent implements OnInit {
   @Input() project: Project;
   @Input() user: User;
-  @Input() projectChange = new EventEmitter();
+  @Input() projectChange: EventEmitter<CommonsState>;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router) {
+  }
 
   ngOnInit() {
-    setTimeout(function() {
+    setTimeout(function () {
       addeventatc.refresh();
     }, 200);
   }

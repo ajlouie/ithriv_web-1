@@ -13,7 +13,7 @@ export class MoveCategoryButtonComponent implements OnInit {
   @Input() user: User;
   @Input() siblings: Category[];
   @Input() direction: string;
-  @Output() updatedCategory: EventEmitter<Category> = new EventEmitter();
+  @Output() updatedCategory = new EventEmitter<Category>();
 
   constructor(private api: ResourceApiService) { }
 

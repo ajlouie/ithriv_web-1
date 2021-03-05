@@ -16,7 +16,7 @@ import { debounceTime } from 'rxjs/operators';
 import { Filter, ResourceQuery } from '../resource-query';
 import { fadeTransition } from '../shared/animations';
 import { User } from '../user';
-import { Project } from '../commons-types';
+import { CommonsState, Project } from '../commons-types';
 import { CommonsApiService } from '../shared/commons-api/commons-api.service';
 import { IThrivForm } from '../shared/IThrivForm';
 import { Fieldset } from '../fieldset';
@@ -30,7 +30,7 @@ import { ErrorMatcher } from '../error-matcher';
 })
 export class CommonsMenuComponent implements OnInit {
   @Input() user: User;
-  @Output() currentFormChange = new EventEmitter();
+  @Output() currentFormChange = new EventEmitter<CommonsState>();
   @Input() currentForm: String;
   project: Project;
 

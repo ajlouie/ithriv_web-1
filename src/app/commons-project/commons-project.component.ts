@@ -12,7 +12,7 @@ import {
   Dataset,
   ProjectDocumentMap,
   ProjectDocument,
-  UserPermission, CommonsState,
+  UserPermission, CommonsState, CommonsStateForm,
 } from '../commons-types';
 import { CommonsApiService } from '../shared/commons-api/commons-api.service';
 import { Observable } from 'rxjs';
@@ -31,7 +31,7 @@ import { CommonsProjectCreateEditComponent } from '../commons-project-create-edi
 })
 export class CommonsProjectComponent implements OnInit {
   @Input() user: User;
-  @Input() currentForm: String;
+  @Input() currentForm: CommonsStateForm;
   @Output() currentFormChange = new EventEmitter<CommonsState>();
   @Input() project: Project;
   @Input() datasetsPrivate: Dataset[];
@@ -222,7 +222,8 @@ export class CommonsProjectComponent implements OnInit {
 
   addDocument(): void {
     const dialogRef = this.dialog.open(CommonsProjectDocumentComponent, {
-      width: '300px',
+      height: '400px',
+      width: '600px',
       data: <ProjectDocumentMap>{
         user: this.user,
         project: this.project,
@@ -252,7 +253,8 @@ export class CommonsProjectComponent implements OnInit {
 
   updateDocument(documentType: string) {
     const dialogRef = this.dialog.open(CommonsProjectDocumentComponent, {
-      width: '300px',
+      height: '400px',
+      width: '600px',
       data: <ProjectDocumentMap>{
         user: this.user,
         project: this.project,

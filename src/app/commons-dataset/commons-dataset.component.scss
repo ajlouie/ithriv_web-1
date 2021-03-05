@@ -3,13 +3,6 @@
 .ithriv-spacer {
   flex: 1 2 auto;
 }
-mat-card-footer {
-  position: fixed;
-  bottom: 0em;
-  right: 5em;
-  height: 64px;
-  z-index: 7;
-}
 
 .dataset {
   position: relative;
@@ -47,10 +40,6 @@ mat-card-footer {
 
 mat-card {
   padding-top: 2em;
-}
-
-mat-card-title {
-  color: $brand-primary;
 }
 
 .mat-line.category {

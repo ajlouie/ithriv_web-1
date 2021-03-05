@@ -339,13 +339,13 @@
                       (click)="userCanEditHsd(projectDataset) && showDataset(projectDataset)"
                       *ngIf="projectDataset.can_update_meta === true"
                       [disabled]="!userCanEditHsd(projectDataset)"
-                      color="warn"
+                      color="accent"
                       mat-mini-fab
                     >
                       <mat-icon
                         [matTooltip]="!userCanEditHsd(projectDataset) ? 'You do not have IRB approval to view this data.' : 'Click here to edit dataset details/permissions'"
                       >
-                        {{userCanEditHsd(projectDataset) ? 'lock' : 'edit'}}
+                        {{userCanEditHsd(projectDataset) ? 'edit' : 'lock'}}
                       </mat-icon>
                     </button>
                   </td>
@@ -363,6 +363,7 @@
                       (complete)="onFileComplete($event)"
                       [target]="uploadUrlDataset(projectDataset)"
                       [user]="user"
+                      color="primary"
                     ></app-commons-file-upload>
                   </td>
                 </ng-container>

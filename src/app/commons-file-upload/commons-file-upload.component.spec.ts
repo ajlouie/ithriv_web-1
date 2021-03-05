@@ -1,7 +1,6 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatIconModule, MatProgressBarModule } from '@angular/material';
-
+import { MatButtonModule, MatIconModule, MatProgressBarModule } from '@angular/material';
 import { CommonsFileUploadComponent } from './commons-file-upload.component';
 
 describe('CommonsFileUploadComponent', () => {
@@ -13,6 +12,7 @@ describe('CommonsFileUploadComponent', () => {
       declarations: [ CommonsFileUploadComponent ],
       imports: [
         HttpClientTestingModule,
+        MatButtonModule,
         MatIconModule,
         MatProgressBarModule,
       ],

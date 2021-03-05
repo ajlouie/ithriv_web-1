@@ -13,7 +13,7 @@ import { MatSnackBar } from '@angular/material';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { AddPermissionComponent } from '../add-permission/add-permission.component';
-import { Project, UserPermission, UserPermissionMap } from '../commons-types';
+import { CommonsState, CommonsStateForm, Project, UserPermission, UserPermissionMap } from '../commons-types';
 import { ErrorMatcher } from '../error-matcher';
 import { ParsedError } from '../error-message/error-message.component';
 import { ErrorSnackbarComponent } from '../error-snackbar/error-snackbar.component';
@@ -38,9 +38,9 @@ export class CommonsProjectCreateEditComponent implements OnInit, OnChanges {
     {key: '2', value: 'PROJECT COLLABORATOR'},
   ];
   @Input() user: User;
-  @Input() currentForm: String;
-  @Input() previousForm: String;
-  @Output() currentFormChange = new EventEmitter();
+  @Input() currentForm: CommonsStateForm;
+  @Input() previousForm: CommonsStateForm;
+  @Output() currentFormChange = new EventEmitter<CommonsState>();
   @Input() project: Project;
   @Input() projectAction: string;
   errorMessage: string;
@@ -299,7 +299,8 @@ export class CommonsProjectCreateEditComponent implements OnInit, OnChanges {
 
   addPermission(): void {
     const dialogRef = this.dialog.open(AddPermissionComponent, {
-      width: '250px',
+      height: '300px',
+      width: '400px',
       data: <UserPermissionMap>{
         userPermission: <UserPermission>{
           user_email: '',
@@ -312,9 +313,7 @@ export class CommonsProjectCreateEditComponent implements OnInit, OnChanges {
     });
 
     dialogRef.afterClosed().subscribe((result: UserPermission) => {
-      console.log('The dialog was closed');
-      console.log(result);
-      if (result !== null) {
+      if (result) {
         this.cas
           .addUserProjectPermission(this.user, this.project, result)
           .subscribe(
@@ -338,7 +337,8 @@ export class CommonsProjectCreateEditComponent implements OnInit, OnChanges {
     };
 
     const dialogRef = this.dialog.open(AddPermissionComponent, {
-      width: '250px',
+      height: '300px',
+      width: '400px',
       data: <UserPermissionMap>{
         userPermission: userPermission,
         permissionsMap:
@@ -348,8 +348,7 @@ export class CommonsProjectCreateEditComponent implements OnInit, OnChanges {
     });
 
     dialogRef.afterClosed().subscribe((result: UserPermission) => {
-      console.log('The dialog was closed');
-      if (result !== null) {
+      if (result) {
         this.cas.addUserProjectPermission(this.user, this.project, result).subscribe(
           () => {
             this.cas.deleteUserProjectPermission(this.user, this.project, userPermissionCurrent).subscribe(

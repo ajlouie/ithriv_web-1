@@ -131,6 +131,7 @@ import { SearchBarComponent } from './search-bar/search-bar.component';
 import { CommonsProjectActionsComponent } from './commons-project-actions/commons-project-actions.component';
 import { ErrorMessageComponent } from './error-message/error-message.component';
 import { ErrorSnackbarComponent } from './error-snackbar/error-snackbar.component';
+import { HsdDownloadDialogComponent } from './hsd-download-dialog/hsd-download-dialog.component';
 // import { DropDownListComponent } from '@syncfusion/ej2-angular-dropdowns';
 
 export const MY_NATIVE_FORMATS = {
@@ -217,6 +218,7 @@ export const MY_NATIVE_FORMATS = {
     CommonsProjectActionsComponent,
     ErrorMessageComponent,
     ErrorSnackbarComponent,
+    HsdDownloadDialogComponent,
     // DropDownListComponent
   ],
   imports: [

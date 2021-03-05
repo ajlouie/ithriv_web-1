@@ -110,8 +110,8 @@ describe('CommonsDatasetCreateEditComponent', () => {
     component = fixture.componentInstance;
 
     component.user = mockUser;
-    component.currentForm = '';
-    component.previousForm = '';
+    component.currentForm = 'commons-dataset-create-edit';
+    component.previousForm = 'commons-dataset-create-edit';
     component.project = mockProject;
     component.dataset = mockDataset;
 

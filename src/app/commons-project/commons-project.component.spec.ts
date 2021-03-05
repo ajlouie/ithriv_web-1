@@ -1,6 +1,7 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import {
+  MatButtonModule,
   MatCardModule,
   MatChipsModule,
   MatDialogModule,
@@ -37,6 +38,7 @@ describe('CommonsProjectComponent', () => {
       imports: [
         HttpClientTestingModule,
         MarkdownModule,
+        MatButtonModule,
         MatCardModule,
         MatChipsModule,
         MatDialogModule,
@@ -62,7 +64,7 @@ describe('CommonsProjectComponent', () => {
     fixture = TestBed.createComponent(CommonsProjectComponent);
     component = fixture.componentInstance;
     component.user = mockUser;
-    component.currentForm = '';
+    component.currentForm = 'commons-project';
     component.project = mockProject;
     component.datasetsPrivate = [mockDataset];
     component.datasetsPublic = [mockDataset];

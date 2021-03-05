@@ -2,7 +2,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
-  MAT_DIALOG_DATA,
+  MAT_DIALOG_DATA, MatButtonModule,
   MatDialogModule,
   MatDialogRef,
   MatIconModule,
@@ -31,6 +31,7 @@ describe('CommonsProjectDocumentComponent', () => {
       imports: [
         FormsModule,
         HttpClientTestingModule,
+        MatButtonModule,
         MatDialogModule,
         MatIconModule,
         MatInputModule,

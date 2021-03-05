@@ -3,7 +3,7 @@ import {
   Breakpoints,
   BreakpointState
 } from '@angular/cdk/layout';
-import { Project } from '../commons-types';
+import { CommonsState, Project } from '../commons-types';
 import { ResourceQuery } from '../resource-query';
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { User } from '../user';
@@ -16,7 +16,7 @@ import { User } from '../user';
 export class CommonsProjectListComponent implements OnInit {
   @Input() user: User;
   @Input() currentForm: String;
-  @Output() currentFormChange = new EventEmitter();
+  @Output() currentFormChange = new EventEmitter<CommonsState>();
   @Input() listType: String;
   @Input() projects: Project[];
   @Input() resourceQuery: ResourceQuery;

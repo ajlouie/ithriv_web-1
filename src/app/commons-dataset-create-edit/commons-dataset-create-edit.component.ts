@@ -12,7 +12,15 @@ import { MatSnackBar } from '@angular/material';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { AddPermissionComponent } from '../add-permission/add-permission.component';
-import { Dataset, IrbInvestigator, IrbNumber, Project, UserPermission, UserPermissionMap } from '../commons-types';
+import {
+  CommonsState, CommonsStateForm,
+  Dataset,
+  IrbInvestigator,
+  IrbNumber,
+  Project,
+  UserPermission,
+  UserPermissionMap
+} from '../commons-types';
 import { ErrorMatcher } from '../error-matcher';
 import { ErrorMessageComponent, ParsedError } from '../error-message/error-message.component';
 import { ErrorSnackbarComponent } from '../error-snackbar/error-snackbar.component';
@@ -39,9 +47,9 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
     {key: '3', value: 'DATASET CUSTOMER'},
   ];
   @Input() user: User;
-  @Input() currentForm: String;
-  @Input() previousForm: String;
-  @Output() currentFormChange = new EventEmitter();
+  @Input() currentForm: CommonsStateForm;
+  @Input() previousForm: CommonsStateForm;
+  @Output() currentFormChange = new EventEmitter<CommonsState>();
   @Input() project: Project;
   @Input() dataset: Dataset;
   error: String;
@@ -419,7 +427,8 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
 
   addPermission(): void {
     const dialogRef = this.dialog.open(AddPermissionComponent, {
-      width: '250px',
+      height: '300px',
+      width: '400px',
       data: this.buildUserPermissionMap({
         user_email: '',
         user_role: '',
@@ -427,8 +436,7 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe((result: UserPermission) => {
-      // console.log('The dialog was closed');
-      if (result !== null) {
+      if (result) {
         this.cas
           .addUserDatasetPermission(this.user, this.dataset, result)
           .subscribe(
@@ -452,13 +460,13 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
     };
 
     const dialogRef = this.dialog.open(AddPermissionComponent, {
-      width: '250px',
+      height: '300px',
+      width: '400px',
       data: this.buildUserPermissionMap(userPermission),
     });
 
     dialogRef.afterClosed().subscribe((result: UserPermission) => {
-      // console.log('The dialog was closed');
-      if (result !== null) {
+      if (result) {
         this.cas
           .addUserDatasetPermission(this.user, this.dataset, result)
           .subscribe(

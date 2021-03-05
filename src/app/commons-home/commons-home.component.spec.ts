@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
-  MatBadgeModule,
+  MatBadgeModule, MatButtonModule,
   MatCardModule, MatCheckboxModule, MatChipsModule, MatIconModule,
   MatInputModule,
   MatListModule, MatProgressBarModule, MatProgressSpinnerModule,
@@ -71,6 +71,7 @@ describe('CommonsHomeComponent', () => {
         HttpClientTestingModule,
         MarkdownModule,
         MatBadgeModule,
+        MatButtonModule,
         MatCardModule,
         MatCheckboxModule,
         MatChipsModule,
