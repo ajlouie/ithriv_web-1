@@ -18,6 +18,7 @@ export class CommonsDatasetComponent implements OnInit {
   userPermissionsTeam$: Observable<UserPermission[]> | undefined;
   userPermissionsCustomer$: Observable<UserPermission[]> | undefined;
   fileVersions$: Observable<DatasetFileVersion[]> | undefined;
+  isConnected = false;
   displayedUserpermColumns: string[] = ['email', 'role'];
   displayedFileVersionColumns: string[] = [
     'file_version',
@@ -31,6 +32,11 @@ export class CommonsDatasetComponent implements OnInit {
   ngOnInit() {
     this.loadPermisssions();
     this.loadFileVersions();
+    this.cas.testSSO().subscribe(add => {
+      if (add.sum === '300') {
+        this.isConnected = true;
+      }
+    });
   }
 
   showNext() {
