@@ -229,7 +229,7 @@ export class CommonsApiService {
         project.id,
         {
           user_role: Number(userPermission.user_role),
-          user_email: userPermission.user_email,
+          user_email: userPermission.user_email.toLowerCase(),
         },
         {
           headers: {REMOTE_USER: user.eppn},
@@ -283,6 +283,7 @@ export class CommonsApiService {
     dataset: Dataset,
     userPermission: UserPermission
   ): Observable<any> {
+    userPermission.user_email = userPermission.user_email.toLowerCase()
     return this.http
       .post<any>(
         this.getLandingServiceUrl(user) +

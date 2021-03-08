@@ -244,9 +244,13 @@
       <mat-card-header>
         <mat-card-title>
           Dataset Permissions
+          <mat-card-subtitle>
+            Acceptable formats: USERID@virginia.edu, USERID@vt.edu, USERID@carilionclinic.org, USERID@inova.org.
+          </mat-card-subtitle>
         </mat-card-title>
       </mat-card-header>
       <mat-card-content *ngIf="user">
+
         <mat-list dense>
           <table
             mat-table
@@ -315,6 +319,12 @@
             ></tr>
           </table>
         </mat-list>
+        <div *ngIf="dataset.is_hsd === true">
+          <mat-card-subtitle>
+            You can only give permissions to team members listed on your IRB approval who are EMPLOYED BY (or official VOLUNTEER under) a HIPAA-COVERED ENTITY. Refer to your approved personnel IRB documentation.
+          </mat-card-subtitle>
+        </div>
+        <span class="ithriv-spacer"></span>
         <div
           id="error_message_permission"
           class="display mat-error"

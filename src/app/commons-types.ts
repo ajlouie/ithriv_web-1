@@ -65,6 +65,8 @@ export interface Dataset {
   approved_irb_link?: string;
   contract_link?: string;
   link_to_external_dataset?: string;
+  is_locked_for_user?: boolean;
+  is_hsd?: boolean;
   dicom_de_identified?: string;
   dicom_bids_structure?: string;
   dicom_quality?: string;
