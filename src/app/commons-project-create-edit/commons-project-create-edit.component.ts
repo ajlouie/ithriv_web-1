@@ -103,7 +103,8 @@ export class CommonsProjectCreateEditComponent implements OnInit {
       pl_pi: new FormField({
         formControl: new FormControl(),
         required: true,
-        placeholder: 'Project Lead / Principal Investigator(s):',
+        placeholder: 'Project Lead / Principal Investigator(s) Email(s):',
+        helpText: 'Acceptable formats: USERID@virginia.edu, USERID@vt.edu, USERID@carilionclinic.org, USERID@inova.org',
         type: 'email',
         options: {
           status: ['words'],
@@ -444,7 +445,7 @@ export class CommonsProjectCreateEditComponent implements OnInit {
 
       this.project.name = this.fields.name.formControl.value;
       this.project.name_alts = this.fields.name_alts.formControl.value;
-      this.project.pl_pi = this.fields.pl_pi.formControl.value;
+      this.project.pl_pi = this.fields.pl_pi.formControl.value.toLowerCase();
       this.project.description = this.fields.description.formControl.value;
       this.project.keywords = this.fields.keywords.formControl.value;
       this.project.funding_source = this.fields.funding_source.formControl.value;
@@ -459,7 +460,7 @@ export class CommonsProjectCreateEditComponent implements OnInit {
             for (const pi of this.project.pl_pi.split(',')) {
               this.cas
               .addUserProjectPermission(this.user, this.project,
-                <UserPermission>{ user_email: pi.trim(), user_role: '1' })
+                <UserPermission>{ user_email: pi.trim().toLowerCase(), user_role: '1' })
               .subscribe(
                 (e1) => {
                   this.loadPermisssions();
@@ -501,7 +502,7 @@ export class CommonsProjectCreateEditComponent implements OnInit {
               for (const pi of this.project.pl_pi.split(',')) {
                 this.cas
                 .addUserProjectPermission(this.user, this.project,
-                  <UserPermission>{ user_email: pi.trim(), user_role: '1' })
+                  <UserPermission>{ user_email: pi.trim().toLowerCase(), user_role: '1' })
                 .subscribe(
                   (e1) => {
                     this.loadPermisssions();
