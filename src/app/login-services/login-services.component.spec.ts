@@ -6,7 +6,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs/internal/observable/of';
-import { MockResourceApiService } from '../shared/mocks/resource-api.service.mock';
 import { ResourceApiService } from '../shared/resource-api/resource-api.service';
 import { LoginServicesComponent } from './login-services.component';
 
@@ -28,7 +27,7 @@ describe('LoginServicesComponent', () => {
         {
           provide: ActivatedRoute,
           useValue: {
-            routeConfig: { path: 'register' },
+            routeConfig: {path: 'register'},
             queryParams: of({}),
           }
         },
@@ -46,10 +45,10 @@ describe('LoginServicesComponent', () => {
         const req = httpMock.expectOne(`http://localhost:5000/api/institution`);
         expect(req.request.method).toEqual('GET');
         req.flush([
-          { id: 1, name: 'UVA' },
-          { id: 2, name: 'Carilion' },
-          { id: 3, name: 'Virginia Tech' },
-          { id: 4, name: 'Inova' },
+          {id: 1, name: 'UVA'},
+          {id: 2, name: 'Carilion'},
+          {id: 3, name: 'Virginia Tech'},
+          {id: 4, name: 'Inova'},
         ]);
       });
   }));
@@ -57,6 +56,9 @@ describe('LoginServicesComponent', () => {
   afterEach(() => {
     fixture.destroy();
     httpMock.verify();
+
+    sessionStorage.clear();
+    localStorage.clear();
   });
 
   it('should create', () => {

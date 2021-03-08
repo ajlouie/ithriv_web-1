@@ -5,7 +5,7 @@ import { MatTooltipModule } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MarkdownModule, MarkdownService } from 'ngx-markdown';
+import { MarkdownModule, MarkdownService, MarkedOptions } from 'ngx-markdown';
 import { of } from 'rxjs/internal/observable/of';
 import { Category } from '../category';
 import { CategoryResource } from '../category-resource';
@@ -44,7 +44,8 @@ describe('CategoryComponent', () => {
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
           ResourceApiService,
-          {provide: MarkdownService, useClass: MockMarkdownService},
+          MarkdownService,
+          MarkedOptions,
           {
             provide: ActivatedRoute,
             useValue: {

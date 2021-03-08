@@ -1,27 +1,33 @@
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { MockResourceApiService } from '../shared/mocks/resource-api.service.mock';
+import { RouterTestingModule } from '@angular/router/testing';
 import { ResourceApiService } from '../shared/resource-api/resource-api.service';
 import { MoveCategoryButtonComponent } from './move-category-button.component';
 
 describe('MoveCategoryButtonComponent', () => {
-  let api: MockResourceApiService;
+  let httpMock: HttpTestingController;
   let component: MoveCategoryButtonComponent;
   let fixture: ComponentFixture<MoveCategoryButtonComponent>;
 
   beforeEach(async(() => {
-    api = new MockResourceApiService();
-
     TestBed
       .configureTestingModule({
-        declarations: [MoveCategoryButtonComponent],
+        declarations: [
+          MoveCategoryButtonComponent
+        ],
+        imports: [
+          HttpClientTestingModule,
+          RouterTestingModule,
+        ],
         providers: [
-          { provide: ResourceApiService, useValue: api }
+          ResourceApiService,
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA]
       })
       .compileComponents()
       .then(() => {
+        httpMock = TestBed.get(HttpTestingController);
         fixture = TestBed.createComponent(MoveCategoryButtonComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();

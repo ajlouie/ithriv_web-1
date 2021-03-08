@@ -5,13 +5,12 @@ import { MatTooltipModule } from '@angular/material';
 import { By } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MarkdownModule, MarkdownService } from 'ngx-markdown';
+import { MarkdownModule, MarkdownService, MarkedOptions } from 'ngx-markdown';
 import { CategoryColorBorderDirective } from '../category-color-border.directive';
 import { getDummyCategory } from '../shared/fixtures/category';
 import { mockInstitution } from '../shared/fixtures/institution';
 import { getDummyResource } from '../shared/fixtures/resource';
-import { getDummyUser, mockUser } from '../shared/fixtures/user';
-import { MockMarkdownService } from '../shared/mocks/markdown.service.mock';
+import { getDummyUser } from '../shared/fixtures/user';
 import { ResourceApiService } from '../shared/resource-api/resource-api.service';
 import { ResourceComponent } from './resource.component';
 
@@ -86,7 +85,8 @@ describe('ResourceComponent', () => {
         ],
         providers: [
           ResourceApiService,
-          {provide: MarkdownService, useClass: MockMarkdownService},
+          MarkedOptions,
+          MarkdownService,
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA]
       })

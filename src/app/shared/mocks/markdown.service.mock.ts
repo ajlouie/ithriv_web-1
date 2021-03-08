@@ -3,7 +3,6 @@ import { SpyObject } from './helper.mock';
 import Spy = jasmine.Spy;
 
 export class MockMarkdownService extends SpyObject {
-
   compileSpy: Spy;
   getSourceSpy: Spy;
   highlightSpy: Spy;

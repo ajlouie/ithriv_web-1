@@ -83,3 +83,11 @@ export function getDummyCategory(): Category {
     },
   };
 }
+
+const level2: Category = getDummyCategory();
+const level1: Category = level2.parent;
+const level0: Category = level1.parent;
+level0.children = [level1];
+level1.children = [level2];
+
+export const mockCategories = [level0];

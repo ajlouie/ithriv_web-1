@@ -33,7 +33,6 @@ import { FormFieldLabelComponent } from '../form-field-label/form-field-label.co
 import { FormFieldComponent } from '../form-field/form-field.component';
 import { mockProject } from '../shared/fixtures/project';
 import { mockUser } from '../shared/fixtures/user';
-import { MockMarkdownService } from '../shared/mocks/markdown.service.mock';
 import { ResourceApiService } from '../shared/resource-api/resource-api.service';
 import { TreeSelectComponent } from '../tree-select/tree-select.component';
 
@@ -88,8 +87,8 @@ describe('CommonsProjectCreateEditComponent', () => {
         RouterTestingModule,
       ],
       providers: [
-        {provide: MarkdownService, useClass: MockMarkdownService},
         MarkedOptions,
+        MarkdownService,
         ResourceApiService,
         {provide: Router, useValue: mockRouter},
       ],
@@ -112,6 +111,9 @@ describe('CommonsProjectCreateEditComponent', () => {
   afterEach(() => {
     fixture.destroy();
     httpMock.verify();
+
+    sessionStorage.clear();
+    localStorage.clear();
   });
 
   it('should create', () => {

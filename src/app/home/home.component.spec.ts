@@ -1,7 +1,7 @@
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ReactiveFormsModule } from '@angular/forms';
 import {
   MatExpansionModule,
   MatFormFieldModule,
@@ -28,7 +28,7 @@ describe('HomeComponent', () => {
   let component: HomeComponent;
   let fixture: ComponentFixture<HomeComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [
         CategoryTileComponent,
@@ -55,10 +55,12 @@ describe('HomeComponent', () => {
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })
       .compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     const institutionId = mockInstitution.id;
+    sessionStorage.setItem('institution_id', `${institutionId}`);
+    localStorage.setItem('token', `MOCK_TOKEN_VALUE`);
     httpMock = TestBed.get(HttpTestingController);
     fixture = TestBed.createComponent(HomeComponent);
     component = fixture.componentInstance;
@@ -73,8 +75,6 @@ describe('HomeComponent', () => {
       resources: [],
     });
 
-    localStorage.setItem('token', `MOCK_TOKEN_VALUE`);
-    sessionStorage.setItem('institution_id', `${institutionId}`);
     fixture.detectChanges();
 
     const userReq = httpMock.expectOne(`http://localhost:5000/api/session`);
@@ -101,6 +101,9 @@ describe('HomeComponent', () => {
   afterEach(() => {
     fixture.destroy();
     httpMock.verify();
+
+    sessionStorage.clear();
+    localStorage.clear();
   });
 
   it('should create', () => {

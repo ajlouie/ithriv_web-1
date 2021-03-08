@@ -50,6 +50,9 @@ describe('GraphComponent', () => {
   afterEach(() => {
     fixture.destroy();
     httpMock.verify();
+
+    sessionStorage.clear();
+    localStorage.clear();
   });
 
   it('should create', () => {

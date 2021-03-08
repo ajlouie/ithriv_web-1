@@ -1,44 +1,52 @@
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of as observableOf } from 'rxjs';
-import { MockResourceApiService } from '../shared/mocks/resource-api.service.mock';
 import { ResourceApiService } from '../shared/resource-api/resource-api.service';
 import { SessionRedirectComponent } from './session-redirect.component';
 
 describe('SessionRedirectComponent', () => {
-  let api: MockResourceApiService;
+  let httpMock: HttpTestingController;
   let component: SessionRedirectComponent;
   let fixture: ComponentFixture<SessionRedirectComponent>;
 
   beforeEach(async(() => {
-    api = new MockResourceApiService();
-
     TestBed
       .configureTestingModule({
         declarations: [SessionRedirectComponent],
         imports: [
-          RouterTestingModule.withRoutes([])
+          HttpClientTestingModule,
+          RouterTestingModule.withRoutes([]),
         ],
         providers: [
           {
             provide: ActivatedRoute,
             useValue: {
-              params: observableOf({ token: '' }),
+              params: observableOf({token: ''}),
             }
           },
-          { provide: ResourceApiService, useValue: api }
+          ResourceApiService,
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA]
       })
       .compileComponents()
       .then(() => {
+        httpMock = TestBed.get(HttpTestingController);
         fixture = TestBed.createComponent(SessionRedirectComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
       });
   }));
+
+  afterEach(() => {
+    fixture.destroy();
+    httpMock.verify();
+
+    sessionStorage.clear();
+    localStorage.clear();
+  });
 
   it('should create', () => {
     expect(component).toBeTruthy();

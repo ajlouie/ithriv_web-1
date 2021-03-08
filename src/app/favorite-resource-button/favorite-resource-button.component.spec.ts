@@ -1,25 +1,26 @@
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { FavoriteResourceButtonComponent } from './favorite-resource-button.component';
 import { MatTooltipModule } from '@angular/material';
+import { RouterTestingModule } from '@angular/router/testing';
 import { ResourceApiService } from '../shared/resource-api/resource-api.service';
-import { MockResourceApiService } from '../shared/mocks/resource-api.service.mock';
+import { FavoriteResourceButtonComponent } from './favorite-resource-button.component';
 
 describe('FavoriteResourceButtonComponent', () => {
+  let httpMock: HttpTestingController;
   let component: FavoriteResourceButtonComponent;
   let fixture: ComponentFixture<FavoriteResourceButtonComponent>;
-  let api: MockResourceApiService;
 
   beforeEach(async(() => {
-    api = new MockResourceApiService();
-
     TestBed.configureTestingModule({
       declarations: [FavoriteResourceButtonComponent],
       imports: [
+        HttpClientTestingModule,
+        RouterTestingModule,
         MatTooltipModule
       ],
       providers: [
-        { provide: ResourceApiService, useValue: api }
+        ResourceApiService,
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })
@@ -27,9 +28,18 @@ describe('FavoriteResourceButtonComponent', () => {
   }));
 
   beforeEach(() => {
+    httpMock = TestBed.get(HttpTestingController);
     fixture = TestBed.createComponent(FavoriteResourceButtonComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+  });
+
+  afterEach(() => {
+    fixture.destroy();
+    httpMock.verify();
+
+    sessionStorage.clear();
+    localStorage.clear();
   });
 
   it('should create', () => {

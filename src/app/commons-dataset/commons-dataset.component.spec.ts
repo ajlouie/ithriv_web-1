@@ -3,7 +3,8 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import {
   MatButtonModule,
   MatCardModule,
-  MatChipsModule, MatDialogModule,
+  MatChipsModule,
+  MatDialogModule,
   MatDividerModule,
   MatIconModule,
   MatInputModule,
@@ -17,14 +18,13 @@ import {
 } from '@angular/material';
 import { RouterTestingModule } from '@angular/router/testing';
 import { FileDropModule } from 'ngx-file-drop';
-import { MarkdownModule, MarkdownService } from 'ngx-markdown';
+import { MarkdownModule, MarkdownService, MarkedOptions } from 'ngx-markdown';
 import { NgProgressModule } from 'ngx-progressbar';
 import { BreadcrumbsComponent } from '../breadcrumbs/breadcrumbs.component';
 import { CommonsFileUploadComponent } from '../commons-file-upload/commons-file-upload.component';
 import { FileUploadComponent } from '../file-upload/file-upload.component';
 import { mockDataset } from '../shared/fixtures/dataset';
 import { mockUser } from '../shared/fixtures/user';
-import { MockMarkdownService } from '../shared/mocks/markdown.service.mock';
 import { CommonsDatasetComponent } from './commons-dataset.component';
 
 describe('CommonsDatasetComponent', () => {
@@ -61,7 +61,8 @@ describe('CommonsDatasetComponent', () => {
         RouterTestingModule,
       ],
       providers: [
-        {provide: MarkdownService, useClass: MockMarkdownService},
+        MarkedOptions,
+        MarkdownService,
       ]
     })
       .compileComponents();

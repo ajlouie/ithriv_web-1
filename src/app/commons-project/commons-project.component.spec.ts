@@ -15,13 +15,12 @@ import {
   MatTooltipModule
 } from '@angular/material';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MarkdownModule, MarkdownService } from 'ngx-markdown';
+import { MarkdownModule, MarkdownService, MarkedOptions } from 'ngx-markdown';
 import { BreadcrumbsComponent } from '../breadcrumbs/breadcrumbs.component';
 import { CommonsFileUploadComponent } from '../commons-file-upload/commons-file-upload.component';
 import { mockDataset } from '../shared/fixtures/dataset';
 import { mockProject } from '../shared/fixtures/project';
 import { mockUser } from '../shared/fixtures/user';
-import { MockMarkdownService } from '../shared/mocks/markdown.service.mock';
 import { CommonsProjectComponent } from './commons-project.component';
 
 describe('CommonsProjectComponent', () => {
@@ -53,7 +52,8 @@ describe('CommonsProjectComponent', () => {
         RouterTestingModule,
       ],
       providers: [
-        {provide: MarkdownService, useClass: MockMarkdownService},
+        MarkedOptions,
+        MarkdownService,
       ]
 
     })
