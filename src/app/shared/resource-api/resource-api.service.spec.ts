@@ -17,7 +17,6 @@ describe('ResourceApiService', () => {
         ],
         providers: [
           ResourceApiService,
-          { provide: XHRBackend, useClass: MockBackend }
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA]
       });

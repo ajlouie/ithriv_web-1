@@ -29,6 +29,7 @@ const parked = {
 };
 
 Node.prototype.contains = function (arg) {
+  // tslint:disable-next-line:no-bitwise
   return this === arg || !!(this.compareDocumentPosition(arg) & 16);
 };
 

@@ -283,7 +283,7 @@ export class CommonsApiService {
     dataset: Dataset,
     userPermission: UserPermission
   ): Observable<any> {
-    userPermission.user_email = userPermission.user_email.toLowerCase()
+    userPermission.user_email = userPermission.user_email.toLowerCase();
     return this.http
       .post<any>(
         this.getLandingServiceUrl(user) +

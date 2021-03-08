@@ -1,11 +1,11 @@
-import { Availability } from "./availability";
-import { Favorite } from "./favorite";
-import { FileAttachment } from "./file-attachment";
-import { Institution } from "./institution";
-import { Links } from "./links";
-import { ResourceCategory } from "./resource-category";
-import { ResourceType } from "./resourceType";
-import { SegmentType } from "./segmentType";
+import { Availability } from './availability';
+import { Favorite } from './favorite';
+import { FileAttachment } from './file-attachment';
+import { Institution } from './institution';
+import { Links } from './links';
+import { ResourceCategory } from './resource-category';
+import { ResourceType } from './resourceType';
+import { SegmentType } from './segmentType';
 
 export interface Resource {
   id: number;

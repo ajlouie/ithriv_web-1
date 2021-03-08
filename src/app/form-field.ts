@@ -1,5 +1,5 @@
-import { FormControl, FormGroup } from "@angular/forms";
-import { FileAttachment } from "./file-attachment";
+import { FormControl, FormGroup } from '@angular/forms';
+import { FileAttachment } from './file-attachment';
 import { FormSelectOption } from './form-select-option';
 
 export class FormField {

@@ -50,15 +50,19 @@ export class IThrivForm {
 
   setObjectToEdit(object: any) {
     for (const fieldName in this.fields) {
-      const field = this.fields[fieldName];
-      field.formControl.patchValue(object[fieldName]);
+      if (this.fields[fieldName] && object[fieldName]) {
+        const field = this.fields[fieldName];
+        field.formControl.patchValue(object[fieldName]);
+      }
     }
   }
 
   updateObject(object: any) {
     for (const fieldName in this.fields) {
-      const field = this.fields[fieldName];
-      object[fieldName] = field.formControl.value;
+      if (this.fields[fieldName] && object[fieldName]) {
+        const field = this.fields[fieldName];
+        object[fieldName] = field.formControl.value;
+      }
     }
   }
 
