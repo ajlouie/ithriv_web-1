@@ -25,7 +25,7 @@ import { RichTextEditorModule } from '@syncfusion/ej2-angular-richtexteditor';
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 import { ColorPickerModule } from 'ngx-color-picker';
 import { FileDropModule } from 'ngx-file-drop';
-import { MarkdownModule } from 'ngx-markdown';
+import { MarkdownModule, MarkdownService, MarkedOptions } from 'ngx-markdown';
 import { NgProgressModule } from 'ngx-progressbar';
 import { BreadcrumbsComponent } from '../breadcrumbs/breadcrumbs.component';
 import { FileUploadComponent } from '../file-upload/file-upload.component';
@@ -33,6 +33,7 @@ import { FormFieldLabelComponent } from '../form-field-label/form-field-label.co
 import { FormFieldComponent } from '../form-field/form-field.component';
 import { mockProject } from '../shared/fixtures/project';
 import { mockUser } from '../shared/fixtures/user';
+import { MockMarkdownService } from '../shared/mocks/markdown.service.mock';
 import { ResourceApiService } from '../shared/resource-api/resource-api.service';
 import { TreeSelectComponent } from '../tree-select/tree-select.component';
 
@@ -87,6 +88,8 @@ describe('CommonsProjectCreateEditComponent', () => {
         RouterTestingModule,
       ],
       providers: [
+        {provide: MarkdownService, useClass: MockMarkdownService},
+        MarkedOptions,
         ResourceApiService,
         {provide: Router, useValue: mockRouter},
       ],

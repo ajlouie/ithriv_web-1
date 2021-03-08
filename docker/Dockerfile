@@ -18,9 +18,9 @@ RUN npm config set unsafe-perm true \
 RUN node -v
 RUN ng --version
 COPY . .
-# RUN npm run lint
+RUN npm run lint
 RUN npm run "build_$BUILD_ENV"
-# RUN npm run test
+RUN npm run test
 RUN npm prune --production
 
 FROM nginx:alpine
