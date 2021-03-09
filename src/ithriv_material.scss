@@ -181,6 +181,10 @@
         margin-top: 0;
         margin-bottom: 0;
       }
+
+      .mat-card-subtitle {
+        margin-top: 1em;
+      }
     }
 
     .mat-card-actions {
@@ -210,4 +214,5 @@
   .mat-snack-bar-container.snackbar-warning {
     background-color: $brand-warning;
   }
+
 }
