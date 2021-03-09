@@ -13,7 +13,7 @@ export class EditCategoryButtonComponent implements OnInit {
   @Input() category: Category;
   @Input() user: User;
   @Input() parent: Category;
-  @Output() updatedCategory: EventEmitter<Category> = new EventEmitter();
+  @Output() updatedCategory = new EventEmitter<Category>();
 
   constructor(private dialog: MatDialog) {}
 

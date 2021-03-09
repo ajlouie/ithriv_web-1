@@ -1,7 +1,7 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { UserPermissionMap } from '../commons-types';
+import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { IrbInvestigator, UserPermissionMap } from '../commons-types';
 import { ValidateEmailSingle } from '../shared/validators/comms_sep_email.validator';
 
 @Component({
@@ -11,15 +11,26 @@ import { ValidateEmailSingle } from '../shared/validators/comms_sep_email.valida
 })
 export class AddPermissionComponent implements OnInit {
   emailControl = new FormControl('', [Validators.required, ValidateEmailSingle]);
+  irbInvestigators: IrbInvestigator[];
   permissionControl = new FormControl('', Validators.required);
+  hasIrbNumber: boolean;
+  isDataset: boolean;
+
   constructor(
     public dialogRef: MatDialogRef<AddPermissionComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: UserPermissionMap
-  ) {}
+    @Inject(MAT_DIALOG_DATA) public data: UserPermissionMap,
+  ) {
+  }
 
   ngOnInit() {
     this.emailControl.setValue(this.data.userPermission.user_email);
     this.permissionControl.setValue(this.data.userPermission.user_role);
+    this.isDataset = this.data.isDataset || false;
+
+    if (this.isDataset) {
+      this.irbInvestigators = this.data.irbInvestigators;
+      this.hasIrbNumber = this.data.hasIrbNumber;
+    }
   }
 
   onNoClick(): void {

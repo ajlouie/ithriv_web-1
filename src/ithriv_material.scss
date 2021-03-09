@@ -1,126 +1,7 @@
-//@import '../node_modules/@angular/material/theming';
-//@include mat-core();
-@import '../node_modules/@angular/material/theming';
-@include mat-core();
-
-$mat-blue: (
-  50: #f1f5f7, // Modified, was #e0e6ed
-  100: #b3c1d3,
-  200: #8097b6,
-  300: #4d6d98,
-  400: #264e82,
-  500: #002f6c,
-  600: #002a64,
-  700: #002359,
-  800: #001d4f,
-  900: #00123d,
-  A100: #738cff,
-  A200: #4062ff,
-  A400: #0d38ff,
-  A700: #002bf2,
-  contrast: (
-    50: #000000,
-    100: #000000,
-    200: #000000,
-    300: #ffffff,
-    400: #ffffff,
-    500: #ffffff,
-    600: #ffffff,
-    700: #ffffff,
-    800: #ffffff,
-    900: #ffffff,
-    A100: #000000,
-    A200: #ffffff,
-    A400: #ffffff,
-    A700: #ffffff
-  )
-);
-
-$mat-orange: (
-  50: #fceee0,
-  100: #f7d5b3,
-  200: #f2b980,
-  300: #ed9c4d,
-  400: #e98726,
-  500: #e57200,
-  600: #e26a00,
-  700: #de5f00,
-  800: #da5500,
-  900: #d34200,
-  A100: #fffcfb,
-  A200: #ffd5c8,
-  A400: #ffaf95,
-  A700: #ff9b7b,
-  contrast: (
-    50: #000000,
-    100: #000000,
-    200: #000000,
-    300: #000000,
-    400: #000000,
-    500: #ffffff,
-    600: #ffffff,
-    700: #ffffff,
-    800: #ffffff,
-    900: #ffffff,
-    A100: #000000,
-    A200: #000000,
-    A400: #000000,
-    A700: #000000
-  )
-);
-
-// Top-bar dark green: #005424
-// Menu-bar medium green: #007A3C (this one is also the generic/default green for resource pages, etc.)
-// Light Tan: #FAF9F8 (this is background on section panels and at the top of home page)
-
-$mat-green: (
-  50: #e8f5e9,
-  100: #c8e6c9,
-  200: #a5d6a7,
-  300: #81c784,
-  400: #66bb6a,
-  500: #4caf50,
-  600: #43a047,
-  700: #388e3c,
-  800: #007a3c, // Modified, was #2e7d32
-  900: #005424, // Modified, was #1b5e20
-  A100: #b9f6ca,
-  A200: #69f0ae,
-  A400: #00e676,
-  A700: #00c853,
-  contrast: (
-    50: $dark-primary-text,
-    100: $dark-primary-text,
-    200: $dark-primary-text,
-    300: $dark-primary-text,
-    400: $dark-primary-text,
-    500: $light-primary-text,
-    600: $light-primary-text,
-    700: $light-primary-text,
-    800: $light-primary-text,
-    900: $light-primary-text,
-    A100: $dark-primary-text,
-    A200: $dark-primary-text,
-    A400: $dark-primary-text,
-    A700: $dark-primary-text
-  )
-);
-
-$uva-primary: mat-palette($mat-blue);
-$uva-accent: mat-palette($mat-orange);
-$uva-warn: mat-palette($mat-deep-orange);
-$uva-theme: mat-light-theme($uva-primary, $uva-accent, $uva-warn);
-
-$ithriv-primary: mat-palette($mat-green);
-$ithriv-secondary: mat-palette($mat-blue);
-$ithriv-accent: mat-palette($mat-orange);
-$ithriv-warn: mat-palette($mat-deep-orange);
-$ithriv-theme: mat-light-theme($ithriv-primary, $ithriv-accent, $ithriv-warn);
-
-$easeDuration: 300ms;
-$animationDuration: 500ms;
-
-@include angular-material-theme($uva-theme);
+@import "config";
+@import "material";
+@import "mixins";
+@include mat-core($custom-typography);
 @include angular-material-theme($ithriv-theme);
 
 // Define a mixin that accepts a theme and outputs the color styles for the component.
@@ -129,12 +10,18 @@ $animationDuration: 500ms;
   $primary: map-get($theme, primary);
   $accent: map-get($theme, accent);
 
-  // Use mat-color to extract individual colors from a palette as necessary.
-
-  body,
-  .main {
-    background-color: mat-color($primary, 50);
-    margin: 0px;
+  html, body, .main {
+    font-family: sans-serif;
+    line-height: 1.15;
+    -ms-text-size-adjust: 100%;
+    -webkit-text-size-adjust: 100%;
+    box-sizing: border-box;
+    font-size: 100%;
+    margin: 0 !important;
+    padding: 0 !important;
+    max-width: 100vw;
+    overflow-x: hidden;
+    background-color: $brand-primary-light-25;
     min-height: 100vh;
   }
 
@@ -158,7 +45,7 @@ $animationDuration: 500ms;
     font-size: 24px;
 
     &.page-title {
-      color: mat-color($ithriv-primary, 800, 1);
+      color: $brand-primary;
       font-size: 32px;
       font-weight: bolder;
       margin-top: 1em;
@@ -187,7 +74,7 @@ $animationDuration: 500ms;
 
   a {
     text-decoration: none;
-    color: mat-color($ithriv-primary, 800, 1);
+    color: $brand-primary;
   }
 
   .mat-tab-label {
@@ -207,12 +94,12 @@ $animationDuration: 500ms;
   }
 
   .mat-tab-body-content {
-    background-color: mat-color($primary, 50);
+    background-color: $brand-primary-light-25;
   }
 
   ::ng-deep .mat-tab-group.mat-primary.mat-background-primary .mat-ink-bar,
   ::ng-deep .mat-tab-nav-bar.mat-primary.mat-background-primary .mat-ink-bar {
-    background-color: mat-color($ithriv-primary, 500, 1);
+    background-color: $brand-primary-light;
   }
 
   #fileUpload {
@@ -230,7 +117,7 @@ $animationDuration: 500ms;
         text-align: center;
 
         #dropZoneInstructions {
-          color: #999999;
+          color: $brand-gray;
           text-align: center;
 
           mat-icon {
@@ -247,8 +134,8 @@ $animationDuration: 500ms;
     }
 
     &.hover file-drop .file-upload {
-      background-color: mat-color($ithriv-primary, 800, 1);
-      border: 1px solid mat-color($ithriv-primary, 800, 1);
+      background-color: $brand-primary;
+      border: 1px solid $brand-primary;
 
       #dropZoneInstructions {
         color: white;
@@ -273,4 +160,59 @@ $animationDuration: 500ms;
   :host >>> .content {
     height: -moz-available; /* WebKit-based browsers will ignore this. */
   }
+
+  .mat-tooltip {
+    font-size: 12px !important;
+  }
+
+  .mat-card.create-edit, .mat-card.view {
+    .mat-card-header {
+      padding-bottom: 1em;
+
+      .mat-card-header-text {
+        padding: 0;
+        margin: 0;
+      }
+
+      .mat-card-title {
+        font-size: $font-size-larger-4;
+        color: $brand-primary;
+        text-transform: uppercase;
+        margin-top: 0;
+        margin-bottom: 0;
+      }
+
+      .mat-card-subtitle {
+        margin-top: 1em;
+      }
+    }
+
+    .mat-card-actions {
+      padding: 0;
+      margin: 0;
+      margin-bottom: 4px !important;
+    }
+  }
+
+  .mat-table {
+    @include mat-elevation(2);
+
+    .mat-cell {
+      padding-left: 1em;
+      padding-right: 1em;
+    }
+
+    .mat-header-cell {
+      padding-left: 1em;
+      padding-right: 1em;
+      background-color: $brand-primary-light;
+      color: white;
+      font-size: $base-font-size;
+    }
+  }
+
+  .mat-snack-bar-container.snackbar-warning {
+    background-color: $brand-warning;
+  }
+
 }

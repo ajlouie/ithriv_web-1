@@ -1,234 +1,231 @@
-<mat-card *ngIf="user">
-  <mat-card-content>
-    <mat-card *ngIf="user">
-      <mat-card-content *ngIf="user">
-        <mat-toolbar>
-          <mat-card-title>
-            Project Details
-          </mat-card-title>
-        </mat-toolbar>
-        <form
-          *ngIf="formStatus === 'form'"
-          [formGroup]="fg"
-          (ngSubmit)="submitProject($event)"
-        >
-          <app-form-field
-            *ngFor="let field of getFields()"
-            [errors]="
+<div *ngIf="error" class="display mat-error" id="delete_error_message">
+  {{ error }}
+</div>
+<div *ngIf="user" fxLayout="column" fxLayoutGap="10px">
+  <mat-card *ngIf="user" ngClass="create-edit">
+    <mat-card-content *ngIf="user">
+      <mat-card-header>
+        <h2 mat-card-title>Project Details</h2>
+        <span fxFlex></span>
+        <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="10px">
+          <button
+            (click)="showConfirmDelete = true"
+            *ngIf="
+                  project.can_delete_meta &&
+                  project.can_delete_data &&
+                  !showConfirmDelete &&
+                  createNew === false
+                "
+            color="warn"
+            mat-raised-button
+            ngClass="show-confirm-delete"
+            type="button"
+          >
+            Delete Project
+          </button>
+          <button
+            (click)="deleteProject()"
+            *ngIf="showConfirmDelete && project.can_delete_meta && project.can_delete_data"
+            color="warn"
+            mat-raised-button
+            ngClass="confirm-delete"
+            type="button"
+          >
+            <mat-icon>delete</mat-icon>
+            Permanently Delete This Project!!!
+          </button>
+          <button
+            (click)="showConfirmDelete = false"
+            *ngIf="showConfirmDelete && project.can_delete_meta && project.can_delete_data"
+            mat-button
+            ngClass="cancel-delete"
+          >
+            <mat-icon>cancel</mat-icon>
+            Cancel
+          </button>
+        </div>
+      </mat-card-header>
+      <form
+        (ngSubmit)="submitProject($event)"
+        *ngIf="formStatus === 'form'"
+        [formGroup]="fg"
+      >
+        <app-form-field
+          *ngFor="let field of getFields()"
+          [errorMatcher]="errorMatcher"
+          [errors]="
               field.formControl
                 ? field.formControl.errors
                 : field.formGroup.errors
             "
-            [field]="field"
-            [formGroup]="fg"
-            [errorMatcher]="errorMatcher"
-          ></app-form-field>
-          <footer *ngIf="formStatus === 'form'">
-            <div
-              id="error_message"
-              class="display mat-error"
-              *ngIf="errorMessage"
-            >
-              <h4>{{ errorMessage }}</h4>
-            </div>
-            <span class="ithriv-spacer"></span>
-            <button
-              type="button"
-              color="primary"
-              mat-raised-button
-              (click)="submitProject($event)"
-            >
-              <mat-icon>save_alt</mat-icon>
-              Save
-            </button>
-            <button type="button" (click)="cancelProject()" mat-button>
-              <mat-icon>cancel</mat-icon>
-              Cancel
-            </button>
-          </footer>
-        </form>
-
-        <ng-container *ngIf="formStatus !== 'form'">
+          [field]="field"
+          [formGroup]="fg"
+        ></app-form-field>
+        <footer *ngIf="formStatus === 'form'">
           <div
-            *ngIf="formStatus === 'submitting'"
-            fxLayout="column"
-            fxLayoutAlign="space-around center"
+            *ngIf="errorMessage"
+            class="display mat-error"
+            id="create_error_message"
           >
-            <mat-spinner [diameter]="48"></mat-spinner>
-            <button type="button" (click)="onCancel()" mat-button>
-              Cancel
-            </button>
+            <h4>{{ errorMessage }}</h4>
           </div>
-          <div *ngIf="formStatus === 'complete'">
-            <p>
-              <b>Commons project {{ project.name }} successfully created. </b>
-            </p>
-            <button
-              type="button"
-              color="primary"
-              mat-raised-button
-              (click)="showForm()"
-            >
-              <mat-icon>help</mat-icon>
-              Create another project
-            </button>
-            <button
-              type="button"
-              color="primary"
-              mat-button
-              (click)="cancelProject()"
-            >
-              Continue
-            </button>
-          </div>
-        </ng-container>
-      </mat-card-content>
-    </mat-card>
-    <mat-divider [inset]="true"></mat-divider>
-    <mat-card
-      *ngIf="
+          <span class="ithriv-spacer"></span>
+          <button
+            (click)="submitProject($event)"
+            color="primary"
+            mat-raised-button
+            type="button"
+          >
+            <mat-icon>save_alt</mat-icon>
+            Save
+          </button>
+          <button (click)="cancelProject()" mat-button type="button">
+            <mat-icon>cancel</mat-icon>
+            Cancel
+          </button>
+        </footer>
+      </form>
+      
+      <ng-container *ngIf="formStatus !== 'form'">
+        <div
+          *ngIf="formStatus === 'submitting'"
+          fxLayout="column"
+          fxLayoutAlign="space-around center"
+        >
+          <mat-spinner [diameter]="48"></mat-spinner>
+          <button (click)="onCancel()" mat-button type="button">
+            Cancel
+          </button>
+        </div>
+        <div *ngIf="formStatus === 'complete'">
+          <p>
+            <b>Commons project {{ project.name }} successfully created. </b>
+          </p>
+          <button
+            (click)="showForm()"
+            color="primary"
+            mat-raised-button
+            type="button"
+          >
+            <mat-icon>help</mat-icon>
+            Create another project
+          </button>
+          <button
+            (click)="cancelProject()"
+            color="primary"
+            mat-button
+            type="button"
+          >
+            Continue
+          </button>
+        </div>
+      </ng-container>
+    </mat-card-content>
+  </mat-card>
+  <mat-divider [inset]="true"></mat-divider>
+  <mat-card
+    *ngIf="
         user &&
         formStatus === 'form' &&
         project.id !== '' &&
         project.can_manage_permission === true
       "
-    >
-      <mat-card-content *ngIf="user">
-        <mat-toolbar>
-          <mat-card-title>
-            Project Permissions
-            <mat-card-subtitle>
-              Acceptable formats: USERID@virginia.edu, USERID@vt.edu, USERID@carilionclinic.org, USERID@inova.org
-            </mat-card-subtitle>
-          </mat-card-title>
-        </mat-toolbar>
-        <mat-list dense>
-          <table
-            mat-table
-            [dataSource]="userPermissions$ | async"
-            class="mat-elevation-z8 projectperms"
-          >
-            <ng-container matColumnDef="email">
-              <th mat-header-cell *matHeaderCellDef>EMAIL</th>
-              <td mat-cell *matCellDef="let userPermission">
-                <mat-label>
-                  {{ userPermission.user_email }}
-                </mat-label>
-              </td>
-            </ng-container>
-            <ng-container matColumnDef="role">
-              <th mat-header-cell *matHeaderCellDef>ROLE</th>
-              <td mat-cell *matCellDef="let userPermission">
-                {{ lookupRole(userPermission.user_role) }}
-              </td>
-            </ng-container>
-            <ng-container matColumnDef="edit">
-              <th mat-header-cell *matHeaderCellDef>
-                EDIT
-              </th>
-              <td mat-cell *matCellDef="let userPermission">
-                <button
-                  type="button"
-                  (click)="editPermission(userPermission)"
-                  color="warn"
-                  mat-mini-fab
+    ngClass="create-edit"
+  >
+    <mat-card-content *ngIf="user">
+      <mat-card-header>
+        <mat-card-title>
+          Project Permissions
+        </mat-card-title>
+        <mat-card-subtitle>
+          Acceptable formats: USERID@virginia.edu, USERID@vt.edu, USERID@carilionclinic.org, USERID@inova.org
+        </mat-card-subtitle>
+      </mat-card-header>
+      <mat-list dense>
+        <table
+          [dataSource]="userPermissions$ | async"
+          class="projectperms"
+          mat-table
+        >
+          <ng-container matColumnDef="email">
+            <th *matHeaderCellDef mat-header-cell>EMAIL</th>
+            <td *matCellDef="let userPermission" mat-cell>
+              <mat-label>
+                {{ userPermission.user_email }}
+              </mat-label>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="role">
+            <th *matHeaderCellDef mat-header-cell>ROLE</th>
+            <td *matCellDef="let userPermission" mat-cell>
+              {{ lookupRole(userPermission.user_role) }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="edit">
+            <th *matHeaderCellDef mat-header-cell>
+              EDIT
+            </th>
+            <td *matCellDef="let userPermission" mat-cell>
+              <button
+                (click)="editPermission(userPermission)"
+                color="accent"
+                mat-mini-fab
+                type="button"
+              >
+                <mat-icon
+                  matTooltip="Click here to edit project user permission"
                 >
-                  <mat-icon
-                    matTooltip="Click here to edit project user permission"
-                  >
-                    edit
-                  </mat-icon>
-                </button>
-              </td>
-            </ng-container>
-            <ng-container matColumnDef="delete">
-              <th mat-header-cell *matHeaderCellDef>DELETE</th>
-              <td mat-cell *matCellDef="let userPermission">
-                <button
-                  type="button"
-                  (click)="deletePermission(userPermission)"
-                  color="primary"
-                  mat-mini-fab
+                  edit
+                </mat-icon>
+              </button>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="delete">
+            <th *matHeaderCellDef mat-header-cell>DELETE</th>
+            <td *matCellDef="let userPermission" mat-cell>
+              <button
+                (click)="deletePermission(userPermission)"
+                color="primary"
+                mat-mini-fab
+                type="button"
+              >
+                <mat-icon
+                  matTooltip="Click here to delete user's project permission"
                 >
-                  <mat-icon
-                    matTooltip="Click here to delete user's project permission"
-                  >
-                    delete
-                  </mat-icon>
-                </button>
-              </td>
-            </ng-container>
-            <tr mat-header-row *matHeaderRowDef="displayedUserpermColumns"></tr>
-            <tr
-              mat-row
-              *matRowDef="
+                  delete
+                </mat-icon>
+              </button>
+            </td>
+          </ng-container>
+          <tr *matHeaderRowDef="displayedUserpermColumns" mat-header-row></tr>
+          <tr
+            *matRowDef="
                 let row;
-                let even = even;
+                let odd = odd;
                 columns: displayedUserpermColumns
               "
-              [ngClass]="{ gray: even }"
-            ></tr>
-          </table>
-        </mat-list>
-        <div
-          id="error_message"
-          class="display mat-error"
-          *ngIf="errorMessagePerm"
-        >
-          <h4>{{ errorMessagePerm }}</h4>
-        </div>
-        <span class="ithriv-spacer"></span>
-        <button
-          type="button"
-          color="warn"
-          mat-raised-button
-          (click)="addPermission()"
-        >
-          <mat-icon>security</mat-icon>
-          ADD PERMISSION
-        </button>
-      </mat-card-content>
-    </mat-card>
-  </mat-card-content>
-  <mat-card-footer>
-    <button
-      mat-raised-button
-      *ngIf="createNew === false"
-      color="primary"
-      (click)="showNext()"
-    >
-      <mat-icon>home</mat-icon>
-      Project Home
-    </button>
-    <button
-      type="button"
-      mat-raised-button
-      *ngIf="
-        project.can_delete_meta &&
-        project.can_delete_data &&
-        !showConfirmDelete &&
-        createNew === false
-      "
-      (click)="showDelete()"
-      color="warn"
-    >
-      Delete Project
-    </button>
-    <button
-      *ngIf="
-        showConfirmDelete && project.can_delete_meta && project.can_delete_data
-      "
-      type="button"
-      mat-raised-button
-      (click)="deleteProject()"
-      color="warn"
-    >
-      <mat-icon>delete</mat-icon>
-      Permanently Delete This Project!!!
-    </button>
-
-    <div id="error_message" class="display mat-error" *ngIf="error">
-      {{ error }}
-    </div>
-  </mat-card-footer>
-</mat-card>
+            [ngClass]="{ gray: odd }"
+            mat-row
+          ></tr>
+        </table>
+      </mat-list>
+      <div
+        *ngIf="errorMessagePerm"
+        class="display mat-error"
+        id="perm_error_message"
+      >
+        <h4>{{ errorMessagePerm }}</h4>
+      </div>
+    </mat-card-content>
+    <mat-card-actions>
+      <button
+        (click)="addPermission()"
+        color="primary"
+        mat-raised-button
+      >
+        <mat-icon>security</mat-icon>
+        ADD PERMISSION
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</div>

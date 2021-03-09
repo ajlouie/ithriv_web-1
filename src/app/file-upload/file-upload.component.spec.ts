@@ -1,36 +1,38 @@
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { FileUploadComponent } from './file-upload.component';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatTableModule } from '@angular/material';
-import { ResourceApiService } from '../shared/resource-api/resource-api.service';
-import { MockResourceApiService } from '../shared/mocks/resource-api.service.mock';
-import { ReactiveFormsModule, FormsModule, FormControl } from '@angular/forms';
-import { FormField } from '../form-field';
+import { RouterTestingModule } from '@angular/router/testing';
 import { FileAttachment } from '../file-attachment';
+import { FormField } from '../form-field';
+import { ResourceApiService } from '../shared/resource-api/resource-api.service';
+import { FileUploadComponent } from './file-upload.component';
 
 describe('FileUploadComponent', () => {
+  let httpMock: HttpTestingController;
   let component: FileUploadComponent;
   let fixture: ComponentFixture<FileUploadComponent>;
-  let api: MockResourceApiService;
 
   beforeEach(async(() => {
-    api = new MockResourceApiService();
-
     TestBed
       .configureTestingModule({
         declarations: [FileUploadComponent],
         imports: [
           FormsModule,
+          HttpClientTestingModule,
           MatTableModule,
-          ReactiveFormsModule
+          ReactiveFormsModule,
+          RouterTestingModule,
         ],
         providers: [
-          { provide: ResourceApiService, useValue: api }
+          ResourceApiService,
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA]
       })
       .compileComponents()
       .then(() => {
+        httpMock = TestBed.get(HttpTestingController);
         fixture = TestBed.createComponent(FileUploadComponent);
         component = fixture.componentInstance;
         component.field = new FormField({
@@ -43,6 +45,14 @@ describe('FileUploadComponent', () => {
         fixture.detectChanges();
       });
   }));
+
+  afterEach(() => {
+    fixture.destroy();
+    httpMock.verify();
+
+    sessionStorage.clear();
+    localStorage.clear();
+  });
 
   it('should create', () => {
     expect(component).toBeTruthy();

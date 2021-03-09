@@ -1,34 +1,38 @@
 import {
-  Component,
-  OnInit,
-  Input,
-  Output,
-  EventEmitter,
-  ChangeDetectorRef,
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
 } from '@angular/core';
-import { User } from '../user';
-import { Dataset, Project, ProjectDocument, UserPermission, UserPermissionMap } from '../commons-types';
-import { ErrorMatcher } from '../error-matcher';
-import { Fieldset } from '../fieldset';
-import {
-  FormGroup,
-  FormBuilder,
-  FormControl,
-  Validators,
-} from '@angular/forms';
-import { IThrivForm } from '../shared/IThrivForm';
-import { CommonsApiService } from '../shared/commons-api/commons-api.service';
-import { ResourceApiService } from '../shared/resource-api/resource-api.service';
-import { FormField } from '../form-field';
-import { ValidateDateTimeRange } from '../shared/validators/date_time_range.validator';
-import { ValidateUrl } from '../shared/validators/url.validator';
-import { environment } from '../../environments/environment';
+import { FormBuilder, FormControl, FormGroup, Validators, } from '@angular/forms';
 import { MatSnackBar } from '@angular/material';
 import { MatDialog } from '@angular/material/dialog';
-import { AddPermissionComponent } from '../add-permission/add-permission.component';
 import { Observable } from 'rxjs';
+import { AddPermissionComponent } from '../add-permission/add-permission.component';
+import {
+  CommonsState, CommonsStateForm,
+  Dataset,
+  IrbInvestigator,
+  IrbNumber,
+  Project,
+  UserPermission,
+  UserPermissionMap
+} from '../commons-types';
+import { ErrorMatcher } from '../error-matcher';
+import { ErrorMessageComponent, ParsedError } from '../error-message/error-message.component';
+import { ErrorSnackbarComponent } from '../error-snackbar/error-snackbar.component';
+import { Fieldset } from '../fieldset';
+import { FormField } from '../form-field';
 import { FormSelectOption } from '../form-select-option';
+import { CommonsApiService } from '../shared/commons-api/commons-api.service';
+import { IThrivForm } from '../shared/IThrivForm';
+import { ResourceApiService } from '../shared/resource-api/resource-api.service';
+import { ValidateDateTimeRange } from '../shared/validators/date_time_range.validator';
+import { ValidateUrl } from '../shared/validators/url.validator';
+import { User } from '../user';
 
 @Component({
   selector: 'app-commons-dataset-create-edit',
@@ -38,14 +42,14 @@ import { FormSelectOption } from '../form-select-option';
 })
 export class CommonsDatasetCreateEditComponent implements OnInit {
   public static DATASET_ROLE_MAP_STATIC = [
-    { key: '1', value: 'DATASET ADMINISTRATOR' },
-    { key: '2', value: 'DATASET COLLABORATOR' },
-    { key: '3', value: 'DATASET CUSTOMER' },
+    {key: '1', value: 'DATASET ADMINISTRATOR'},
+    {key: '2', value: 'DATASET COLLABORATOR'},
+    {key: '3', value: 'DATASET CUSTOMER'},
   ];
   @Input() user: User;
-  @Input() currentForm: String;
-  @Input() previousForm: String;
-  @Output() currentFormChange = new EventEmitter();
+  @Input() currentForm: CommonsStateForm;
+  @Input() previousForm: CommonsStateForm;
+  @Output() currentFormChange = new EventEmitter<CommonsState>();
   @Input() project: Project;
   @Input() dataset: Dataset;
   error: String;
@@ -86,13 +90,13 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
   displayedUserpermColumns: string[] = ['email', 'role', 'edit', 'delete'];
   dateTimeRange: Date[];
   listOfOptions = [
-    { name: 'Generic' },
-    { name: 'DICOM' },
-    { name: 'REDCap' }
+    {name: 'Generic'},
+    {name: 'DICOM'},
+    {name: 'REDCap'}
   ];
   toggleOptions = [
-    { name: 'true' },
-    { name: 'false' }
+    {name: 'true'},
+    {name: 'false'}
   ];
   urlFormControl = new FormControl('', [
     Validators.required,
@@ -104,6 +108,9 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
     Validators.max(365)
   ]);
   datasetTypeSelected: string;
+  irbNumbers: IrbNumber[];
+  irbNumberOptions: FormSelectOption[] = [];
+  irbInvestigators: IrbInvestigator[] = [];
 
   constructor(
     fb: FormBuilder,
@@ -117,13 +124,10 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
 
   ngOnInit() {
     this.loadFields();
-    // this.fg = fb.group(this.fields);
-    this.iThrivForm = new IThrivForm(this.fields, this.fg);
-    this.loadData();
   }
 
   showNext() {
-    this.currentFormChange.emit({ displayForm: 'commons-project' });
+    this.currentFormChange.emit({displayForm: 'commons-project'});
     this.currentFormChange.emit({
       currentDataset: this.dataset,
       previousForm: 'commons-dataset-create-edit',
@@ -140,141 +144,149 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
       return form;
     }
   }
-  loadFields() {
-    const irbDocumentOptions = [];
-    this.project.documents.filter(
-      document => (document.type === 'IRB_Approval' ||  document.type === 'IRB Approval') && document.url !== ''
-    ).forEach((document) => {
-      irbDocumentOptions.push(new FormSelectOption({ id: document.url, name: document.filename }));
-    });
-    const contractDocumentOptions = [];
-    this.project.documents.filter(
-      document => document.type === 'Contract' && document.url !== ''
-    ).forEach((document) => {
-      contractDocumentOptions.push(new FormSelectOption({ id: document.url, name: document.filename }));
-    });
 
-    this.fields = {
-      name: new FormField({
-        formControl: new FormControl(),
-        required: true,
-        placeholder: 'Dataset Name:',
-        type: 'text',
-        options: {
-          status: ['words'],
-        },
-      }),
-      description: new FormField({
-        formControl: new FormControl(),
-        required: true,
-        placeholder: 'Brief Description:',
-        type: 'textarea',
-        options: {
-          status: ['words'],
-        },
-      }),
-      keywords: new FormField({
-        formControl: new FormControl(),
-        required: true,
-        placeholder: 'Key Words:',
-        type: 'text',
-        options: {
-          status: ['words'],
-        },
-      }),
-      identifiers_hipaa: new FormField({
-        formControl: new FormControl(),
-        required: true,
-        placeholder: 'HIPAA options:',
-        type: 'select',
-        multiSelect: true,
-        selectOptions: this.hipaaOptions,
-      }),
-      other_sensitive_data: new FormField({
-        formControl: new FormControl(),
-        required: true,
-        placeholder: 'Other sensitive data:',
-        helpText: 'Example: None, Financial data (GLBA), Student Data (FERPA), California Consumer Privacy Act (CCPA), Other',
-        type: 'text',
-        options: {
-          status: ['words'],
-        },
-      }),
-      // based_on_dataset_id: new FormField({
-      //   formControl: new FormControl(),
-      //   required: false,
-      //   placeholder: 'Basedon Dataset:',
-      //   type: 'select',
-      //   multiSelect: true,
-      //   selectOptions: [],
-      // }),
-      variable_measured: new FormField({
-        formControl: new FormControl(),
-        required: false,
-        placeholder: 'Variable Measured:',
-        type: 'text',
-        options: {
-          status: ['words'],
-        },
-      }),
-      license: new FormField({
-        formControl: new FormControl(),
-        required: false,
-        placeholder: 'License:',
-        type: 'text',
-        options: {
-          status: ['words'],
-        },
-      }),
-      spatial_coverage_address: new FormField({
-        formControl: new FormControl(),
-        required: false,
-        placeholder: 'Geographic Coverage Description:',
-        type: 'text',
-        options: {
-          status: ['words'],
-        },
-      }),
-      temporal_coverage_date: new FormField({
-        formControl: new FormControl(),
-        required: false,
-        placeholder: 'Data Collection Timeframe',
-        type: 'owldatetime',
-        selectMode: 'range',
-        pickerMode: 'dialog',
-      }),
-      study_irb_number: new FormField({
-        formControl: new FormControl(),
-        required: false,
-        placeholder: 'Study IRB Number:',
-        type: 'text',
-        options: {
-          status: ['words'],
-        },
-      }),
-      approved_irb_link: new FormField({
-        formControl: new FormControl(),
-        required: false,
-        placeholder: 'IRB Protocol Number (required for highly sensitive data):',
-        type: 'select',
-        multiSelect: false,
-        selectOptionsMap: irbDocumentOptions,
-      }),
-      contract_link: new FormField({
-        formControl: new FormControl(),
-        required: false,
-        placeholder: 'Related Contract:',
-        type: 'select',
-        multiSelect: false,
-        selectOptionsMap: contractDocumentOptions,
-      }),
-      link_to_external_dataset: new FormField({
-        formControl: new FormControl(),
-        required: false,
-        placeholder: 'Link to Data (if stored elsewhere):',
-        type: 'url',
-      }),
-    };
+  loadFields() {
+    this.cas.getUserIrbNumbers(this.user).subscribe((irbNumbers: IrbNumber[]) => {
+      this.irbNumbers = irbNumbers;
+
+      const irbDocumentOptions: FormSelectOption[] = [];
+      this.project.documents.forEach(document => {
+        if ((document.type === 'IRB_Approval' || document.type === 'IRB Approval') && document.url !== '') {
+          irbDocumentOptions.push(new FormSelectOption({id: document.url, name: document.filename}));
+        }
+      });
+      const contractDocumentOptions = [];
+      this.project.documents.forEach(document => {
+        if (document.type === 'Contract' && document.url !== '') {
+          contractDocumentOptions.push(new FormSelectOption({id: document.url, name: document.filename}));
+        }
+      });
+
+      this.fields = {
+        name: new FormField({
+          formControl: new FormControl(),
+          required: true,
+          placeholder: 'Dataset Name:',
+          type: 'text',
+          options: {
+            status: ['words'],
+          },
+        }),
+        description: new FormField({
+          formControl: new FormControl(),
+          required: true,
+          placeholder: 'Brief Description:',
+          type: 'textarea',
+          options: {
+            status: ['words'],
+          },
+        }),
+        keywords: new FormField({
+          formControl: new FormControl(),
+          required: true,
+          placeholder: 'Key Words:',
+          type: 'text',
+          options: {
+            status: ['words'],
+          },
+        }),
+        identifiers_hipaa: new FormField({
+          formControl: new FormControl(),
+          required: true,
+          placeholder: 'HIPAA options:',
+          type: 'select',
+          multiSelect: true,
+          selectOptions: this.hipaaOptions,
+        }),
+        other_sensitive_data: new FormField({
+          formControl: new FormControl(),
+          required: true,
+          placeholder: 'Other sensitive data:',
+          type: 'text',
+          options: {
+            status: ['words'],
+          },
+        }),
+        // based_on_dataset_id: new FormField({
+        //   formControl: new FormControl(),
+        //   required: false,
+        //   placeholder: 'Basedon Dataset:',
+        //   type: 'select',
+        //   multiSelect: true,
+        //   selectOptions: [],
+        // }),
+        variable_measured: new FormField({
+          formControl: new FormControl(),
+          required: false,
+          placeholder: 'Variable Measured:',
+          type: 'text',
+          options: {
+            status: ['words'],
+          },
+        }),
+        license: new FormField({
+          formControl: new FormControl(),
+          required: false,
+          placeholder: 'License:',
+          type: 'text',
+          options: {
+            status: ['words'],
+          },
+        }),
+        spatial_coverage_address: new FormField({
+          formControl: new FormControl(),
+          required: false,
+          placeholder: 'Geographic Coverage Description:',
+          type: 'text',
+          options: {
+            status: ['words'],
+          },
+        }),
+        temporal_coverage_date: new FormField({
+          formControl: new FormControl(),
+          required: false,
+          placeholder: 'Temporal Coverage of Dataset',
+          type: 'owldatetime',
+          selectMode: 'range',
+          pickerMode: 'dialog',
+        }),
+        study_irb_number: new FormField({
+          formControl: new FormControl(),
+          required: false,
+          placeholder: 'IRB Protocol Number:',
+          type: 'select',
+          multiSelect: false,
+          selectOptionsMap: this.irbNumbers.map((irbNumber: IrbNumber) => {
+            return new FormSelectOption({id: irbNumber.study_id, name: irbNumber.study_id});
+          }),
+        }),
+        approved_irb_link: new FormField({
+          formControl: new FormControl(),
+          required: false,
+          placeholder: 'Select Corresponding IRB Approval Document from Project Documents',
+          type: 'select',
+          multiSelect: false,
+          selectOptionsMap: irbDocumentOptions,
+        }),
+        contract_link: new FormField({
+          formControl: new FormControl(),
+          required: false,
+          placeholder: 'Related Contract:',
+          type: 'select',
+          multiSelect: false,
+          selectOptionsMap: contractDocumentOptions,
+        }),
+        link_to_external_dataset: new FormField({
+          formControl: new FormControl(),
+          required: false,
+          placeholder: 'Link to Data (if stored elsewhere):',
+          type: 'url',
+        }),
+      };
+
+      this.iThrivForm = new IThrivForm(this.fields, this.fg);
+      this.loadData();
+    });
   }
 
   loadFieldsets() {
@@ -376,9 +388,11 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
   }
 
   loadPermisssions() {
+    this.cas.getDatasetIrbInvestigators(this.user, this.dataset).subscribe(ii => this.irbInvestigators = ii);
+
     this.userPermissions$ = this.cas.getDatasetPermissions(
       this.user,
-      this.dataset
+      this.dataset,
     );
     this.currentFormChange.emit({
       currentDataset: this.dataset,
@@ -400,27 +414,23 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
       ) {
         return CommonsDatasetCreateEditComponent.DATASET_ROLE_MAP_STATIC[i][
           'value'
-        ];
+          ];
       }
     }
   }
 
   addPermission(): void {
     const dialogRef = this.dialog.open(AddPermissionComponent, {
-      width: '250px',
-      data: <UserPermissionMap>{
-        userPermission: <UserPermission>{
-          user_email: '',
-          user_role: '',
-        },
-        permissionsMap:
-          CommonsDatasetCreateEditComponent.DATASET_ROLE_MAP_STATIC,
-      },
+      height: '300px',
+      width: '400px',
+      data: this.buildUserPermissionMap({
+        user_email: '',
+        user_role: '',
+      }),
     });
 
     dialogRef.afterClosed().subscribe((result: UserPermission) => {
-      // console.log('The dialog was closed');
-      if (result !== null) {
+      if (result) {
         this.cas
           .addUserDatasetPermission(this.user, this.dataset, result)
           .subscribe(
@@ -429,10 +439,7 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
               this.errorMessagePerm = '';
             },
             (error1) => {
-              this.snackBar.open(error1, '', {
-                duration: 5000,
-                panelClass: 'snackbar-warning',
-              });
+              this.displayError(error1);
               this.errorMessagePerm = error1;
             }
           );
@@ -447,17 +454,13 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
     };
 
     const dialogRef = this.dialog.open(AddPermissionComponent, {
-      width: '250px',
-      data: <UserPermissionMap>{
-        userPermission: userPermission,
-        permissionsMap:
-          CommonsDatasetCreateEditComponent.DATASET_ROLE_MAP_STATIC,
-      },
+      height: '300px',
+      width: '400px',
+      data: this.buildUserPermissionMap(userPermission),
     });
 
     dialogRef.afterClosed().subscribe((result: UserPermission) => {
-      // console.log('The dialog was closed');
-      if (result !== null) {
+      if (result) {
         this.cas
           .addUserDatasetPermission(this.user, this.dataset, result)
           .subscribe(
@@ -469,7 +472,7 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
                   userPermissionCurrent
                 )
                 .subscribe(
-                  (e) => {
+                  () => {
                     this.loadPermisssions();
                     this.errorMessagePerm = '';
                   },
@@ -481,30 +484,21 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
                         userPermissionCurrent
                       )
                       .subscribe(
-                        (e) => {
+                        () => {
                           this.loadPermisssions();
                         },
                         (error2) => {
-                          this.snackBar.open(error2, '', {
-                            duration: 5000,
-                            panelClass: 'snackbar-warning',
-                          });
+                          this.displayError(error2);
                           this.errorMessagePerm = error2;
                         }
                       );
-                    this.snackBar.open(error1, '', {
-                      duration: 5000,
-                      panelClass: 'snackbar-warning',
-                    });
+                    this.displayError(error1);
                     this.errorMessagePerm = error1;
                   }
                 );
             },
             (error1) => {
-              this.snackBar.open(error1, '', {
-                duration: 5000,
-                panelClass: 'snackbar-warning',
-              });
+              this.displayError(error1);
               this.errorMessagePerm = error1;
             }
           );
@@ -523,10 +517,7 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
           this.errorMessagePerm = '';
         },
         (error1) => {
-          this.snackBar.open(error1, '', {
-            duration: 5000,
-            panelClass: 'snackbar-warning',
-          });
+          this.displayError(error1);
           this.errorMessagePerm = error1;
         }
       );
@@ -552,8 +543,10 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
   togglePrivate(isPrivate: boolean) {
     this.dataset.private = isPrivate;
     this.cas.updateDataset(this.dataset).subscribe(
-      (e) => {},
-      (error1) => {}
+      (e) => {
+      },
+      (error1) => {
+      }
     );
   }
 
@@ -588,27 +581,21 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
                   this.user,
                   'Informatics Tools',
                   'Inquiry',
-                  'iTHriov commons portal: Request to create REDcap token' ,
+                  'iTHriov commons portal: Request to create REDcap token',
                   this.dataset.redcap_project_url
                 )
                 .subscribe(
-                  e => {
+                  () => {
                     this.errorMessage = '';
                   },
                   error1 => {
                     if (error1) {
-                      this.snackBar.open(error1, '', {
-                        duration: 5000,
-                        panelClass: 'snackbar-warning',
-                      });
+                      this.displayError(error1);
                       this.errorMessage = error1;
                     } else {
                       this.errorMessage =
                         'Failed to submit request to create REDCap tokem, please contact system admin';
-                      this.snackBar.open(this.errorMessage, '', {
-                        duration: 5000,
-                        panelClass: 'snackbar-warning',
-                      });
+                      this.displayError(this.errorMessage);
                     }
                   }
                 );
@@ -617,18 +604,12 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
           },
           (error1) => {
             if (error1) {
-              this.snackBar.open(error1, '', {
-                duration: 5000,
-                panelClass: 'snackbar-warning',
-              });
+              this.displayError(error1);
               this.errorMessage = error1;
             } else {
               this.errorMessage =
                 'Failed to create dataset, please try again later or contact system admin';
-              this.snackBar.open(this.errorMessage, '', {
-                duration: 5000,
-                panelClass: 'snackbar-warning',
-              });
+              this.displayError(this.errorMessage);
             }
             this.formStatus = 'form';
             this.changeDetectorRef.detectChanges();
@@ -644,18 +625,12 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
           },
           (error1) => {
             if (error1) {
-              this.snackBar.open(error1, '', {
-                duration: 5000,
-                panelClass: 'snackbar-warning',
-              });
+              this.displayError(error1);
               this.errorMessage = error1;
             } else {
               this.errorMessage =
                 'Failed to update dataset, please try again later or contact system admin';
-              this.snackBar.open(this.errorMessage, '', {
-                duration: 5000,
-                panelClass: 'snackbar-warning',
-              });
+              this.displayError(this.errorMessage);
             }
             this.formStatus = 'form';
             this.changeDetectorRef.detectChanges();
@@ -665,7 +640,10 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
 
       this.formStatus = 'submitting';
     } else {
-      const messages: string[] = [];
+      const messages: ParsedError = {
+        title: 'Please double-check the following fields:',
+        errors: [],
+      };
       const controls = this.fg.controls;
       for (const fieldName in controls) {
         if (controls.hasOwnProperty(fieldName)) {
@@ -676,41 +654,33 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
             if (errors.hasOwnProperty(errorName)) {
               switch (errorName) {
                 case 'dateTimeRange':
-                  messages.push(
-                    `${label} is not a valid start and end date/time.`
-                  );
+                  messages.errors.push({title: label, messages: [`Not a valid start and end date/time.`]});
                   break;
                 case 'email':
-                  messages.push(`${label} is not a valid email address.`);
+                  messages.errors.push({title: label, messages: [`Not a valid email address.`]});
                   break;
                 case 'maxlength':
-                  messages.push(`${label} is not long enough.`);
+                  messages.errors.push({title: label, messages: [`Not long enough.`]});
                   break;
                 case 'minlength':
-                  messages.push(`${label} is too short.`);
+                  messages.errors.push({title: label, messages: [`Too short.`]});
                   break;
                 case 'required':
-                  messages.push(`${label} is empty.`);
+                  messages.errors.push({title: label, messages: [`This field is required. It is currently empty.`]});
                   break;
                 case 'url':
-                  messages.push(`${label} is not a valid URL.`);
+                  messages.errors.push({title: label, messages: [`Not a valid URL.`]});
                   break;
                 default:
-                  messages.push(`${label} has an error.`);
+                  messages.errors.push({title: label, messages: [`Has an error.`]});
                   break;
               }
             }
           }
         }
       }
-      const action = '';
-      const message = `Please double-check the following fields: ${messages.join(
-        ' '
-      )}`;
-      this.snackBar.open(message, action, {
-        duration: 5000,
-        panelClass: 'snackbar-warning',
-      });
+
+      this.displayError(JSON.stringify(messages));
     }
   }
 
@@ -723,22 +693,15 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
       (e) => {
         this.error = '';
         this.formStatus = 'complete';
-        this.currentFormChange.emit({ displayForm: 'commons-project' });
+        this.currentFormChange.emit({displayForm: 'commons-project'});
       },
       (error1) => {
         if (error1) {
-          this.snackBar.open(error1, '', {
-            duration: 5000,
-            panelClass: 'snackbar-warning',
-          });
+          this.displayError(error1);
           this.error = error1;
         } else {
-          this.errorMessage =
-            'Failed to delete dataset, please try again later or contact system admin';
-          this.snackBar.open(this.errorMessage, '', {
-            duration: 5000,
-            panelClass: 'snackbar-warning',
-          });
+          this.errorMessage = 'Failed to delete dataset, please try again later or contact system admin';
+          this.displayError(this.errorMessage);
         }
         this.formStatus = 'form';
         this.changeDetectorRef.detectChanges();
@@ -770,5 +733,23 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
       this.cas.getLandingServiceUrl(this.user) +
       `/commons/data/datasets/file/${this.dataset.id}`
     );
+  }
+
+  private buildUserPermissionMap(userPermission: UserPermission): UserPermissionMap {
+    return {
+      userPermission: userPermission,
+      permissionsMap: CommonsDatasetCreateEditComponent.DATASET_ROLE_MAP_STATIC,
+      isDataset: true,
+      hasIrbNumber: !!this.dataset.study_irb_number,
+      irbInvestigators: this.irbInvestigators,
+    };
+  }
+
+  private displayError(errorString: string) {
+    this.snackBar.openFromComponent(ErrorSnackbarComponent, {
+      data: { errorString, action: 'Ok' },
+      duration: 50000,
+      panelClass: 'snackbar-warning',
+    });
   }
 }

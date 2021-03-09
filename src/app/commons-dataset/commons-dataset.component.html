@@ -15,53 +15,52 @@
       fxFlex.xs="100%"
     >
       <mat-card>
-        <mat-card-content>
-          <mat-toolbar>
-            <button
-              *ngIf="user && dataset.can_update_meta === true"
-              matTooltip="Click here to edit dataset details/permissions"
-              mat-raised-button
-              color="warn"
-              (click)="showDataset()"
-            >
-              <mat-icon>
-                edit
-              </mat-icon>
-              EDIT DATASET DETAILS
-            </button>
-            <span class="ithriv-spacer"></span>
-            <div matTooltip="Click here to upload latest dataset file">
-              <app-commons-file-upload
-                *ngIf="
-                  user && dataset.id !== '' && dataset.can_upload_data === true
-                "
-                (complete)="onFileComplete($event)"
-                [target]="uploadUrl()"
-                [user]="user"
-                text="UPLOAD FILE"
-                color="primary"
-              ></app-commons-file-upload>
-            </div>
-            <a
+        <mat-card-header fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="10px">
+          <button
+            *ngIf="user && dataset.can_update_meta === true"
+            matTooltip="Click here to edit dataset details/permissions"
+            mat-raised-button
+            color="accent"
+            (click)="showDataset()"
+          >
+            <mat-icon>
+              edit
+            </mat-icon>
+            EDIT DATASET DETAILS
+          </button>
+          <div matTooltip="Click here to upload latest dataset file">
+            <app-commons-file-upload
               *ngIf="
-                (!dataset.private || user) &&
-                dataset.url !== '' &&
-                dataset.can_download_data === true
+                user && dataset.id !== '' && dataset.can_upload_data === true
               "
-              (click)="cas.downloadFile(dataset.url, dataset.filename, user)"
-            >
-              <button type="button" mat-raised-button color="primary">
-                <mat-icon
-                  matTooltip="Click here to download latest dataset file ({{
-                    dataset.filename
-                  }})"
-                >
-                  file_download
-                </mat-icon>
-                DOWNLOAD FILE
-              </button>
-            </a>
-          </mat-toolbar>
+              (complete)="onFileComplete($event)"
+              [target]="uploadUrl()"
+              [user]="user"
+              text="UPLOAD FILE"
+              color="primary"
+            ></app-commons-file-upload>
+          </div>
+          <a
+            *ngIf="
+              (!dataset.private || user) &&
+              dataset.url !== '' &&
+              dataset.can_download_data === true
+            "
+            (click)="downloadFile(dataset.url, dataset.filename, user)"
+          >
+            <button type="button" mat-raised-button color="primary">
+              <mat-icon
+                matTooltip="Click here to download latest dataset file ({{
+                  dataset.filename
+                }})"
+              >
+                file_download
+              </mat-icon>
+              DOWNLOAD FILE
+            </button>
+          </a>
+        </mat-card-header>
+        <mat-card-content>
           <h4>
             <markdown [data]="dataset.description"></markdown>
           </h4>
@@ -136,7 +135,7 @@
         </mat-card-content>
       </mat-card>
       <!--
-      <ejs-spreadsheet [saveUrl]="uploadUrl()" [openUrl]="dataset.url" allowSave='true'> 
+      <ejs-spreadsheet [saveUrl]="uploadUrl()" [openUrl]="dataset.url" allowSave='true'>
       </ejs-spreadsheet>
       -->
       <mat-card
@@ -159,147 +158,48 @@
         *ngIf="
           user && dataset.id !== '' && dataset.can_manage_permission === true
         "
+        ngClass="view"
       >
-        <mat-toolbar>
+        <mat-card-header>
           <mat-card-title>
             Dataset Team
           </mat-card-title>
-        </mat-toolbar>
-        <mat-list dense>
-          <table
-            mat-table
-            [dataSource]="userPermissionsTeam$ | async"
-            class="mat-elevation-z8 datasetperms"
-          >
-            <ng-container matColumnDef="email">
-              <th mat-header-cell *matHeaderCellDef>EMAIL</th>
-              <td mat-cell *matCellDef="let userPermission">
-                <mat-label>
-                  {{ userPermission.user_email }}
-                </mat-label>
-              </td>
-            </ng-container>
-            <ng-container matColumnDef="role">
-              <th mat-header-cell *matHeaderCellDef>ROLE</th>
-              <td mat-cell *matCellDef="let userPermission">
-                {{ lookupRole(userPermission.user_role) }}
-              </td>
-            </ng-container>
-            <tr mat-header-row *matHeaderRowDef="displayedUserpermColumns"></tr>
-            <tr
-              mat-row
-              *matRowDef="
-                let row;
-                let even = even;
-                columns: displayedUserpermColumns
-              "
-              [ngClass]="{ gray: even }"
-            ></tr>
-          </table>
-        </mat-list>
-        <button
-          *ngIf="user && dataset.can_manage_permission === true"
-          matTooltip="Click here to edit dataset details/permissions"
-          mat-raised-button
-          color="primary"
-          (click)="showDataset()"
-        >
-          <mat-icon>security</mat-icon>
-          EDIT PERMISSIONS
-        </button>
-      </mat-card>
-      <mat-divider [inset]="true"></mat-divider>
-      <mat-card
-        *ngIf="
-          user &&
-          dataset.id !== '' &&
-          dataset.url !== null &&
-          dataset.url !== '' &&
-          dataset.can_manage_permission === true
-        "
-      >
-        <mat-toolbar>
-          <mat-card-title>
-            Published Status of current Dataset File
-            <mat-card-subtitle>
-              The Publish Dataset File feature is frozen at this time pending governance decisions
-            </mat-card-subtitle>
-          </mat-card-title>
-        </mat-toolbar>
-        <mat-list dense>
-          <mat-list>
-            <mat-list-item>
-              <mat-slide-toggle
-                *ngIf="user && dataset.can_manage_permission === true"
-                disabled
-                color="primary"
-                [checked]="dataset.private_data"
-                (change)="
-                  toggleDatasetDataPrivate(dataset, !dataset.private_data)
+        </mat-card-header>
+        <mat-card-content>
+          <mat-list dense>
+            <table
+              mat-table
+              [dataSource]="userPermissionsTeam$ | async"
+              class="datasetperms"
+            >
+              <ng-container matColumnDef="email">
+                <th mat-header-cell *matHeaderCellDef>EMAIL</th>
+                <td mat-cell *matCellDef="let userPermission">
+                  <mat-label>
+                    {{ userPermission.user_email }}
+                  </mat-label>
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="role">
+                <th mat-header-cell *matHeaderCellDef>ROLE</th>
+                <td mat-cell *matCellDef="let userPermission">
+                  {{ lookupRole(userPermission.user_role) }}
+                </td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="displayedUserpermColumns"></tr>
+              <tr
+                mat-row
+                *matRowDef="
+                  let row;
+                  let odd = odd;
+                  columns: displayedUserpermColumns
                 "
-              >
-                <mat-chip
-                  *ngIf="dataset.private_data"
-                  matTooltip="This Resource is only visible to PI and collaborators on this dataset."
-                  id="button-not-private"
-                >
-                  <mat-icon style="margin-right: 8px;">visibility_off</mat-icon>
-                  PRIVATE
-                </mat-chip>
-                <mat-chip
-                  *ngIf="!dataset.private_data"
-                  matTooltip="This Resource is visible to all iTHRIV users."
-                  id="button-private"
-                >
-                  <mat-icon style="margin-right: 8px;">visibility</mat-icon>
-                  PUBLIC
-                </mat-chip>
-              </mat-slide-toggle>
-            </mat-list-item>
+                [ngClass]="{ gray: odd }"
+              ></tr>
+            </table>
           </mat-list>
-          <mat-list
-            *ngIf="
-              dataset.private_data && userPermissionsCustomer$ | async;
-              let userPermissionsCustomer
-            "
-          >
-            <ng-container *ngIf="userPermissionsCustomer.length > 0">
-              Note: Published current file to below individual users only:
-              <table
-                mat-table
-                [dataSource]="userPermissionsCustomer$"
-                class="mat-elevation-z8 datasetperms"
-              >
-                <ng-container matColumnDef="email">
-                  <th mat-header-cell *matHeaderCellDef>EMAIL</th>
-                  <td mat-cell *matCellDef="let userPermission">
-                    <mat-label>
-                      {{ userPermission.user_email }}
-                    </mat-label>
-                  </td>
-                </ng-container>
-                <ng-container matColumnDef="role">
-                  <th mat-header-cell *matHeaderCellDef>ROLE</th>
-                  <td mat-cell *matCellDef="let userPermission">
-                    {{ lookupRole(userPermission.user_role) }}
-                  </td>
-                </ng-container>
-                <tr
-                  mat-header-row
-                  *matHeaderRowDef="displayedUserpermColumns"
-                ></tr>
-                <tr
-                  mat-row
-                  *matRowDef="
-                    let row;
-                    let even = even;
-                    columns: displayedUserpermColumns
-                  "
-                  [ngClass]="{ gray: even }"
-                ></tr>
-              </table>
-            </ng-container>
-          </mat-list>
+        </mat-card-content>
+        <mat-card-actions>
           <button
             *ngIf="user && dataset.can_manage_permission === true"
             matTooltip="Click here to edit dataset details/permissions"
@@ -310,122 +210,226 @@
             <mat-icon>security</mat-icon>
             EDIT PERMISSIONS
           </button>
-        </mat-list>
+        </mat-card-actions>
+      </mat-card>
+      <mat-divider [inset]="true"></mat-divider>
+      <mat-card
+        *ngIf="
+          user &&
+          dataset.id !== '' &&
+          dataset.url !== null &&
+          dataset.url !== '' &&
+          dataset.can_manage_permission === true
+        "
+        ngClass="view"
+      >
+        <mat-card-header>
+          <mat-card-title>
+            Published Status of current Dataset File
+            <mat-card-subtitle>
+              The Publish Dataset File feature is frozen at this time pending governance decisions
+            </mat-card-subtitle>
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <mat-list dense>
+            <mat-list>
+              <mat-list-item>
+                <mat-slide-toggle
+                  *ngIf="user && dataset.can_manage_permission === true"
+                  disabled
+                  color="primary"
+                  [checked]="dataset.private_data"
+                  (change)="
+                    toggleDatasetDataPrivate(dataset, !dataset.private_data)
+                  "
+                >
+                  <mat-chip
+                    *ngIf="dataset.private_data"
+                    matTooltip="This Resource is only visible to PI and collaborators on this dataset."
+                    id="button-not-private"
+                  >
+                    <mat-icon style="margin-right: 8px;">visibility_off</mat-icon>
+                    PRIVATE
+                  </mat-chip>
+                  <mat-chip
+                    *ngIf="!dataset.private_data"
+                    matTooltip="This Resource is visible to all iTHRIV users."
+                    id="button-private"
+                  >
+                    <mat-icon style="margin-right: 8px;">visibility</mat-icon>
+                    PUBLIC
+                  </mat-chip>
+                </mat-slide-toggle>
+              </mat-list-item>
+            </mat-list>
+            <mat-list
+              *ngIf="
+                dataset.private_data && userPermissionsCustomer$ | async;
+                let userPermissionsCustomer
+              "
+            >
+              <ng-container *ngIf="userPermissionsCustomer.length > 0">
+                Note: Published current file to below individual users only:
+                <table
+                  mat-table
+                  [dataSource]="userPermissionsCustomer$"
+                  class="datasetperms"
+                >
+                  <ng-container matColumnDef="email">
+                    <th mat-header-cell *matHeaderCellDef>EMAIL</th>
+                    <td mat-cell *matCellDef="let userPermission">
+                      <mat-label>
+                        {{ userPermission.user_email }}
+                      </mat-label>
+                    </td>
+                  </ng-container>
+                  <ng-container matColumnDef="role">
+                    <th mat-header-cell *matHeaderCellDef>ROLE</th>
+                    <td mat-cell *matCellDef="let userPermission">
+                      {{ lookupRole(userPermission.user_role) }}
+                    </td>
+                  </ng-container>
+                  <tr
+                    mat-header-row
+                    *matHeaderRowDef="displayedUserpermColumns"
+                  ></tr>
+                  <tr
+                    mat-row
+                    *matRowDef="
+                      let row;
+                      let odd = odd;
+                      columns: displayedUserpermColumns
+                    "
+                    [ngClass]="{ gray: odd }"
+                  ></tr>
+                </table>
+              </ng-container>
+            </mat-list>
+            <button
+              *ngIf="user && dataset.can_manage_permission === true"
+              matTooltip="Click here to edit dataset details/permissions"
+              mat-raised-button
+              color="primary"
+              (click)="showDataset()"
+            >
+              <mat-icon>security</mat-icon>
+              EDIT PERMISSIONS
+            </button>
+          </mat-list>
+        </mat-card-content>
       </mat-card>
       <mat-divider [inset]="true"></mat-divider>
       <mat-card
         *ngIf="
           user && dataset.id !== '' && dataset.can_upload_data === true
         "
+        ngClass="view"
       >
-        <mat-toolbar>
+        <mat-card-header>
           <mat-card-title>
             Dataset File Versions
           </mat-card-title>
-        </mat-toolbar>
-        <mat-list dense *ngIf="fileVersions$ | async; let fileVersions">
-          <ng-container *ngIf="fileVersions.length > 0">
-            <table
-              mat-table
-              [dataSource]="fileVersions$"
-              class="mat-elevation-z8 datasetversions"
-            >
-              <ng-container matColumnDef="file_version">
-                <th mat-header-cell *matHeaderCellDef>FILE NAME</th>
-                <td mat-cell *matCellDef="let fileVersionDetail">
-                  <mat-label>
-                    {{ fileVersionDetail.fileName }}
-                  </mat-label>
-                </td>
-              </ng-container>
-              <ng-container matColumnDef="creator">
-                <th mat-header-cell *matHeaderCellDef>CREATOR</th>
-                <td mat-cell *matCellDef="let fileVersionDetail">
-                  {{ fileVersionDetail.fileCreatedBy.email }}
-                </td>
-              </ng-container>
-              <ng-container matColumnDef="create_date_time">
-                <th mat-header-cell *matHeaderCellDef>CREATE DATE/TIME</th>
-                <td mat-cell *matCellDef="let fileVersionDetail">
-                  {{ fileVersionDetail.fileDateCreated | date: 'MM/d/y h:mm a' }}
-                </td>
-              </ng-container>
-              <ng-container matColumnDef="download">
-                <th mat-header-cell *matHeaderCellDef>DOWNLOAD</th>
-                <td mat-cell *matCellDef="let fileVersionDetail">
-                  <a
-                    (click)="
-                      cas.downloadFile(
-                        fileVersionDetail.url,
-                        fileVersionDetail.fileName,
-                        user
-                      )
-                    "
-                  >
-                    <button type="button" color="primary" mat-mini-fab>
-                      <mat-icon
-                        matTooltip="Click here to download file ({{
-                          fileVersionDetail.fileName
-                        }})"
-                      >
-                        file_download
-                      </mat-icon>
-                    </button>
-                  </a>
-                </td>
-              </ng-container>
-              <tr
-                mat-header-row
-                *matHeaderRowDef="displayedFileVersionColumns"
-              ></tr>
-              <tr
-                mat-row
-                *matRowDef="
-                  let row;
-                  let even = even;
-                  columns: displayedFileVersionColumns
-                "
-                [ngClass]="{ gray: even }"
-              ></tr>
-            </table>
-          </ng-container>
-        </mat-list>
-        <div matTooltip="Click here to upload dataset file">
-          <app-commons-file-upload
-            *ngIf="
-              user &&
-              dataset.id !== '' &&
-              dataset.can_upload_data === true &&
-              dataset.url
-            "
-            color="primary"
-            text="UPLOAD NEW VERSION"
-            (complete)="onFileComplete($event)"
-            [target]="uploadUrl()"
-            [user]="user"
-          ></app-commons-file-upload>
-          <app-commons-file-upload
-            *ngIf="
-              user &&
-              dataset.id !== '' &&
-              dataset.can_upload_data === true &&
-              !dataset.url
-            "
-            color="primary"
-            text="UPLOAD FILE"
-            (complete)="onFileComplete($event)"
-            [target]="uploadUrl()"
-            [user]="user"
-          ></app-commons-file-upload>
-        </div>
+        </mat-card-header>
+        <mat-card-content>
+          <mat-list dense *ngIf="fileVersions$ | async; let fileVersions">
+            <ng-container *ngIf="fileVersions.length > 0">
+              <table
+                mat-table
+                [dataSource]="fileVersions$"
+                class="datasetversions"
+              >
+                <ng-container matColumnDef="file_version">
+                  <th mat-header-cell *matHeaderCellDef>FILE NAME</th>
+                  <td mat-cell *matCellDef="let fileVersionDetail">
+                    <mat-label>
+                      {{ fileVersionDetail.fileName }}
+                    </mat-label>
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="creator">
+                  <th mat-header-cell *matHeaderCellDef>CREATOR</th>
+                  <td mat-cell *matCellDef="let fileVersionDetail">
+                    {{ fileVersionDetail.fileCreatedBy.email }}
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="create_date_time">
+                  <th mat-header-cell *matHeaderCellDef>CREATE DATE/TIME</th>
+                  <td mat-cell *matCellDef="let fileVersionDetail">
+                    {{ fileVersionDetail.fileDateCreated | date: 'MM/d/y h:mm a' }}
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="download">
+                  <th mat-header-cell *matHeaderCellDef>DOWNLOAD</th>
+                  <td mat-cell *matCellDef="let fileVersionDetail">
+                    <a
+                      (click)="downloadFile(
+                          fileVersionDetail.url,
+                          fileVersionDetail.fileName,
+                          user
+                        )"
+                    >
+                      <button type="button" color="primary" mat-mini-fab>
+                        <mat-icon
+                          matTooltip="Click here to download file ({{
+                            fileVersionDetail.fileName
+                          }})"
+                        >
+                          file_download
+                        </mat-icon>
+                      </button>
+                    </a>
+                  </td>
+                </ng-container>
+                <tr
+                  mat-header-row
+                  *matHeaderRowDef="displayedFileVersionColumns"
+                ></tr>
+                <tr
+                  mat-row
+                  *matRowDef="
+                    let row;
+                    let odd = odd;
+                    columns: displayedFileVersionColumns
+                  "
+                  [ngClass]="{ gray: odd }"
+                ></tr>
+              </table>
+            </ng-container>
+          </mat-list>
+        </mat-card-content>
+        <mat-card-actions>
+          <div matTooltip="Click here to upload dataset file">
+            <app-commons-file-upload
+              *ngIf="
+                user &&
+                dataset.id !== '' &&
+                dataset.can_upload_data === true &&
+                dataset.url
+              "
+              color="primary"
+              text="UPLOAD NEW VERSION"
+              (complete)="onFileComplete($event)"
+              [target]="uploadUrl()"
+              [user]="user"
+            ></app-commons-file-upload>
+            <app-commons-file-upload
+              *ngIf="
+                user &&
+                dataset.id !== '' &&
+                dataset.can_upload_data === true &&
+                !dataset.url
+              "
+              color="primary"
+              text="UPLOAD FILE"
+              (complete)="onFileComplete($event)"
+              [target]="uploadUrl()"
+              [user]="user"
+            ></app-commons-file-upload>
+          </div>
+        </mat-card-actions>
       </mat-card>
       <mat-divider [inset]="true"></mat-divider>
-      <mat-card-footer>
-        <button mat-raised-button color="primary" (click)="showNext()">
-          <mat-icon>home</mat-icon>
-          Project Home
-        </button>
-      </mat-card-footer>
     </div>
     <mat-card
       fxFlex.xl="25%"
@@ -434,9 +438,11 @@
       fxFlex.sm="50%"
       fxFlex.xs="100%"
     >
-      <mat-card-title>
-        DATASET DETAILS
-      </mat-card-title>
+      <mat-card-header>
+        <mat-card-title>
+          DATASET DETAILS
+        </mat-card-title>
+      </mat-card-header>
       <mat-card-content>
         <mat-chip-list *ngIf="user && dataset.can_manage_permission === true">
           <mat-chip

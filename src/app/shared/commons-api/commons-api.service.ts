@@ -1,36 +1,21 @@
-import {
-  HttpClient,
-  HttpErrorResponse,
-  HttpEvent,
-  HttpEventType,
-  HttpHeaders,
-  HttpParams,
-} from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, throwError, of as observableOf } from 'rxjs';
-import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
-import {
-  groupBy,
-  mergeMap,
-  catchError,
-  last,
-  map,
-  tap,
-  filter,
-  toArray,
-} from 'rxjs/operators';
 import fileSaver from 'file-saver';
+import { Observable, throwError } from 'rxjs';
+import { catchError, map, } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
-import { FileAttachment } from '../../file-attachment';
-import { User } from '../../user';
 import {
-  Project,
-  UserPermission,
+  Add,
+  Dataset,
   DatasetFileVersion,
+  IrbInvestigator,
+  IrbNumber,
+  Project,
+  ProjectDocument,
+  UserPermission,
 } from '../../commons-types';
-import { Dataset } from '../../commons-types';
-import { ProjectDocument } from '../../commons-types';
-import { Add } from '../../commons-types';
+import { User } from '../../user';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -42,7 +27,9 @@ export class CommonsApiService {
   endpoints = {
     root: '/',
   };
-  constructor(private http: HttpClient) {}
+
+  constructor(private http: HttpClient) {
+  }
 
   getLandingServiceUrl(user: User) {
     for (const institution_info in environment.landing_service) {
@@ -62,6 +49,7 @@ export class CommonsApiService {
         catchError(this.handleError)
       );
   }
+
   loadPublicProjects(): Observable<Project[]> {
     return this.http
       .get<Project[]>(this.apiRoot + 'project_list_public')
@@ -90,7 +78,7 @@ export class CommonsApiService {
     return this.http
       .delete<any>(
         this.apiRootPrivate +
-          `project/${project.id}/${project.institution.name}`
+        `project/${project.id}/${project.institution.name}`
       )
       .pipe(catchError(this.handleError));
   }
@@ -135,7 +123,7 @@ export class CommonsApiService {
     return this.http
       .delete<any>(
         this.apiRootPrivate +
-          `dataset/${dataset.id}/${dataset.institution.name}`
+        `dataset/${dataset.id}/${dataset.institution.name}`
       )
       .pipe(catchError(this.handleError));
   }
@@ -143,12 +131,12 @@ export class CommonsApiService {
   deleteDatasetData(dataset: Dataset, user: User): Observable<any> {
     if (dataset.can_delete_data) {
       return this.http
-      .delete<any>(
-        this.getLandingServiceUrl(user) +
+        .delete<any>(
+          this.getLandingServiceUrl(user) +
           `/commons/data/datasets/file/${dataset.id}`, {
-            headers: { REMOTE_USER: user.eppn },
+            headers: {REMOTE_USER: user.eppn},
           })
-          .pipe(catchError(this.handleError));
+        .pipe(catchError(this.handleError));
     }
   }
 
@@ -157,10 +145,10 @@ export class CommonsApiService {
       return this.http
         .put<any>(
           this.getLandingServiceUrl(user) +
-            `/commons/data/datasets/file/${dataset.id}/restore`, {},
-            {
-              headers: { REMOTE_USER: user.eppn, EMAIL: user.eppn },
-            }
+          `/commons/data/datasets/file/${dataset.id}/restore`, {},
+          {
+            headers: {REMOTE_USER: user.eppn, EMAIL: user.eppn},
+          }
         )
         .pipe(catchError(this.handleError));
     }
@@ -174,15 +162,15 @@ export class CommonsApiService {
     return this.http
       .put<any>(
         this.getLandingServiceUrl(user) +
-          `/commons/meta/projects/file/` +
-          project.id +
-          `/` +
-          document.type +
-          `/` +
-          document.filename +
+        `/commons/meta/projects/file/` +
+        project.id +
+        `/` +
+        document.type +
+        `/` +
+        document.filename +
         `/restore`, {},
         {
-          headers: { REMOTE_USER: user.eppn, EMAIL: user.eppn},
+          headers: {REMOTE_USER: user.eppn, EMAIL: user.eppn},
         }
       )
       .pipe(catchError(this.handleError));
@@ -191,7 +179,7 @@ export class CommonsApiService {
   deleteDocument(document: ProjectDocument, user: User): Observable<any> {
     return this.http
       .delete<any>(document.url, {
-        headers: { REMOTE_USER: user.eppn },
+        headers: {REMOTE_USER: user.eppn},
       })
       .pipe(catchError(this.handleError));
   }
@@ -199,7 +187,7 @@ export class CommonsApiService {
   downloadFile(url, filename, user: User) {
     this.http
       .get(url, {
-        headers: { REMOTE_USER: user.eppn },
+        headers: {REMOTE_USER: user.eppn},
         responseType: 'blob',
       })
       .subscribe((blob) => {
@@ -215,14 +203,14 @@ export class CommonsApiService {
     return this.http
       .delete<any>(
         this.getLandingServiceUrl(user) +
-          `/commons/permissions/projects/users/` +
-          project.id +
-          `/` +
-          userPermission.user_role +
-          `/` +
-          userPermission.user_email,
+        `/commons/permissions/projects/users/` +
+        project.id +
+        `/` +
+        userPermission.user_role +
+        `/` +
+        userPermission.user_email,
         {
-          headers: { REMOTE_USER: user.eppn },
+          headers: {REMOTE_USER: user.eppn},
           responseType: 'json',
         }
       )
@@ -237,14 +225,14 @@ export class CommonsApiService {
     return this.http
       .post<any>(
         this.getLandingServiceUrl(user) +
-          `/commons/permissions/projects/users/` +
-          project.id,
+        `/commons/permissions/projects/users/` +
+        project.id,
         {
           user_role: Number(userPermission.user_role),
           user_email: userPermission.user_email.toLowerCase(),
         },
         {
-          headers: { REMOTE_USER: user.eppn },
+          headers: {REMOTE_USER: user.eppn},
           responseType: 'json',
         }
       )
@@ -258,10 +246,10 @@ export class CommonsApiService {
     return this.http
       .get<UserPermission[]>(
         this.getLandingServiceUrl(user) +
-          `/commons/permissions/projects/users/` +
-          project.id,
+        `/commons/permissions/projects/users/` +
+        project.id,
         {
-          headers: { REMOTE_USER: user.eppn },
+          headers: {REMOTE_USER: user.eppn},
           responseType: 'json',
         }
       )
@@ -276,14 +264,14 @@ export class CommonsApiService {
     return this.http
       .delete<any>(
         this.getLandingServiceUrl(user) +
-          `/commons/permissions/datasets/users/` +
-          dataset.id +
-          `/` +
-          userPermission.user_role +
-          `/` +
-          userPermission.user_email,
+        `/commons/permissions/datasets/users/` +
+        dataset.id +
+        `/` +
+        userPermission.user_role +
+        `/` +
+        userPermission.user_email,
         {
-          headers: { REMOTE_USER: user.eppn },
+          headers: {REMOTE_USER: user.eppn},
           responseType: 'json',
         }
       )
@@ -295,15 +283,15 @@ export class CommonsApiService {
     dataset: Dataset,
     userPermission: UserPermission
   ): Observable<any> {
-    userPermission.user_email = userPermission.user_email.toLowerCase()
+    userPermission.user_email = userPermission.user_email.toLowerCase();
     return this.http
       .post<any>(
         this.getLandingServiceUrl(user) +
-          `/commons/permissions/datasets/users/` +
-          dataset.id,
+        `/commons/permissions/datasets/users/` +
+        dataset.id,
         userPermission,
         {
-          headers: { REMOTE_USER: user.eppn },
+          headers: {REMOTE_USER: user.eppn},
           responseType: 'json',
         }
       )
@@ -312,15 +300,15 @@ export class CommonsApiService {
 
   getDatasetPermissions(
     user: User,
-    dataset: Dataset
+    dataset: Dataset,
   ): Observable<UserPermission[]> {
     return this.http
       .get<UserPermission[]>(
         this.getLandingServiceUrl(user) +
-          `/commons/permissions/datasets/users/` +
-          dataset.id,
+        `/commons/permissions/datasets/users/` +
+        dataset.id,
         {
-          headers: { REMOTE_USER: user.eppn },
+          headers: {REMOTE_USER: user.eppn},
           responseType: 'json',
         }
       )
@@ -334,10 +322,10 @@ export class CommonsApiService {
     return this.http
       .get<UserPermission[]>(
         this.getLandingServiceUrl(user) +
-          `/commons/permissions/datasets/users/` +
-          dataset.id,
+        `/commons/permissions/datasets/users/` +
+        dataset.id,
         {
-          headers: { REMOTE_USER: user.eppn },
+          headers: {REMOTE_USER: user.eppn},
           responseType: 'json',
         }
       )
@@ -357,10 +345,10 @@ export class CommonsApiService {
     return this.http
       .get<UserPermission[]>(
         this.getLandingServiceUrl(user) +
-          `/commons/permissions/datasets/users/` +
-          dataset.id,
+        `/commons/permissions/datasets/users/` +
+        dataset.id,
         {
-          headers: { REMOTE_USER: user.eppn },
+          headers: {REMOTE_USER: user.eppn},
           responseType: 'json',
         }
       )
@@ -380,11 +368,11 @@ export class CommonsApiService {
     return this.http
       .get<DatasetFileVersion[]>(
         this.getLandingServiceUrl(user) +
-          `/commons/data/datasets/file/` +
-          dataset.id +
-          `/versions`,
+        `/commons/data/datasets/file/` +
+        dataset.id +
+        `/versions`,
         {
-          headers: { REMOTE_USER: user.eppn },
+          headers: {REMOTE_USER: user.eppn},
           responseType: 'json',
         }
       )
@@ -394,6 +382,42 @@ export class CommonsApiService {
   testSSO(): Observable<Add> {
     return this.http
       .get<Add>(`https://apidemo.uvarc.io/add/130/170`)
+      .pipe(catchError(this.handleError));
+  }
+
+  /**
+   * Returns the list of IRB Investigators for the given project from the backend.
+   * @param user
+   * @param dataset
+   */
+  getDatasetIrbInvestigators(user: User, dataset: Dataset): Observable<IrbInvestigator[]> {
+    return this.http
+      .get<IrbInvestigator[]>(
+        this.getLandingServiceUrl(user) +
+        `/commons/permissions/datasets/investigators/` +
+        dataset.id,
+        {
+          headers: {REMOTE_USER: user.eppn},
+          responseType: 'json',
+        }
+      )
+      .pipe(catchError(this.handleError));
+  }
+
+  /**
+   * Returns the list of IRB Study Numbers for the given user from the backend.
+   * @param user
+   */
+  getUserIrbNumbers(user: User): Observable<IrbNumber[]> {
+    return this.http
+      .get<IrbNumber[]>(
+        this.getLandingServiceUrl(user) +
+        `/commons/permissions/user/irb_protocols`,
+        {
+          headers: {REMOTE_USER: user.eppn},
+          responseType: 'json',
+        }
+      )
       .pipe(catchError(this.handleError));
   }
 
@@ -410,8 +434,8 @@ export class CommonsApiService {
       // The response body may contain clues as to what went wrong,
       console.error(
         `Backend returned a status code ${error.status}, ` +
-          `Code was: ${JSON.stringify(error.error.code)}, ` +
-          `Message was: ${JSON.stringify(error.error.message)}`
+        `Code was: ${JSON.stringify(error.error.code)}, ` +
+        `Message was: ${JSON.stringify(error.error.message)}`
       );
       message = error.error.message;
     }

@@ -1,0 +1,49 @@
+// GLOBAL SCSS VARIABLES
+$body-font-family: 'Roboto, "Helvetica Neue", sans-serif';
+$heading-font-family: 'Roboto, "Helvetica Neue", sans-serif';
+
+// Brand palette
+$brand-primary-light-25: #f1f5f7;
+$brand-primary-light-50: #e8f5e9;
+$brand-primary-light-100: #c8e6c9;
+$brand-primary-light-200: #a5d6a7;
+$brand-primary-light: #4caf50;
+$brand-primary: #007a3c;
+$brand-primary-dark: #005424;
+$brand-accent-light-200: #f2b980;
+$brand-accent-light-100: #f7d5b3;
+$brand-accent-light: #ed9c4d;
+$brand-accent: #da5500;
+$brand-accent-dark: #d34200;
+$brand-warning-light: #ff5722;
+$brand-warning: #ff5722;
+$brand-warning-dark: #ff5722;
+$brand-gray-light: #f5f5f5;
+$brand-gray: #999999;
+$brand-gray-dark: #666666;
+$brand-text-dark: #212121;
+
+// Categories
+$brand-category-learn: #C26A4E;
+$brand-category-propose: #6F8CB8;
+$brand-category-conduct: #BC9025;
+$brand-category-connect: #708938;
+
+$ease-duration: 300ms;
+$animation-duration: 500ms;
+
+// Whitespace
+$padding-size: 20px;
+$border-top-size: 10px;
+$icon-size: 50px;
+
+// Typography
+$base-font-size: 16px;
+$font-size-larger-8: $base-font-size * 2.500;
+$font-size-larger-7: $base-font-size * 2.250;
+$font-size-larger-6: $base-font-size * 2.000;
+$font-size-larger-5: $base-font-size * 1.750;
+$font-size-larger-4: $base-font-size * 1.625;
+$font-size-larger-3: $base-font-size * 1.500;
+$font-size-larger-2: $base-font-size * 1.375;
+$font-size-larger-1: $base-font-size * 1.250;

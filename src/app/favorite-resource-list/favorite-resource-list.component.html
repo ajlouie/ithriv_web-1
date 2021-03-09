@@ -4,6 +4,7 @@
     [user]="user"
     [sidenavExpanded]="false"
     fxFlexFill
+    [navItems]="[{title: 'Favorite Resources and Events', routerLink: '/home', queryParams: {tabIndex: tabIndex}}]"
   ></app-resource-list>
 </div>
 <div *ngIf="!user && !institution" class="please-log-in">

@@ -6,13 +6,17 @@ import {
   Output,
   ChangeDetectorRef,
 } from '@angular/core';
+import {
+  HsdDownloadDialogComponent,
+  HsdDownloadDialogData
+} from '../hsd-download-dialog/hsd-download-dialog.component';
 import { User } from '../user';
 import {
   Project,
   Dataset,
   ProjectDocumentMap,
   ProjectDocument,
-  UserPermission,
+  UserPermission, CommonsState, CommonsStateForm,
 } from '../commons-types';
 import { CommonsApiService } from '../shared/commons-api/commons-api.service';
 import { Observable } from 'rxjs';
@@ -31,8 +35,8 @@ import { CommonsProjectCreateEditComponent } from '../commons-project-create-edi
 })
 export class CommonsProjectComponent implements OnInit {
   @Input() user: User;
-  @Input() currentForm: String;
-  @Output() currentFormChange = new EventEmitter();
+  @Input() currentForm: CommonsStateForm;
+  @Output() currentFormChange = new EventEmitter<CommonsState>();
   @Input() project: Project;
   @Input() datasetsPrivate: Dataset[];
   @Input() datasetsPublic: Dataset[];
@@ -108,6 +112,13 @@ export class CommonsProjectComponent implements OnInit {
     };
     this.loadPermisssions();
   }
+  userCanEditHsd(dataset: Dataset): boolean {
+    if (dataset.hasOwnProperty('is_locked_for_user')) {
+      return !dataset.is_locked_for_user;
+    } else {
+      return true;
+    }
+  }
 
   showNext() {
     this.currentFormChange.emit({ displayForm: 'commons-projects-list' });
@@ -138,7 +149,7 @@ export class CommonsProjectComponent implements OnInit {
 
   getDataSource() {
     if (this.datasetsPrivate == null && this.datasetsPublic == null) {
-      return []
+      return [];
     } else {
       return <Dataset[]>[].concat(this.datasetsPrivate, this.datasetsPublic);
     }
@@ -146,8 +157,8 @@ export class CommonsProjectComponent implements OnInit {
 
   onFileComplete(data: any) {
     this.cas.updateProject(this.project).subscribe(
-      (e) => {
-        this.project = e;
+      (project) => {
+        this.project = project;
         this.currentFormChange.emit({
           currentProject: this.project,
           previousForm: 'commons-project',
@@ -215,7 +226,8 @@ export class CommonsProjectComponent implements OnInit {
 
   addDocument(): void {
     const dialogRef = this.dialog.open(CommonsProjectDocumentComponent, {
-      width: '300px',
+      height: '400px',
+      width: '600px',
       data: <ProjectDocumentMap>{
         user: this.user,
         project: this.project,
@@ -245,7 +257,8 @@ export class CommonsProjectComponent implements OnInit {
 
   updateDocument(documentType: string) {
     const dialogRef = this.dialog.open(CommonsProjectDocumentComponent, {
-      width: '300px',
+      height: '400px',
+      width: '600px',
       data: <ProjectDocumentMap>{
         user: this.user,
         project: this.project,
@@ -275,10 +288,10 @@ export class CommonsProjectComponent implements OnInit {
 
   restoreDatasetData(dataset) {
     this.cas.restoreDatasetData(dataset, this.user).subscribe(
-      (e) => {
+      () => {
         this.cas.updateProject(this.project).subscribe(
-          (e) => {
-            this.project = e;
+          (project) => {
+            this.project = project;
             this.currentFormChange.emit({
               currentProject: this.project,
               previousForm: 'commons-project',
@@ -299,10 +312,10 @@ export class CommonsProjectComponent implements OnInit {
 
   deleteDatasetData(dataset) {
     this.cas.deleteDatasetData(dataset, this.user).subscribe(
-      (e) => {
+      () => {
         this.cas.updateProject(this.project).subscribe(
-          (e) => {
-            this.project = e;
+          (project) => {
+            this.project = project;
             this.currentFormChange.emit({
               currentProject: this.project,
               previousForm: 'commons-project',
@@ -323,10 +336,10 @@ export class CommonsProjectComponent implements OnInit {
 
   restoreDocument(document) {
     this.cas.restoreDocument(this.project, document, this.user).subscribe(
-      (e) => {
+      () => {
         this.cas.updateProject(this.project).subscribe(
-          (e) => {
-            this.project = e;
+          (project) => {
+            this.project = project;
             this.currentFormChange.emit({
               currentProject: this.project,
               previousForm: 'commons-project',
@@ -343,10 +356,10 @@ export class CommonsProjectComponent implements OnInit {
 
   deleteDocument(document) {
     this.cas.deleteDocument(document, this.user).subscribe(
-      (e) => {
+      () => {
         this.cas.updateProject(this.project).subscribe(
-          (e) => {
-            this.project = e;
+          (project) => {
+            this.project = project;
             this.currentFormChange.emit({
               currentProject: this.project,
               previousForm: 'commons-project',
@@ -359,5 +372,37 @@ export class CommonsProjectComponent implements OnInit {
       (error1) => {}
     );
     // console.log(document);
+  }
+
+  downloadFile(projectDataset: Dataset) {
+    const doIt = () => {
+      this.cas.downloadFile(
+        projectDataset.url,
+        projectDataset.filename,
+        this.user,
+      );
+    };
+
+    if (this.userCanEditHsd(projectDataset)) {
+      if (this.dataset.is_hsd) {
+        // Open confirmation dialog first.
+        const dialogRef = this.dialog.open(HsdDownloadDialogComponent, {
+          height: '300px',
+          width: '500px',
+          data: {
+            dataset: projectDataset,
+            confirm: false,
+          },
+        });
+
+        dialogRef.afterClosed().subscribe((data: HsdDownloadDialogData) => {
+          if (data.confirm) {
+            doIt();
+          }
+        });
+      } else {
+        doIt();
+      }
+    }
   }
 }

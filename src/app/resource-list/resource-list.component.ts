@@ -1,6 +1,7 @@
 import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
 import { Component, OnInit } from '@angular/core';
 import { Input } from '@angular/core';
+import { NavItem } from '../commons-types';
 import { Resource } from '../resource';
 import { ResourceQuery } from '../resource-query';
 import { ResourceApiService } from '../shared/resource-api/resource-api.service';
@@ -17,6 +18,7 @@ export class ResourceListComponent implements OnInit {
   @Input() user: User;
   @Input() resourceQuery: ResourceQuery;
   @Input() sidenavExpanded: boolean;
+  @Input() navItems: NavItem[];
   csvDataReady = false;
   preparingCsvData = false;
   csvData = [];

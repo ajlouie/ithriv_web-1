@@ -1,50 +1,48 @@
 import {
-  Component,
-  OnInit,
-  Input,
-  Output,
-  EventEmitter,
   ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChanges,
 } from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  FormControl,
-  Validators,
-  AbstractControl,
-} from '@angular/forms';
-import { ErrorMatcher } from '../error-matcher';
-import { FormField } from '../form-field';
-import { IThrivForm } from '../shared/IThrivForm';
-import { User } from '../user';
-import { ResourceApiService } from '../shared/resource-api/resource-api.service';
-import { CommonsApiService } from '../shared/commons-api/commons-api.service';
-import { Project, UserPermission, UserPermissionMap } from '../commons-types';
-import { filter } from 'rxjs/operators';
-import { Fieldset } from '../fieldset';
-import { ValidateDateTimeRange } from '../shared/validators/date_time_range.validator';
+import { FormBuilder, FormControl, FormGroup, Validators, } from '@angular/forms';
 import { MatSnackBar } from '@angular/material';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { AddPermissionComponent } from '../add-permission/add-permission.component';
-import { ValidateUrl } from '../shared/validators/url.validator';
+import { CommonsState, CommonsStateForm, Project, UserPermission, UserPermissionMap } from '../commons-types';
+import { ErrorMatcher } from '../error-matcher';
+import { ParsedError } from '../error-message/error-message.component';
+import { ErrorSnackbarComponent } from '../error-snackbar/error-snackbar.component';
+import { Fieldset } from '../fieldset';
+import { FormField } from '../form-field';
+import { CommonsApiService } from '../shared/commons-api/commons-api.service';
+import { IThrivForm } from '../shared/IThrivForm';
+import { ResourceApiService } from '../shared/resource-api/resource-api.service';
 import { ValidateEmail } from '../shared/validators/comms_sep_email.validator';
+import { ValidateDateTimeRange } from '../shared/validators/date_time_range.validator';
+import { ValidateUrl } from '../shared/validators/url.validator';
+import { User } from '../user';
 
 @Component({
   selector: 'app-commons-project-create-edit',
   templateUrl: './commons-project-create-edit.component.html',
   styleUrls: ['./commons-project-create-edit.component.scss'],
 })
-export class CommonsProjectCreateEditComponent implements OnInit {
+export class CommonsProjectCreateEditComponent implements OnInit, OnChanges {
   public static PROJECT_ROLE_MAP_STATIC = [
-    { key: '1', value: 'PROJECT OWNER' },
-    { key: '2', value: 'PROJECT COLLABORATOR' },
+    {key: '1', value: 'PROJECT OWNER'},
+    {key: '2', value: 'PROJECT COLLABORATOR'},
   ];
   @Input() user: User;
-  @Input() currentForm: String;
-  @Input() previousForm: String;
-  @Output() currentFormChange = new EventEmitter();
+  @Input() currentForm: CommonsStateForm;
+  @Input() previousForm: CommonsStateForm;
+  @Output() currentFormChange = new EventEmitter<CommonsState>();
   @Input() project: Project;
+  @Input() projectAction: string;
   errorMessage: string;
   errorMatcher = new ErrorMatcher();
   errorMessagePerm: string;
@@ -55,10 +53,10 @@ export class CommonsProjectCreateEditComponent implements OnInit {
   iThrivForm: IThrivForm;
   formStatus = 'form';
   isDataLoaded = false;
+  showConfirmDelete = false;
   createNew = false;
   institutionOptions = ['Virginia Tech', 'Carilion', 'Inova', 'UVA'];
   error: String;
-  showConfirmDelete = false;
   userPermission: UserPermission;
   userPermissions$: Observable<UserPermission[]> | undefined;
   displayedUserpermColumns: string[] = ['email', 'role', 'edit', 'delete'];
@@ -78,6 +76,10 @@ export class CommonsProjectCreateEditComponent implements OnInit {
 
   ngOnInit() {
     this.loadData();
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    console.log('changes', changes);
   }
 
   loadFields() {
@@ -291,28 +293,28 @@ export class CommonsProjectCreateEditComponent implements OnInit {
       ) {
         return CommonsProjectCreateEditComponent.PROJECT_ROLE_MAP_STATIC[i][
           'value'
-        ];
+          ];
       }
     }
   }
 
   addPermission(): void {
     const dialogRef = this.dialog.open(AddPermissionComponent, {
-      width: '250px',
+      height: '300px',
+      width: '400px',
       data: <UserPermissionMap>{
         userPermission: <UserPermission>{
           user_email: '',
           user_role: '',
         },
         permissionsMap:
-          CommonsProjectCreateEditComponent.PROJECT_ROLE_MAP_STATIC,
+        CommonsProjectCreateEditComponent.PROJECT_ROLE_MAP_STATIC,
+        isDataset: false,
       },
     });
 
     dialogRef.afterClosed().subscribe((result: UserPermission) => {
-      console.log('The dialog was closed');
-      console.log(result);
-      if (result !== null) {
+      if (result) {
         this.cas
           .addUserProjectPermission(this.user, this.project, result)
           .subscribe(
@@ -321,10 +323,7 @@ export class CommonsProjectCreateEditComponent implements OnInit {
               this.errorMessagePerm = '';
             },
             (error1) => {
-              this.snackBar.open(error1, '', {
-                duration: 5000,
-                panelClass: 'snackbar-warning',
-              });
+              this.displayError(error1);
               this.errorMessagePerm = error1;
             }
           );
@@ -339,64 +338,49 @@ export class CommonsProjectCreateEditComponent implements OnInit {
     };
 
     const dialogRef = this.dialog.open(AddPermissionComponent, {
-      width: '250px',
+      height: '300px',
+      width: '400px',
       data: <UserPermissionMap>{
         userPermission: userPermission,
         permissionsMap:
-          CommonsProjectCreateEditComponent.PROJECT_ROLE_MAP_STATIC,
+        CommonsProjectCreateEditComponent.PROJECT_ROLE_MAP_STATIC,
+        isDataset: false,
       },
     });
 
     dialogRef.afterClosed().subscribe((result: UserPermission) => {
-      console.log('The dialog was closed');
-      if (result !== null) {
-        this.cas
-          .addUserProjectPermission(this.user, this.project, result)
-          .subscribe(
-            (e) => {
-              this.cas
-                .deleteUserProjectPermission(
-                  this.user,
-                  this.project,
-                  userPermissionCurrent
-                )
-                .subscribe(
-                  (e) => {
+      if (result) {
+        this.cas.addUserProjectPermission(this.user, this.project, result).subscribe(
+          () => {
+            this.cas.deleteUserProjectPermission(this.user, this.project, userPermissionCurrent).subscribe(
+              () => {
+                this.loadPermisssions();
+                this.errorMessagePerm = '';
+              },
+              (deletePermissionError) => {
+                this.cas.addUserProjectPermission(this.user, this.project, userPermissionCurrent).subscribe(
+                  () => {
                     this.loadPermisssions();
-                    this.errorMessagePerm = '';
                   },
                   (error1) => {
-                    this.cas
-                      .addUserProjectPermission(
-                        this.user,
-                        this.project,
-                        userPermissionCurrent
-                      )
-                      .subscribe(
-                        (e1) => {
+                    this.cas.addUserProjectPermission(this.user, this.project, userPermissionCurrent).subscribe(
+                      (e1) => {
                           this.loadPermisssions();
                         },
-                        (error2) => {
-                          this.snackBar.open(error2, '', {
-                            duration: 5000,
-                            panelClass: 'snackbar-warning',
-                          });
-                          this.errorMessagePerm = error2;
-                        }
-                      );
-                    this.snackBar.open(error1, '', {
-                      duration: 5000,
-                      panelClass: 'snackbar-warning',
-                    });
+                      (error2) => {
+                        this.displayError(error2);
+                        this.errorMessagePerm = error2;
+                      }
+                    );
+
+                    this.displayError(error1);
                     this.errorMessagePerm = error1;
                   }
                 );
-            },
-            (error1) => {
-              this.snackBar.open(error1, '', {
-                duration: 5000,
-                panelClass: 'snackbar-warning',
               });
+          },
+            (error1) => {
+              this.displayError(error1);
               this.errorMessagePerm = error1;
             }
           );
@@ -415,10 +399,7 @@ export class CommonsProjectCreateEditComponent implements OnInit {
           this.errorMessagePerm = '';
         },
         (error1) => {
-          this.snackBar.open(error1, '', {
-            duration: 5000,
-            panelClass: 'snackbar-warning',
-          });
+          this.displayError(error1);
           this.errorMessagePerm = error1;
         }
       );
@@ -479,10 +460,7 @@ export class CommonsProjectCreateEditComponent implements OnInit {
           },
           (error1) => {
             if (error1) {
-              this.snackBar.open(error1, '', {
-                duration: 5000,
-                panelClass: 'snackbar-warning',
-              });
+              this.displayError(error1);
               this.errorMessage = error1;
             } else {
               this.errorMessage =
@@ -525,18 +503,12 @@ export class CommonsProjectCreateEditComponent implements OnInit {
           },
           (error1) => {
             if (error1) {
-              this.snackBar.open(error1, '', {
-                duration: 5000,
-                panelClass: 'snackbar-warning',
-              });
+              this.displayError(error1);
               this.errorMessage = error1;
             } else {
               this.errorMessage =
                 'Failed to update project, please try again later or contact system admin';
-              this.snackBar.open(this.errorMessage, '', {
-                duration: 5000,
-                panelClass: 'snackbar-warning',
-              });
+              this.displayError(this.errorMessage);
             }
             this.formStatus = 'form';
             this.changeDetectorRef.detectChanges();
@@ -546,7 +518,10 @@ export class CommonsProjectCreateEditComponent implements OnInit {
 
       this.formStatus = 'submitting';
     } else {
-      const messages: string[] = [];
+      const messages: ParsedError = {
+        title: 'Please double-check the following fields:',
+        errors: [],
+      };
       const controls = this.fg.controls;
       for (const fieldName in controls) {
         if (controls.hasOwnProperty(fieldName)) {
@@ -557,41 +532,32 @@ export class CommonsProjectCreateEditComponent implements OnInit {
             if (errors.hasOwnProperty(errorName)) {
               switch (errorName) {
                 case 'dateTimeRange':
-                  messages.push(
-                    `${label} is not a valid event start and end date/time.`
-                  );
+                  messages.errors.push({title: label, messages: [`Not a valid event start and end date/time.`]});
                   break;
                 case 'email':
-                  messages.push(`${label} is not a valid email address.`);
+                  messages.errors.push({title: label, messages: [`Not a valid email address.`]});
                   break;
                 case 'maxlength':
-                  messages.push(`${label} is not long enough.`);
+                  messages.errors.push({title: label, messages: [`Not long enough.`]});
                   break;
                 case 'minlength':
-                  messages.push(`${label} is too short.`);
+                  messages.errors.push({title: label, messages: [`Too short.`]});
                   break;
                 case 'required':
-                  messages.push(`${label} is empty.`);
+                  messages.errors.push({title: label, messages: [`This field is required. It is currently empty.`]});
                   break;
                 case 'url':
-                  messages.push(`${label} is not a valid URL.`);
+                  messages.errors.push({title: label, messages: [`Not a valid URL.`]});
                   break;
                 default:
-                  messages.push(`${label} has an error.`);
+                  messages.errors.push({title: label, messages: [`Has an error.`]});
                   break;
               }
             }
           }
         }
       }
-      const action = '';
-      const message = `Please double-check the following fields: ${messages.join(
-        ' '
-      )}`;
-      this.snackBar.open(message, action, {
-        duration: 5000,
-        panelClass: 'snackbar-warning',
-      });
+      this.displayError(JSON.stringify(messages));
     }
   }
 
@@ -599,10 +565,6 @@ export class CommonsProjectCreateEditComponent implements OnInit {
     this.currentFormChange.emit({
       displayForm: this.previousForm,
     });
-  }
-
-  showDelete() {
-    this.showConfirmDelete = true;
   }
 
   deleteProject() {
@@ -615,10 +577,7 @@ export class CommonsProjectCreateEditComponent implements OnInit {
         });
       },
       (error1) => {
-        this.snackBar.open(error1, '', {
-          duration: 5000,
-          panelClass: 'snackbar-warning',
-        });
+        this.displayError(error1);
         this.error = error1;
       }
     );
@@ -643,5 +602,13 @@ export class CommonsProjectCreateEditComponent implements OnInit {
   showForm() {
     this.iThrivForm.reset();
     this.formStatus = 'form';
+  }
+
+  private displayError(errorString: string) {
+    this.snackBar.openFromComponent(ErrorSnackbarComponent, {
+      data: { errorString, action: 'Ok' },
+      duration: 5000,
+      panelClass: 'snackbar-warning',
+    });
   }
 }

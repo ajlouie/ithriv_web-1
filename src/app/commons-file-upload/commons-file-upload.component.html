@@ -14,9 +14,8 @@
 </ul>
 <ng-container *ngIf="!text">
   <button
-    *ngIf="color === 'warn'"
     mat-button
-    color="warn"
+    [color]="color"
     (click)="onClick()"
     mat-mini-fab
   >
@@ -25,9 +24,8 @@
 </ng-container>
 <ng-container *ngIf="text">
   <button
-    *ngIf="color !== 'warn'"
     mat-raised-button
-    color="warn"
+    [color]="color"
     (click)="onClick()"
   >
     <mat-icon>file_upload</mat-icon>

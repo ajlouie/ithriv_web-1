@@ -96,7 +96,7 @@
       </div>
       <mat-card-content *ngIf="user">
         <mat-table
-          class="users-table mat-elevation-z8"
+          class="users-table"
           [dataSource]="dataSource"
         >
           <ng-container matColumnDef="reference_id">
@@ -158,8 +158,8 @@
           <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
 
           <mat-row
-            *matRowDef="let row; let even = even; columns: displayedColumns"
-            [ngClass]="{ gray: even }"
+            *matRowDef="let row; let odd = odd; columns: displayedColumns"
+            [ngClass]="{ gray: odd }"
           >
           </mat-row>
         </mat-table>

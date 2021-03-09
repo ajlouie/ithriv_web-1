@@ -3,10 +3,16 @@ LABEL maintainer="rkc7h@virginia.edu"
 ARG BUILD_ENV
 ENV APP_LOC /ithriv_web
 RUN apk update && apk upgrade && \
-    apk add --no-cache bash git openssh python3 python2
+    apk add --no-cache bash git openssh python3 python2 chromium chromium-chromedriver
+ENV CHROME_BIN=/usr/bin/chromium-browser \
+    CHROME_PATH=/usr/lib/chromium/ \
+    LIGHTHOUSE_CHROMIUM_PATH=/usr/bin/chromium-browser \
+    PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+
 WORKDIR $APP_LOC
 COPY package*.json ./
 RUN npm config set unsafe-perm true \
+    && npm install --save-dev puppeteer \
     && npm install bootstrap \
     && npm install -g @angular/cli@8.3.23 \
     && npm install \
@@ -18,9 +24,9 @@ RUN npm config set unsafe-perm true \
 RUN node -v
 RUN ng --version
 COPY . .
-# RUN npm run lint
+RUN npm run lint
+RUN npm run test:docker
 RUN npm run "build_$BUILD_ENV"
-# RUN npm run test
 RUN npm prune --production
 
 FROM nginx:alpine

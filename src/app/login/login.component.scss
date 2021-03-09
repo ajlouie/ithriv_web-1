@@ -1,7 +1,4 @@
-// Import theming functions
-@import '~@angular/material/theming';
-@import '../../ithriv_material';
-@include ithriv-theme($ithriv-theme);
+@import "../../config";
 
 .container {
   min-height: 100vh;
@@ -13,5 +10,5 @@ div.help {
 }
 
 mat-tab-group {
-  background-color: mat-color($ithriv-primary, 800, 1.0);
+  background-color: $brand-primary;
 }

@@ -1,14 +1,4 @@
-// Import theming functions
-@import '~@angular/material/theming';
-// Import your custom theme
-@import '../../ithriv_material';
-// Load the UVA Theme
-@include ithriv-theme($uva-theme);
-
-$base-font-size: 16px;
-$padding-size: 20px;
-$border-top-size: 10px;
-$icon-size: 50px;
+@import "../../config";
 
 mat-card.resource {
   cursor: pointer;
@@ -18,13 +8,13 @@ mat-card.resource {
   position: relative;
 
   &:hover {
-    outline: 1px solid mat-color($ithriv-primary, 200, 1);
-    background-color: mat-color($ithriv-primary, 100, 1);
+    outline: 1px solid $brand-primary-light-200;
+    background-color: $brand-primary-light-100;
   }
 
   &:active {
-    outline: 1px solid mat-color($ithriv-accent, 200, 1);
-    background-color: mat-color($ithriv-accent, 100, 1);
+    outline: 1px solid $brand-accent-light-200;
+    background-color: $brand-accent-light-100;
   }
 
   .category-color {

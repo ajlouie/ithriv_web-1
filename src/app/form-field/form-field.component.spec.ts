@@ -1,3 +1,4 @@
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -9,21 +10,26 @@ import {
   MatSelectModule
 } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { Router } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
+import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 import { ColorPickerModule } from 'ngx-color-picker';
 import { MarkdownModule } from 'ngx-markdown';
 import { FormField } from '../form-field';
-import { MockResourceApiService } from '../shared/mocks/resource-api.service.mock';
 import { ResourceApiService } from '../shared/resource-api/resource-api.service';
 import { FormFieldComponent } from './form-field.component';
 
 describe('FormFieldComponent', () => {
-  let api: MockResourceApiService;
+  let httpMock: HttpTestingController;
   let component: FormFieldComponent;
   let errorMatcher: ErrorStateMatcher;
   let fixture: ComponentFixture<FormFieldComponent>;
+  const mockRouter = {
+    createUrlTree: jasmine.createSpy('createUrlTree'),
+    navigate: jasmine.createSpy('navigate')
+  };
 
   beforeEach(async(() => {
-    api = new MockResourceApiService();
     errorMatcher = new ErrorStateMatcher();
 
     TestBed
@@ -35,21 +41,27 @@ describe('FormFieldComponent', () => {
           BrowserAnimationsModule,
           ColorPickerModule,
           FormsModule,
+          HttpClientTestingModule,
           MarkdownModule,
           MatCardModule,
           MatFormFieldModule,
           MatInputModule,
           MatSelectModule,
-          ReactiveFormsModule
+          OwlDateTimeModule,
+          OwlNativeDateTimeModule,
+          ReactiveFormsModule,
+          RouterTestingModule,
         ],
         providers: [
-          { provide: ResourceApiService, useValue: api },
-          { provide: ErrorStateMatcher, useValue: { isErrorState: () => true } }
+          ResourceApiService,
+          { provide: ErrorStateMatcher, useValue: { isErrorState: () => true } },
+          {provide: Router, useValue: mockRouter},
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA]
       })
       .compileComponents()
       .then(() => {
+        httpMock = TestBed.get(HttpTestingController);
         fixture = TestBed.createComponent(FormFieldComponent);
         component = fixture.componentInstance;
         component.errorMatcher = errorMatcher;
@@ -62,6 +74,14 @@ describe('FormFieldComponent', () => {
         fixture.detectChanges();
       });
   }));
+
+  afterEach(() => {
+    fixture.destroy();
+    httpMock.verify();
+
+    sessionStorage.clear();
+    localStorage.clear();
+  });
 
   it('should create', () => {
     expect(component).toBeTruthy();

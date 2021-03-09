@@ -68,7 +68,7 @@
         <h1 class="mat-display-2" [ngStyle]="{ color: category.color }">
           {{ category.name }}
         </h1>
-        <markdown>{{ category.description }}</markdown>
+        <markdown class="mat-typography">{{ category.description }}</markdown>
         <p>
           <app-add-resource-button
             [category]="category"
@@ -81,6 +81,7 @@
           mat-stretch-tabs
           dynamicHeight
           [ngStyle]="{ 'background-color': category.color }"
+          [ngClass]="category.parent.parent.name"
         >
           <mat-tab
             label="

@@ -1,14 +1,13 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatTooltipModule } from '@angular/material';
+import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MarkdownModule, MarkdownService } from 'ngx-markdown';
+import { MarkdownModule, MarkdownService, MarkedOptions } from 'ngx-markdown';
 import { CategoryColorBorderDirective } from '../category-color-border.directive';
 import { getDummyCategory } from '../shared/fixtures/category';
 import { getDummyResource } from '../shared/fixtures/resource';
-import { MockMarkdownService } from '../shared/mocks/markdown.service.mock';
 import { ResourceTileComponent } from './resource-tile.component';
-import { By } from '@angular/platform-browser';
 
 interface ComponentOptions {
   makePrivate?: boolean;
@@ -35,6 +34,10 @@ describe('ResourceTileComponent', () => {
       category: getDummyCategory(),
       _links: null
     }];
+    resource.segment = {
+      id: 0,
+      name: '',
+    };
     component.resource = resource;
 
     fixture.detectChanges();
@@ -52,7 +55,8 @@ describe('ResourceTileComponent', () => {
         RouterTestingModule.withRoutes([])
       ],
       providers: [
-        { provide: MarkdownService, useClass: MockMarkdownService },
+        MarkedOptions,
+        MarkdownService,
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })

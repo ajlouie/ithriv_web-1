@@ -16,7 +16,9 @@ import { ResourceApiService } from '../shared/resource-api/resource-api.service'
 export class LoginServicesComponent implements OnInit {
   @Input() hidePublic: Boolean;
   loginServices: LoginService[] = [];
-  loginUrl = environment.api.includes('localhost') ? environment.api + '/api/login' : environment.api + '/Shibboleth.sso/Login?target=' + environment.api + '/api/login&entityID=';
+  loginUrl = environment.api.includes('localhost') ?
+    environment.api + '/api/login' :
+    environment.api + '/Shibboleth.sso/Login?target=' + environment.api + '/api/login&entityID=';
   institution: Institution;
   selectedTabIndex = 0;
 

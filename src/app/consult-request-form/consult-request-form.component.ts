@@ -110,10 +110,12 @@ export class ConsultRequestFormComponent implements AfterViewInit, OnInit {
   }
 
   ngAfterViewInit() {
-    this.api.getSession().subscribe((user) => {
-      this.paginator.page
-        .pipe(tap(() => this.loadConsultRequests()))
-        .subscribe();
+    this.api.getSession().subscribe(user => {
+      if (this.paginator && this.paginator.page) {
+        this.paginator.page
+          .pipe(tap(() => this.loadConsultRequests()))
+          .subscribe();
+      }
     });
   }
 

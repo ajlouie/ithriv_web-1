@@ -75,6 +75,19 @@ export function getDummyCategory(): Category {
     image: '',
     resource_count: 1,
     display_order: 0,
-    parent: parent
+    parent: parent,
+    _links: {
+      self: '/api/category/123',
+      collection: '/api/category',
+      resources: '/api/category/123/resource',
+    },
   };
 }
+
+const level2: Category = getDummyCategory();
+const level1: Category = level2.parent;
+const level0: Category = level1.parent;
+level0.children = [level1];
+level1.children = [level2];
+
+export const mockCategories = [level0];

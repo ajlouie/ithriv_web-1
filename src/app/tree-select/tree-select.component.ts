@@ -5,14 +5,14 @@ import { MatTreeNestedDataSource } from '@angular/material';
 import { of as observableOf } from 'rxjs';
 import { Category } from '../category';
 import { FormField } from '../form-field';
-import { ResourceApiService } from '../shared/resource-api/resource-api.service';
 import { fadeTransition } from '../shared/animations';
+import { ResourceApiService } from '../shared/resource-api/resource-api.service';
 
 @Component({
   selector: 'app-tree-select',
   templateUrl: './tree-select.component.html',
   styleUrls: ['./tree-select.component.scss'],
-  animations: [fadeTransition()]
+  animations: [fadeTransition()],
 })
 export class TreeSelectComponent implements OnInit {
   @Input() field: FormField;

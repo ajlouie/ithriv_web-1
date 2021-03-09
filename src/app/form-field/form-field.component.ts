@@ -99,7 +99,7 @@ export class FormFieldComponent implements OnInit {
 
   loadOptions() {
     if (this.field.type === 'select') {
-      if (this.field.hasOwnProperty('selectOptions')) {
+      if (this.field.hasOwnProperty('selectOptions') && this.field.selectOptions) {
         this.options = this.field.selectOptions.map(
           (s) => new FormSelectOption({ id: s, name: s })
         );

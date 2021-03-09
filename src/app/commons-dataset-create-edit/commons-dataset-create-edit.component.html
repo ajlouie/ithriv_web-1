@@ -1,14 +1,50 @@
-<mat-card *ngIf="user">
-  <mat-card-content>
-    <mat-card *ngIf="user">
+<div id="error_message_delete" class="display mat-error" *ngIf="error">
+  <app-error-message [errorString]="error"></app-error-message>
+</div>
+<ng-container *ngIf="user">
+    <mat-card *ngIf="user" ngClass="create-edit">
+      <mat-card-header>
+        <mat-card-title>
+          Dataset Details
+        </mat-card-title>
+        <span fxFlex></span>
+        <button
+          type="button"
+          mat-raised-button
+          *ngIf="
+            dataset.can_delete_meta === true &&
+            dataset.can_delete_data === true &&
+            !showConfirmDelete &&
+            dataset.id !== ''
+          "
+          (click)="showDelete()"
+          color="warn"
+        >
+          Delete Dataset
+        </button>
+        <button
+          *ngIf="showConfirmDelete"
+          type="button"
+          mat-raised-button
+          (click)="deleteDataset()"
+          color="warn"
+        >
+          <mat-icon>delete</mat-icon>
+          Permanently Delete This Dataset!!!
+        </button>
+          <button
+            (click)="showConfirmDelete = false"
+            *ngIf="showConfirmDelete && dataset.can_delete_meta && dataset.can_delete_data"
+            mat-button
+            ngClass="cancel-delete"
+          >
+            <mat-icon>cancel</mat-icon>
+            Cancel
+          </button>
+      </mat-card-header>
       <mat-card-content *ngIf="user">
-        <mat-toolbar>
-          <mat-card-title>
-            Dataset Details
-          </mat-card-title>
-        </mat-toolbar>
         <form
-          *ngIf="formStatus === 'form'"
+          *ngIf="formStatus === 'form' && iThrivForm"
           [formGroup]="fg"
           (ngSubmit)="submitDataset($event)"
         >
@@ -23,12 +59,8 @@
             [formGroup]="fg"
             [errorMatcher]="errorMatcher"
           ></app-form-field>
-          <mat-card>
-            <mat-toolbar>
-              <mat-card-title>
-                Dataset Type
-              </mat-card-title>
-            </mat-toolbar>
+          <fieldset class="dataset-type">
+            <legend>Dataset Type</legend>
             <mat-list dense>
               <mat-list>
                 <mat-list-item>
@@ -139,18 +171,18 @@
                 </ng-container>
               </mat-list>
             </mat-list>
-          </mat-card>
+          </fieldset>
           <footer *ngIf="formStatus === 'form'">
             <div
               id="error_message"
               class="display mat-error"
               *ngIf="errorMessage"
             >
-              <h4>{{ errorMessage }}</h4>
+              <app-error-message [errorString]="errorMessage"></app-error-message>
             </div>
             <button
               type="button"
-              color="warn"
+              color="primary"
               mat-raised-button
               (click)="submitDataset($event)"
             >
@@ -207,21 +239,23 @@
         dataset.id !== '' &&
         dataset.can_manage_permission === true
       "
+      ngClass="create-edit"
     >
+      <mat-card-header>
+        <mat-card-title>
+          Dataset Permissions
+          <mat-card-subtitle>
+            Acceptable formats: USERID@virginia.edu, USERID@vt.edu, USERID@carilionclinic.org, USERID@inova.org.
+          </mat-card-subtitle>
+        </mat-card-title>
+      </mat-card-header>
       <mat-card-content *ngIf="user">
-        <mat-toolbar>
-          <mat-card-title>
-            Dataset Permissions
-            <mat-card-subtitle>
-              Acceptable formats: USERID@virginia.edu, USERID@vt.edu, USERID@carilionclinic.org, USERID@inova.org.
-            </mat-card-subtitle>
-          </mat-card-title>
-        </mat-toolbar>
+
         <mat-list dense>
           <table
             mat-table
             [dataSource]="userPermissions$ | async"
-            class="mat-elevation-z8 datasetperms"
+            class="datasetperms"
           >
             <ng-container matColumnDef="email">
               <th mat-header-cell *matHeaderCellDef>EMAIL</th>
@@ -245,7 +279,7 @@
                 <button
                   type="button"
                   (click)="editPermission(userPermission)"
-                  color="warn"
+                  color="accent"
                   mat-mini-fab
                 >
                   <mat-icon
@@ -262,7 +296,7 @@
                 <button
                   type="button"
                   (click)="deletePermission(userPermission)"
-                  color="primary"
+                  color="warn"
                   mat-mini-fab
                 >
                   <mat-icon
@@ -278,10 +312,10 @@
               mat-row
               *matRowDef="
                 let row;
-                let even = even;
+                let odd = odd;
                 columns: displayedUserpermColumns
               "
-              [ngClass]="{ gray: even }"
+              [ngClass]="{ gray: odd }"
             ></tr>
           </table>
         </mat-list>
@@ -292,57 +326,23 @@
         </div>
         <span class="ithriv-spacer"></span>
         <div
-          id="error_message"
+          id="error_message_permission"
           class="display mat-error"
           *ngIf="errorMessagePerm"
         >
-          <h4>{{ errorMessagePerm }}</h4>
+          <app-error-message [errorString]="errorMessagePerm"></app-error-message>
         </div>
-        <span class="ithriv-spacer"></span>
+      </mat-card-content>
+      <mat-card-actions>
         <button
           type="button"
-          color="warn"
+          color="primary"
           mat-raised-button
           (click)="addPermission()"
         >
           <mat-icon>security</mat-icon>
           ADD PERMISSION
         </button>
-      </mat-card-content>
+      </mat-card-actions>
     </mat-card>
-  </mat-card-content>
-  <mat-card-footer>
-    <button mat-raised-button color="primary" (click)="showNext()">
-      <mat-icon>home</mat-icon>
-      {{ getNavLabel(previousForm) }}
-    </button>
-    <button
-      type="button"
-      mat-raised-button
-      *ngIf="
-        dataset.can_delete_meta === true &&
-        dataset.can_delete_data === true &&
-        !showConfirmDelete &&
-        dataset.id !== ''
-      "
-      (click)="showDelete()"
-      color="warn"
-    >
-      Delete Dataset
-    </button>
-    <button
-      *ngIf="showConfirmDelete"
-      type="button"
-      mat-raised-button
-      (click)="deleteDataset()"
-      color="warn"
-    >
-      <mat-icon>delete</mat-icon>
-      Permanently Delete This Dataset!!!
-    </button>
-
-    <div id="error_message" class="display mat-error" *ngIf="error">
-      {{ error }}
-    </div>
-  </mat-card-footer>
-</mat-card>
+</ng-container>

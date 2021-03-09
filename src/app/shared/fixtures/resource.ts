@@ -1,9 +1,11 @@
 import { Resource } from '../../resource';
 import { Institution } from '../../institution';
+import { SegmentType } from '../../segmentType';
+import { mockResourceSegment } from './segment';
 
 const institution: Institution = { id: 777, name: 'The Old Republic' };
 
-export function getDummyResource(): Resource {
+export function getDummyResource(segment?: SegmentType): Resource {
   return {
     id: 999,
     name: 'R2-D2',
@@ -29,6 +31,7 @@ export function getDummyResource(): Resource {
       available: true,
       institution: institution
     }],
-    institution: institution
+    institution: institution,
+    segment: segment || mockResourceSegment,
   };
 }

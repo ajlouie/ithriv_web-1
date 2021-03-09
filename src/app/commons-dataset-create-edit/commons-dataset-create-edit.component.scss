@@ -1,27 +1,16 @@
-// Import theming functions
-@import '~@angular/material/theming';
-@import '~ng-pick-datetime/assets/style/picker.min.css';
-@import '../../ithriv_material';
-@include ithriv-theme($ithriv-theme);
+@import "../../config";
+@import "../../mixins";
+
 form {
   width: 100%;
   min-height: 100%;
   position: relative;
   padding-top: 2em;
-  padding-bottom: 0em;
+  padding-bottom: 0;
 }
 
 .ithriv-spacer {
   flex: 1 1 auto;
-}
-
-mat-card-footer {
-  position: fixed;
-  bottom: 0em;
-  right: 5em;
-  height: 64px;
-  @include mat-elevation(2);
-  z-index: 7;
 }
 
 #spinnerContainer {
@@ -34,23 +23,13 @@ mat-card-footer {
 fieldset {
   border: none;
   outline: none;
-  padding: none;
-  margin: none;
+  padding: 0;
+  margin: 0;
   &.show {
     padding: 2em;
     margin-bottom: 2em;
     @include mat-elevation(1);
   }
-}
-
-::ng-deep snack-bar-container.snackbar-warning {
-  background-color: mat-color($ithriv-warn, default, 1);
-}
-
-table.datasetperms {
-  font-weight: 400;
-  text-align: center;
-  width: 50%;
 }
 
 .mat-row {
@@ -66,15 +45,7 @@ table.datasetperms {
 }
 
 .gray {
-  background-color: #f5f5f5;
-}
-
-.mat-header-cell {
-  background-color: #4caf50;
-  color: white;
-  text-decoration: underline;
-  font-size: 14px;
-  text-align: center;
+  background-color: $brand-gray-light;
 }
 
 .full-width {
@@ -83,4 +54,12 @@ table.datasetperms {
 
 .mat-radio-button ~ .mat-radio-button {
   margin-left: 16px;
+}
+
+fieldset.dataset-type {
+  border: 1px solid $brand-gray;
+  border-radius: 2px;
+  margin-top: 1em;
+  margin-bottom: 1em;
+  padding: 1em;
 }

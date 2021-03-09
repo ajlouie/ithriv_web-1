@@ -2,6 +2,7 @@
   *ngIf="isNormalField(field)"
   [hideRequiredMarker]="formGroup && formGroup.value.hideRequired"
   [floatLabel]="formGroup && formGroup.value.floatLabel"
+  [attr.app-form-field-name]="field.name"
 >
   <input
     *ngIf="field.formControl && field.type === 'color'"
@@ -57,7 +58,7 @@
     {{ field.placeholder }}
   </mat-label>
 
-  <mat-hint *ngIf="field.helpText">
+  <mat-hint *ngIf="field.helpText" align="start">
     <markdown>{{ field.helpText }}</markdown>
   </mat-hint>
 
@@ -107,33 +108,30 @@
 <mat-form-field
   *ngIf="field.type === 'owldatetime'"
   [hideRequiredMarker]="formGroup && formGroup.value.hideRequired"
-  [floatLabel]="formGroup && formGroup.value.floatLabel"
+  [floatLabel]="false"
+  [attr.app-form-field-name]="field.name"
 >
   <mat-label>
     {{ field.placeholder }}
   </mat-label>
-    <!--button class="btn btn-default" type="button" [owlDateTimeTrigger]="dt">
-      <i class="material-icons md-16">&#xE916;</i></button-->
-  <span class="input-group-addon">
-    <input
-      matInput
-      class="form-control"
-      [formControl]="field.formControl"
-      [owlDateTime]="dt"
-      [selectMode]="field.selectMode"
-      [owlDateTimeFilter]="eventFilter"
-      [disabled]="true"
-      [owlDateTimeTrigger]="dt"
-      [placeholder]="field.placeholder"
-      [required]="field.required"
+  <input
+    matInput
+    class="form-control"
+    [formControl]="field.formControl"
+    [owlDateTime]="dt"
+    [selectMode]="field.selectMode"
+    [owlDateTimeFilter]="eventFilter"
+    [disabled]="true"
+    [owlDateTimeTrigger]="dt"
+    [placeholder]="field.placeholder"
+    [required]="field.required"
 
-    />
-    <owl-date-time [pickerType]="'both'" #dt="owlDateTime">
-    </owl-date-time>
-    <button *ngIf="!field.required" class="btn btn-default" type="button" (click)="clearValue(field.formControl)">
-      <i class="material-icons md-16">&#xE14C;</i>
-    </button>
-  </span>
+  />
+  <owl-date-time [pickerType]="'both'" #dt="owlDateTime">
+  </owl-date-time>
+  <button matSuffix *ngIf="!field.required" mat-icon-button type="button" (click)="clearValue(field.formControl)">
+    <mat-icon>close</mat-icon>
+  </button>
   <mat-hint *ngIf="field.helpText">
     <markdown>{{ field.helpText }}</markdown>
   </mat-hint>
@@ -155,14 +153,23 @@
   </mat-error>
 </mat-form-field>
 
-<div *ngIf="field.type === 'tree'" class="mat-typography">
+<div
+  *ngIf="field.type === 'tree'"
+  class="mat-typography"
+  [attr.app-form-field-name]="field.name"
+>
   <app-form-field-label
     [field]="field"
     [errors]="errors"
   ></app-form-field-label>
   <app-tree-select [field]="field"></app-tree-select>
 </div>
-<div *ngIf="field.type === 'richtexteditor'" class="mat-typography">
+
+<div
+  *ngIf="field.type === 'richtexteditor'"
+  class="mat-typography"
+  [attr.app-form-field-name]="field.name"
+>
   <app-form-field-label
     [field]="field"
     [errors]="errors"
@@ -208,13 +215,18 @@
   ></td-text-editor-->
 </div>
 
-<div *ngIf="field.type === 'toggle'" class="toggle mat-typography">
+<div
+  *ngIf="field.type === 'toggle'" class="toggle mat-typography">
   <mat-slide-toggle color="primary" [formControl]="field.formControl">
     {{ field.placeholder }}
   </mat-slide-toggle>
 </div>
 
-<div *ngIf="field.type === 'files'" class="mat-typography">
+<div
+  *ngIf="field.type === 'files'"
+  class="mat-typography"
+  [attr.app-form-field-name]="field.name"
+>
   <app-form-field-label
     [field]="field"
     [errors]="errors"
@@ -222,7 +234,11 @@
   <app-file-upload [field]="field"></app-file-upload>
 </div>
 
-<div *ngIf="field.type === 'checkbox'" class="checkbox-container">
+<div
+  *ngIf="field.type === 'checkbox'"
+  class="checkbox-container"
+  [attr.app-form-field-name]="field.name"
+>
   <app-form-field-label
     [field]="field"
     [errors]="errors"

@@ -1,7 +1,8 @@
+import { Subscription } from 'rxjs';
 import { Icon } from './icon';
 import { Institution } from './institution';
 import { User } from './user';
-import { Subscription } from 'rxjs';
+
 export interface Project {
   id?: string;
   collab_mgmt_service_id?: string;
@@ -27,9 +28,15 @@ export interface Project {
   web_page_url?: string;
 }
 
-export interface Dataset { 
+export enum DatasetType {
+  'Generic' = 'Generic',
+  'DICOM' = 'DICOM',
+  'REDCap' = 'REDCap',
+}
+
+export interface Dataset {
   id?: string;
-  dataset_type: string;
+  dataset_type: DatasetType;
   project_id?: string;
   name?: string;
   description?: string;
@@ -58,8 +65,6 @@ export interface Dataset {
   approved_irb_link?: string;
   contract_link?: string;
   link_to_external_dataset?: string;
-  is_locked_for_user?: boolean;
-  is_hsd?: boolean;
   dicom_de_identified?: string;
   dicom_bids_structure?: string;
   dicom_quality?: string;
@@ -70,12 +75,14 @@ export interface Dataset {
   dicom_fieldof_view?: string;
   dicom_field_strength?: string;
   redcap_project_url?: string;
-  redcap_extract_data?: string; 
+  redcap_extract_data?: string;
   redcap_refresh_rate?: number;
   redcap_report_id?: string;
   redcap_project_token?: string;
   redcap_project_title?: string;
   redcap_project_pi?: string;
+  is_locked_for_user?: boolean;
+  is_hsd?: boolean;
 }
 
 export class FileUploadModel {
@@ -104,6 +111,7 @@ export interface ProjectDocumentMap {
   project: Project;
   document: ProjectDocument;
 }
+
 export interface ProjectDocument {
   last_modified?: string;
   url?: string;
@@ -115,7 +123,11 @@ export interface ProjectDocument {
 export interface UserPermissionMap {
   userPermission: UserPermission;
   permissionsMap: any;
+  isDataset: boolean;
+  hasIrbNumber?: boolean;
+  irbInvestigators?: IrbInvestigator[];
 }
+
 export interface UserPermission {
   user_email?: string;
   user_role?: any;
@@ -124,3 +136,33 @@ export interface UserPermission {
 export interface Add {
   sum?: string;
 }
+
+export interface IrbInvestigator {
+  email: string;
+}
+
+export interface IrbNumber {
+  study_id: string;
+}
+
+export interface NavItem {
+  title: string;
+  routerLink?: any[] | string;
+  queryParams?: { [key: string]: any };
+  onClick?: () => void;
+}
+
+export type CommonsStateForm =
+  | 'commons-projects-list'
+  | 'commons-project'
+  | 'commons-project-create-edit'
+  | 'commons-dataset'
+  | 'commons-dataset-create-edit';
+
+export interface CommonsState {
+  currentDataset?: Dataset;
+  currentProject?: Project;
+  previousForm?: CommonsStateForm;
+  displayForm: CommonsStateForm;
+}
+

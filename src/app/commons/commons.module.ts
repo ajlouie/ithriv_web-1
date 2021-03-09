@@ -4,7 +4,6 @@ import { CommonModule } from '@angular/common';
 import { CommonsRoutingModule } from './commons-routing.module';
 import { CommonsComponent } from './commons.component';
 import { MenuComponent } from './menu/menu.component';
-import { HomeComponent } from './home/home.component';
 import { ProjectListComponent } from './project-list/project-list.component';
 import { ProjectCreateComponent } from './project-create/project-create.component';
 import { ProjectEditComponent } from './project-edit/project-edit.component';
@@ -46,7 +45,6 @@ import {
   declarations: [
     CommonsComponent,
     MenuComponent,
-    HomeComponent,
     ProjectListComponent,
     ProjectCreateComponent,
     ProjectEditComponent,

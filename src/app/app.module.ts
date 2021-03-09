@@ -126,6 +126,12 @@ import { AddPermissionComponent } from './add-permission/add-permission.componen
 import { CommonsProjectDocumentComponent } from './commons-project-document/commons-project-document.component';
 
 import { SpreadsheetAllModule } from '@syncfusion/ej2-angular-spreadsheet';
+import { BreadcrumbsComponent } from './breadcrumbs/breadcrumbs.component';
+import { SearchBarComponent } from './search-bar/search-bar.component';
+import { CommonsProjectActionsComponent } from './commons-project-actions/commons-project-actions.component';
+import { ErrorMessageComponent } from './error-message/error-message.component';
+import { ErrorSnackbarComponent } from './error-snackbar/error-snackbar.component';
+import { HsdDownloadDialogComponent } from './hsd-download-dialog/hsd-download-dialog.component';
 // import { DropDownListComponent } from '@syncfusion/ej2-angular-dropdowns';
 
 export const MY_NATIVE_FORMATS = {
@@ -207,6 +213,12 @@ export const MY_NATIVE_FORMATS = {
     CommonsDatasetComponent,
     AddPermissionComponent,
     CommonsProjectDocumentComponent,
+    BreadcrumbsComponent,
+    SearchBarComponent,
+    CommonsProjectActionsComponent,
+    ErrorMessageComponent,
+    ErrorSnackbarComponent,
+    HsdDownloadDialogComponent,
     // DropDownListComponent
   ],
   imports: [
@@ -270,6 +282,9 @@ export const MY_NATIVE_FORMATS = {
     ResourceFormComponent,
     AddPermissionComponent,
     CommonsProjectDocumentComponent,
+    ErrorMessageComponent,
+    ErrorSnackbarComponent,
+    HsdDownloadDialogComponent,
   ],
   providers: [
     {

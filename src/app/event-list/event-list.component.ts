@@ -16,6 +16,7 @@ export class EventListComponent implements OnInit {
   @Input() user: User;
   @Input() resourceQuery: ResourceQuery;
   @Input() sidenavExpanded: boolean;
+  @Input() tabIndex: number;
   csvDataReady = false;
   preparingCsvData = false;
   csvData = [];

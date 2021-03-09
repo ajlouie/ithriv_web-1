@@ -1,0 +1,20 @@
+<mat-accordion *ngIf="user || publicpage">
+  <mat-expansion-panel
+    [expanded]="isExpanded"
+    hideToggle="true"
+  >
+    <div
+      *ngIf="user || publicpage"
+      fxLayout="row wrap"
+      fxLayoutAlign="center"
+      fxLayoutGap="45px grid"
+      id="tiles"
+    >
+      <app-category-tile
+        (click)="goCategory(category)"
+        *ngFor="let category of categories"
+        [category]="category"
+      ></app-category-tile>
+    </div>
+  </mat-expansion-panel>
+</mat-accordion>

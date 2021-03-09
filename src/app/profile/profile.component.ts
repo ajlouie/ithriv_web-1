@@ -1,12 +1,11 @@
-import { Component, OnInit, ChangeDetectionStrategy, EventEmitter } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, EventEmitter, OnInit } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { environment } from '../../environments/environment';
 import { ErrorMatcher } from '../error-matcher';
 import { FormField } from '../form-field';
-import { User } from '../user';
-import { ResourceApiService } from '../shared/resource-api/resource-api.service';
 import { IThrivForm } from '../shared/IThrivForm';
+import { ResourceApiService } from '../shared/resource-api/resource-api.service';
+import { User } from '../user';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -64,8 +63,11 @@ export class ProfileComponent implements OnInit {
     this.iThrivForm.loadForm();
 
     this.user = {
-      id: null, display_name: this.fields.display_name.formControl.value,
-      email: this.fields.email.formControl.value, institution_id: this.fields.institution_id.formControl.value, role: 'User'
+      id: null,
+      display_name: this.fields.display_name.formControl.value,
+      email: this.fields.email.formControl.value,
+      institution_id: this.fields.institution_id.formControl.value,
+      role: 'User'
     };
     this.iThrivForm.setObjectToEdit(this.user);
 
@@ -89,7 +91,9 @@ export class ProfileComponent implements OnInit {
 
   onSubmit() {
     this.iThrivForm.validate();
-    if (!this.profileForm.valid) { return; }
+    if (!this.profileForm.valid) {
+      return;
+    }
     this.iThrivForm.updateObject(this.user);
     this.submitEmitter.emit(true);
     if (this.createNew) {

@@ -1,4 +1,6 @@
-export const environment = {
+import { AppEnvironment } from '../app/environment';
+
+export const environment: AppEnvironment = {
   envName: 'prod',
   production: true,
   api: 'https://portal.ithriv.org',

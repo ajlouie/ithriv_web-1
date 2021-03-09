@@ -1,8 +1,4 @@
-// Import theming functions
-@import '~@angular/material/theming';
-@import '../../ithriv_material';
-// Load the UVA Theme
-@include ithriv-theme($ithriv-theme);
+@import "../../config";
 
 form.search-box {
   background: transparent;
@@ -62,7 +58,7 @@ mat-list-item {
 }
 
 mat-list-item:hover {
-  background-color: mat-color($uva-primary, 100);
+  background-color: $brand-primary-light-100;
 }
 
 button {
@@ -72,4 +68,20 @@ button {
 
 .mat-expansion-panel:not([class*='mat-elevation-z']) {
   box-shadow: none;
+}
+
+.tab-click-area {
+  display: flex;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+}
+
+::ng-deep .mat-tab-body-content {
+  padding: $padding-size;
 }

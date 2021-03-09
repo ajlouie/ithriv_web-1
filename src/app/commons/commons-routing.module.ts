@@ -1,9 +1,8 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { CommonsHomeComponent } from '../commons-home/commons-home.component';
 import { CommonsComponent } from './commons.component';
-import { HomeComponent } from './home/home.component';
 import { ProjectCreateComponent } from './project-create/project-create.component';
-import { ProjectComponent } from './project/project.component';
 
 const routes: Routes = [
   {
@@ -16,7 +15,7 @@ const routes: Routes = [
       },
       {
         path: '',
-        component: HomeComponent,
+        component: CommonsHomeComponent,
         pathMatch: 'full'
       }
     ]

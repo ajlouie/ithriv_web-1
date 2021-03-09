@@ -2,137 +2,100 @@
   <app-login-services></app-login-services>
 </div>
 
-<mat-accordion *ngIf="user || publicpage">
-  <mat-expansion-panel
-    [expanded]="true"
-    (opened)="panelOpenState = true"
-    (closed)="panelOpenState = false"
-  >
-    <mat-expansion-panel-header>
-      <mat-panel-title> </mat-panel-title>
-      <mat-panel-description> </mat-panel-description>
-    </mat-expansion-panel-header>
-    <div
-      id="tiles"
-      fxLayout="row wrap"
-      fxLayoutGap="45px grid"
-      fxLayoutAlign="center"
-      *ngIf="user || publicpage"
-    >
-      <app-category-tile
-        *ngFor="let category of categories"
-        [category]="category"
-        (click)="goCategory(category)"
-      ></app-category-tile>
-    </div>
-  </mat-expansion-panel>
-</mat-accordion>
-
-<h1 class="mat-h1 page-title" *ngIf="!user && publicpage">Public View</h1>
+<h1 *ngIf="!user && publicpage" class="mat-h1 page-title">Public View</h1>
 <mat-tab-group
-  mat-stretch-tabs
-  dynamicHeight
-  backgroundColor="primary"
   *ngIf="!user && publicpage"
+  backgroundColor="primary"
+  dynamicHeight
+  mat-stretch-tabs
 >
   <mat-tab label="Events">
     <div class="example-small-box mat-elevation-z4">
       <app-event-list
-        [events]="events"
-        [user]="user"
-        [sidenavExpanded]="false"
         *ngIf="!user && publicpage"
+        [events]="events"
+        [sidenavExpanded]="false"
+        [user]="user"
       ></app-event-list>
     </div>
   </mat-tab>
-  <!--
-  <mat-tab>
-    <ng-template mat-tab-label>
-      <span>Research Commons</span>
-    </ng-template>
-    <ng-template matTabContent>
-      <ng-container class="example-small-box mat-elevation-z4">
-        <app-commons-home
-          [user]="user"
-          formStatus="commons-projects-list"
-        ></app-commons-home>
-      </ng-container>
-    </ng-template>
-  </mat-tab>
-  -->
 </mat-tab-group>
 
-<h1 class="mat-h1 page-title" *ngIf="user">myTHRIV Workspace</h1>
+<h1 *ngIf="user" class="mat-h1 page-title">myTHRIV Workspace</h1>
 
 <mat-tab-group
-  mat-stretch-tabs
-  dynamicHeight
-  backgroundColor="primary"
+  #tabGroup
   *ngIf="user"
+  backgroundColor="primary"
+  dynamicHeight
+  mat-stretch-tabs
+  [selectedIndex]="tabIndex"
+  (selectedIndexChange)="updateRouteTabIndex($event)"
 >
-  <mat-tab label="Events">
+  <mat-tab label="Events" [tabindex]="0">
     <ng-template matTabContent>
       <ng-container class="example-small-box mat-elevation-z4">
         <app-event-list
-          [events]="events"
-          [user]="user"
-          [sidenavExpanded]="false"
           *ngIf="user"
+          [events]="events"
+          [sidenavExpanded]="false"
+          [user]="user"
+          [tabIndex]="0"
         ></app-event-list>
       </ng-container>
     </ng-template>
   </mat-tab>
-  <mat-tab label="My Favorite Resources and Events">
+  <mat-tab label="My Favorite Resources and Events" [tabindex]="1">
     <ng-template matTabContent>
       <ng-container class="example-large-box mat-elevation-z4">
         <app-favorite-resource-list
-          [user]="user"
-          [institution]="institution"
           *ngIf="user"
+          [institution]="institution"
+          [user]="user"
+          [tabIndex]="1"
         ></app-favorite-resource-list>
       </ng-container>
     </ng-template>
   </mat-tab>
-  <mat-tab label="My Resources and Events">
+  <mat-tab label="My Resources and Events" [tabindex]="2">
     <ng-template matTabContent>
       <ng-container class="example-large-box mat-elevation-z4">
         <app-user-resource-list
-          [user]="user"
-          [institution]="institution"
           *ngIf="user"
+          [institution]="institution"
+          [user]="user"
+          [tabIndex]="2"
         ></app-user-resource-list>
       </ng-container>
     </ng-template>
   </mat-tab>
-  <mat-tab *ngIf="user && user.institution.name==='UVA'">
+  <mat-tab
+    #commonsTab
+    *ngIf="user && user.institution.name==='UVA'"
+    [tabindex]="3"
+  >
     <ng-template mat-tab-label>
-      <span>Research Commons</span>
+      <span class="tab-click-area" (click)="handleFormStatusTabChange()">Research Commons</span>
     </ng-template>
     <ng-template matTabContent>
-      <ng-container class="example-small-box mat-elevation-z4">
-        <app-commons-home
-          [user]="user"
-          formStatus="commons-projects-list"
-          color="primary"
-        ></app-commons-home>
-        <!-- <router-outlet name="commons-outlet"></router-outlet> -->
-        <!-- <iframe
-          width="100%"
-          height="100%"
-          frameBorder="0"
-          [src]="urlSafe"
-        ></iframe> -->
-      </ng-container>
+      <app-commons-home
+        #commonsHome
+        [user]="user"
+        color="primary"
+        [formStatus]="formStatus"
+        [tabIndex]="3"
+      ></app-commons-home>
     </ng-template>
   </mat-tab>
-  <mat-tab label="Recently Updated Resources and Events">
+  <mat-tab label="Recently Updated Resources and Events" [tabindex]="4">
     <ng-template matTabContent>
       <ng-container class="example-small-box mat-elevation-z4">
         <app-resource-list
-          [resources]="resources"
-          [user]="user"
-          [sidenavExpanded]="false"
           *ngIf="user"
+          [resources]="resources"
+          [sidenavExpanded]="false"
+          [user]="user"
+          [navItems]="[{title: 'Recently Updated Resources and Events', routerLink: '/home', queryParams: {tabIndex: 4}}]"
         ></app-resource-list>
       </ng-container>
     </ng-template>

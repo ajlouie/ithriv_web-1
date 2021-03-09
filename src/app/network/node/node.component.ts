@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Category } from '../../category';
 import { NodeOptions } from '../../node-options';
@@ -6,7 +6,7 @@ import { hexColorToRGBA } from '../../shared/color';
 
 @Component({
   selector: '[app-node]',
-  templateUrl: './node.component.html',
+  templateUrl: './node.component.svg',
   styleUrls: ['./node.component.scss'],
 })
 export class NodeComponent implements OnInit {
@@ -17,10 +17,13 @@ export class NodeComponent implements OnInit {
   strokeWidth = 4;
   iconSize = 24;
   fontSize = 16;
+  loading = false;
 
-  constructor(private router: Router) { }
+  constructor(private router: Router) {
+  }
 
   ngOnInit() {
+    this.loading = true;
   }
 
   rotate(angle: number) {
@@ -97,5 +100,9 @@ export class NodeComponent implements OnInit {
       ${this.translate(xOffset, yOffset)}
       ${this.scale(scale)}
     `;
+  }
+
+  getLoadingMessage() {
+    return '...';
   }
 }

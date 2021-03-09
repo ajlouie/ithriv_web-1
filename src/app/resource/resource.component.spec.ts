@@ -1,18 +1,18 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatTooltipModule } from '@angular/material';
+import { By } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MarkdownModule, MarkdownService } from 'ngx-markdown';
+import { MarkdownModule, MarkdownService, MarkedOptions } from 'ngx-markdown';
 import { CategoryColorBorderDirective } from '../category-color-border.directive';
+import { getDummyCategory } from '../shared/fixtures/category';
+import { mockInstitution } from '../shared/fixtures/institution';
 import { getDummyResource } from '../shared/fixtures/resource';
 import { getDummyUser } from '../shared/fixtures/user';
-import { MockMarkdownService } from '../shared/mocks/markdown.service.mock';
-import { MockResourceApiService } from '../shared/mocks/resource-api.service.mock';
 import { ResourceApiService } from '../shared/resource-api/resource-api.service';
 import { ResourceComponent } from './resource.component';
-import { getDummyCategory } from '../shared/fixtures/category';
-import { By } from '@angular/platform-browser';
 
 interface ComponentOptions {
   makePrivate?: boolean;
@@ -21,36 +21,55 @@ interface ComponentOptions {
 }
 
 describe('ResourceComponent', () => {
-  let api: MockResourceApiService;
+  let httpMock: HttpTestingController;
   let component: ResourceComponent;
   let fixture: ComponentFixture<ResourceComponent>;
 
-  const getDummyData = function (options: ComponentOptions) {
+  const getDummyData = (options: ComponentOptions) => {
+    localStorage.setItem('token', 'MOCK_TOKEN_VALUE');
+    sessionStorage.setItem('institution_id', `${mockInstitution.id}`);
+
+    httpMock = TestBed.get(HttpTestingController);
+    fixture = TestBed.createComponent(ResourceComponent);
+    component = fixture.componentInstance;
+    localStorage.setItem('token', 'MOCK_TOKEN_VALUE');
+    fixture.detectChanges();
+
     const resource = getDummyResource();
     resource.private = options.makePrivate;
     resource.user_may_view = options.userMayView;
     resource.user_may_edit = options.userMayEdit;
+    resource.segment = {
+      id: 0,
+      name: '',
+    };
 
     const user = getDummyUser();
     user.role = options.userMayEdit ? 'Admin' : 'User';
 
-    api.spyAndReturnFake('getResource', resource);
-    api.spyAndReturnFake('getSession', user);
-    api.spyAndReturnFake('getResourceCategories', [{
+    const resourcecategories = [{
       id: 0,
       category_id: 123,
       resource_id: 999,
       category: getDummyCategory()
-    }]);
+    }];
 
-    fixture = TestBed.createComponent(ResourceComponent);
-    component = fixture.componentInstance;
+    const userReq = httpMock.expectOne('http://localhost:5000/api/session');
+    expect(userReq.request.method).toEqual('GET');
+    userReq.flush(user);
+
+    const resourceReq = httpMock.expectOne('http://localhost:5000/api/resource/undefined');
+    expect(resourceReq.request.method).toEqual('GET');
+    resourceReq.flush(resource);
+
+    const categoryReq = httpMock.expectOne(`http://localhost:5000/api/resource/${resource.id}/category`);
+    expect(categoryReq.request.method).toEqual('GET');
+    categoryReq.flush(resourcecategories);
+
     fixture.detectChanges();
   };
 
   beforeEach(async(() => {
-    api = new MockResourceApiService();
-
     TestBed
       .configureTestingModule({
         declarations: [
@@ -59,18 +78,28 @@ describe('ResourceComponent', () => {
         ],
         imports: [
           BrowserAnimationsModule,
+          HttpClientTestingModule,
           MarkdownModule,
           MatTooltipModule,
           RouterTestingModule.withRoutes([])
         ],
         providers: [
-          { provide: ResourceApiService, useValue: api },
-          { provide: MarkdownService, useClass: MockMarkdownService },
+          ResourceApiService,
+          MarkedOptions,
+          MarkdownService,
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA]
       })
       .compileComponents();
   }));
+
+  afterEach(() => {
+    fixture.destroy();
+    httpMock.verify();
+
+    sessionStorage.clear();
+    localStorage.clear();
+  });
 
   it('should create', () => {
     const options: ComponentOptions = {
@@ -91,8 +120,10 @@ describe('ResourceComponent', () => {
     };
 
     getDummyData(options); // Non-private resource, general user
-    const el = fixture.debugElement.query(By.css('.resource')).nativeElement;
-    expect(el.hasAttribute('hidden')).toEqual(false);
+    const debugEl: DebugElement = fixture.debugElement.query(By.css('.resource'));
+    expect(debugEl).toBeTruthy();
+    const resourceElement = debugEl.nativeElement;
+    expect(resourceElement.hasAttribute('hidden')).toEqual(false);
   });
 
   it('should mark private resource', () => {

@@ -1,0 +1,134 @@
+@import 'config';
+@import '../node_modules/@angular/material/theming';
+
+// Define a custom typography config that overrides the font-family
+$custom-typography: mat-typography-config(
+  $font-family:   $body-font-family,
+  $display-4:     mat-typography-level($font-size-larger-8, 1.0, 800, $heading-font-family),
+  $display-3:     mat-typography-level($font-size-larger-7, 1.0, 800, $heading-font-family),
+  $display-2:     mat-typography-level($font-size-larger-6, 1.0, 800, $heading-font-family),
+  $display-1:     mat-typography-level($font-size-larger-5, 1.0, 800, $heading-font-family),
+  $headline:      mat-typography-level($font-size-larger-4, 1.0, 500, $heading-font-family),
+  $title:         mat-typography-level($font-size-larger-3, 1.0, 700, $body-font-family),
+  $subheading-2:  mat-typography-level($font-size-larger-2, 1.0, 500, $body-font-family),
+  $subheading-1:  mat-typography-level($font-size-larger-1, 1.0, 500, $body-font-family),
+  $body-2:        mat-typography-level($base-font-size, 1.5, 500, $body-font-family),
+  $body-1:        mat-typography-level($base-font-size, 1.5, 500, $body-font-family),
+  $caption:       mat-typography-level($base-font-size, 1.5, 500, $body-font-family),
+  $button:        mat-typography-level($base-font-size, 1.5, 500, $body-font-family),
+  $input:         mat-typography-level($base-font-size, 1.5, 500, $body-font-family)
+);
+
+$mat-blue: (
+  50: #f1f5f7, // Modified, was #e0e6ed
+  100: #b3c1d3,
+  200: #8097b6,
+  300: #4d6d98,
+  400: #264e82,
+  500: #002f6c,
+  600: #002a64,
+  700: #002359,
+  800: #001d4f,
+  900: #00123d,
+  A100: #738cff,
+  A200: #4062ff,
+  A400: #0d38ff,
+  A700: #002bf2,
+  contrast: (
+    50: #000000,
+    100: #000000,
+    200: #000000,
+    300: #ffffff,
+    400: #ffffff,
+    500: #ffffff,
+    600: #ffffff,
+    700: #ffffff,
+    800: #ffffff,
+    900: #ffffff,
+    A100: #000000,
+    A200: #ffffff,
+    A400: #ffffff,
+    A700: #ffffff
+  )
+);
+
+$mat-orange: (
+  50: #fceee0,
+  100: #f7d5b3,
+  200: #f2b980,
+  300: #ed9c4d,
+  400: #e98726,
+  500: #e57200,
+  600: #e26a00,
+  700: #de5f00,
+  800: #da5500,
+  900: #d34200,
+  A100: #fffcfb,
+  A200: #ffd5c8,
+  A400: #ffaf95,
+  A700: #ff9b7b,
+  contrast: (
+    50: #000000,
+    100: #000000,
+    200: #000000,
+    300: #000000,
+    400: #000000,
+    500: #ffffff,
+    600: #ffffff,
+    700: #ffffff,
+    800: #ffffff,
+    900: #ffffff,
+    A100: #000000,
+    A200: #000000,
+    A400: #000000,
+    A700: #000000
+  )
+);
+
+// Top-bar dark green: #005424
+// Menu-bar medium green: #007A3C (this one is also the generic/default green for resource pages, etc.)
+// Light Tan: #FAF9F8 (this is background on section panels and at the top of home page)
+
+$mat-green: (
+  50: $brand-primary-light-50,
+  100: $brand-primary-light-100,
+  200: $brand-primary-light-200,
+  300: #81c784,
+  400: #66bb6a,
+  500: $brand-primary-light,
+  600: #43a047,
+  700: #388e3c,
+  800: $brand-primary,
+  900: $brand-primary-dark,
+  A100: #b9f6ca,
+  A200: #69f0ae,
+  A400: #00e676,
+  A700: #00c853,
+  contrast: (
+    50: $dark-primary-text,
+    100: $dark-primary-text,
+    200: $dark-primary-text,
+    300: $dark-primary-text,
+    400: $dark-primary-text,
+    500: $light-primary-text,
+    600: $light-primary-text,
+    700: $light-primary-text,
+    800: $light-primary-text,
+    900: $light-primary-text,
+    A100: $dark-primary-text,
+    A200: $dark-primary-text,
+    A400: $dark-primary-text,
+    A700: $dark-primary-text
+  )
+);
+
+$uva-primary: mat-palette($mat-blue);
+$uva-accent: mat-palette($mat-orange);
+$uva-warn: mat-palette($mat-deep-orange);
+$uva-theme: mat-light-theme($uva-primary, $uva-accent, $uva-warn);
+
+$ithriv-primary: mat-palette($mat-green);
+$ithriv-secondary: mat-palette($mat-blue);
+$ithriv-accent: mat-palette($mat-orange);
+$ithriv-warn: mat-palette($mat-deep-orange);
+$ithriv-theme: mat-light-theme($ithriv-primary, $ithriv-accent, $ithriv-warn);
