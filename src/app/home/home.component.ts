@@ -34,7 +34,7 @@ export class HomeComponent implements OnInit {
   tabIndex = 0;
   formStatus: CommonsStateForm = 'commons-projects-list';
 
-  @ViewChild('commonsHome', { static: false }) commonsHomeComponent: CommonsHomeComponent;
+  @ViewChild('commonsHome') commonsHomeComponent: CommonsHomeComponent;
 
 
   constructor(

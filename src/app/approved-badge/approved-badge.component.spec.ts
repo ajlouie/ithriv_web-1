@@ -29,7 +29,7 @@ describe('ApprovedBadgeComponent', () => {
     })
       .compileComponents()
       .then(() => {
-        httpMock = TestBed.get(HttpTestingController);
+        httpMock = TestBed.inject(HttpTestingController);
         fixture = TestBed.createComponent(ApprovedBadgeComponent);
         component = fixture.debugElement.componentInstance;
         component.resource = resource;

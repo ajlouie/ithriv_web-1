@@ -36,7 +36,7 @@ describe('ConsultRequestFormComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(ConsultRequestFormComponent);
     component = fixture.componentInstance;
-    httpMock = TestBed.get(HttpTestingController);
+    httpMock = TestBed.inject(HttpTestingController);
     localStorage.setItem('token', 'MOCK_TOKEN_VALUE');
     fixture.detectChanges();
 

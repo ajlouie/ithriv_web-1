@@ -6,7 +6,7 @@ describe('IntervalService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: IntervalService = TestBed.get(IntervalService);
+    const service: IntervalService = TestBed.inject(IntervalService);
     expect(service).toBeTruthy();
   });
 });

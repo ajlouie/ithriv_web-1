@@ -37,7 +37,7 @@ describe('LoginServicesComponent', () => {
     })
       .compileComponents()
       .then(() => {
-        httpMock = TestBed.get(HttpTestingController);
+        httpMock = TestBed.inject(HttpTestingController);
         fixture = TestBed.createComponent(LoginServicesComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();

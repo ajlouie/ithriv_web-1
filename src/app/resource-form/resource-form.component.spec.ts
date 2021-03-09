@@ -53,7 +53,7 @@ describe('ResourceFormComponent', () => {
     localStorage.setItem('token', 'MOCK_TOKEN_VALUE');
     sessionStorage.setItem('institution_id', `${mockInstitution.id}`);
 
-    httpMock = TestBed.get(HttpTestingController);
+    httpMock = TestBed.inject(HttpTestingController);
     fixture = TestBed.createComponent(ResourceFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

@@ -28,7 +28,7 @@ describe('FavoriteResourceButtonComponent', () => {
   }));
 
   beforeEach(() => {
-    httpMock = TestBed.get(HttpTestingController);
+    httpMock = TestBed.inject(HttpTestingController);
     fixture = TestBed.createComponent(FavoriteResourceButtonComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

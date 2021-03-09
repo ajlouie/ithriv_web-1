@@ -33,7 +33,7 @@ describe('SessionRedirectComponent', () => {
       })
       .compileComponents()
       .then(() => {
-        httpMock = TestBed.get(HttpTestingController);
+        httpMock = TestBed.inject(HttpTestingController);
         fixture = TestBed.createComponent(SessionRedirectComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();

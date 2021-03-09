@@ -27,7 +27,7 @@ describe('UserResourceListComponent', () => {
   }));
 
   beforeEach(() => {
-    httpMock = TestBed.get(HttpTestingController);
+    httpMock = TestBed.inject(HttpTestingController);
     fixture = TestBed.createComponent(UserResourceListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

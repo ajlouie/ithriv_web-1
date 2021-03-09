@@ -79,8 +79,8 @@ export class ConsultRequestFormComponent implements AfterViewInit, OnInit {
     'status',
     'create_date',
   ];
-  @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
-  @ViewChild('input', { static: false }) input: ElementRef;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild('input') input: ElementRef;
   default_page_size = 5;
 
   constructor(

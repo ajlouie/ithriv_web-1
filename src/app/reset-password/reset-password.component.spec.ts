@@ -36,7 +36,7 @@ describe('ResetPasswordComponent', () => {
       })
       .compileComponents()
       .then(() => {
-        httpMock = TestBed.get(HttpTestingController);
+        httpMock = TestBed.inject(HttpTestingController);
         fixture = TestBed.createComponent(ResetPasswordComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();

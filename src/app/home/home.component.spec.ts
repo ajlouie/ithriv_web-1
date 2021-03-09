@@ -61,7 +61,7 @@ describe('HomeComponent', () => {
     const institutionId = mockInstitution.id;
     sessionStorage.setItem('institution_id', `${institutionId}`);
     localStorage.setItem('token', `MOCK_TOKEN_VALUE`);
-    httpMock = TestBed.get(HttpTestingController);
+    httpMock = TestBed.inject(HttpTestingController);
     fixture = TestBed.createComponent(HomeComponent);
     component = fixture.componentInstance;
     component.resourceQuery = new ResourceQuery({

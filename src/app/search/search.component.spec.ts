@@ -65,7 +65,7 @@ describe('SearchComponent', () => {
       })
       .compileComponents()
       .then(() => {
-        httpMock = TestBed.get(HttpTestingController);
+        httpMock = TestBed.inject(HttpTestingController);
         fixture = TestBed.createComponent(SearchComponent);
         component = fixture.componentInstance;
         component.resourceQuery = new ResourceQuery({

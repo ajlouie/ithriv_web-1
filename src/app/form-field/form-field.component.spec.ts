@@ -61,7 +61,7 @@ describe('FormFieldComponent', () => {
       })
       .compileComponents()
       .then(() => {
-        httpMock = TestBed.get(HttpTestingController);
+        httpMock = TestBed.inject(HttpTestingController);
         fixture = TestBed.createComponent(FormFieldComponent);
         component = fixture.componentInstance;
         component.errorMatcher = errorMatcher;

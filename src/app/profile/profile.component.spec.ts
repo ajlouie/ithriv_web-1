@@ -36,7 +36,7 @@ describe('ProfileComponent', () => {
       })
       .compileComponents()
       .then(() => {
-        httpMock = TestBed.get(HttpTestingController);
+        httpMock = TestBed.inject(HttpTestingController);
         fixture = TestBed.createComponent(ProfileComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();

@@ -38,7 +38,7 @@ describe('LoginFormComponent', () => {
       })
       .compileComponents()
       .then(() => {
-        httpMock = TestBed.get(HttpTestingController);
+        httpMock = TestBed.inject(HttpTestingController);
         fixture = TestBed.createComponent(LoginFormComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();

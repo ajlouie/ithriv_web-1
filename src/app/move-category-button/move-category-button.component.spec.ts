@@ -27,7 +27,7 @@ describe('MoveCategoryButtonComponent', () => {
       })
       .compileComponents()
       .then(() => {
-        httpMock = TestBed.get(HttpTestingController);
+        httpMock = TestBed.inject(HttpTestingController);
         fixture = TestBed.createComponent(MoveCategoryButtonComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();

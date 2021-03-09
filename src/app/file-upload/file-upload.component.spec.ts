@@ -32,7 +32,7 @@ describe('FileUploadComponent', () => {
       })
       .compileComponents()
       .then(() => {
-        httpMock = TestBed.get(HttpTestingController);
+        httpMock = TestBed.inject(HttpTestingController);
         fixture = TestBed.createComponent(FileUploadComponent);
         component = fixture.componentInstance;
         component.field = new FormField({

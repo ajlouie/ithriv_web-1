@@ -36,7 +36,7 @@ describe('CategoryTileComponent', () => {
   });
 
   beforeEach(() => {
-    httpMock = TestBed.get(HttpTestingController);
+    httpMock = TestBed.inject(HttpTestingController);
     fixture = TestBed.createComponent(CategoryTileComponent);
     component = fixture.componentInstance;
     component.category = category;

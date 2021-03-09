@@ -37,7 +37,7 @@ describe('CategoryFormComponent', () => {
       })
       .compileComponents()
       .then(() => {
-        httpMock = TestBed.get(HttpTestingController);
+        httpMock = TestBed.inject(HttpTestingController);
         fixture = TestBed.createComponent(CategoryFormComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();

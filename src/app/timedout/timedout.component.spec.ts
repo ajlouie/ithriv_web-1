@@ -31,7 +31,7 @@ describe('TimedoutComponent', () => {
   }));
 
   beforeEach(() => {
-    httpMock = TestBed.get(HttpTestingController);
+    httpMock = TestBed.inject(HttpTestingController);
     fixture = TestBed.createComponent(TimedoutComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

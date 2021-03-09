@@ -21,8 +21,8 @@ describe('CommonsApiService', () => {
       ]
     });
 
-    httpMock = TestBed.get(HttpTestingController);
-    service = TestBed.get(CommonsApiService);
+    httpMock = TestBed.inject(HttpTestingController);
+    service = TestBed.inject(CommonsApiService);
   });
 
   afterEach(() => {

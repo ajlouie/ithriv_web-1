@@ -38,7 +38,7 @@ describe('TreeSelectComponent', () => {
       })
       .compileComponents()
       .then(() => {
-        httpMock = TestBed.get(HttpTestingController);
+        httpMock = TestBed.inject(HttpTestingController);
         fixture = TestBed.createComponent(TreeSelectComponent);
         component = fixture.componentInstance;
         component.field = new FormField({

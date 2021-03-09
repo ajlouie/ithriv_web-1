@@ -32,7 +32,7 @@ describe('UserAdminComponent', () => {
       })
       .compileComponents()
       .then(() => {
-        httpMock = TestBed.get(HttpTestingController);
+        httpMock = TestBed.inject(HttpTestingController);
         fixture = TestBed.createComponent(UserAdminComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
