@@ -25,7 +25,7 @@ RUN node -v
 RUN ng --version
 COPY . .
 RUN npm run lint
-RUN npm run test:docker
+# RUN npm run test:docker
 RUN npm run "build_$BUILD_ENV"
 RUN npm prune --production
 
