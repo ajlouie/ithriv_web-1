@@ -12,6 +12,7 @@ services:
   - docker
 
 before_install:
+  - export NODE_OPTIONS=–max_old_space_size=8192
   - sudo pip install --upgrade pip
   - pip install --user awscli
   - export PATH=$PATH:$HOME/.local/bin
