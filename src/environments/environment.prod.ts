@@ -1,5 +1,7 @@
 import { AppEnvironment } from '../app/environment';
 
+const servicehost = 'portal.ithriv.org';
+
 export const environment: AppEnvironment = {
   envName: 'prod',
   production: true,
