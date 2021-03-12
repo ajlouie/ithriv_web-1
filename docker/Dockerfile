@@ -2,7 +2,6 @@ FROM node:13-alpine as node
 LABEL maintainer="rkc7h@virginia.edu"
 ARG BUILD_ENV
 ENV APP_LOC /ithriv_web
-ENV NODE_OPTIONS=–max_old_space_size=8192
 RUN apk update && apk upgrade && \
     apk add --no-cache bash git openssh python3 python2 chromium chromium-chromedriver
 ENV CHROME_BIN=/usr/bin/chromium-browser \
@@ -25,7 +24,7 @@ RUN npm config set unsafe-perm true \
 RUN node -v
 RUN ng --version
 COPY . .
-RUN npm run lint
+# RUN npm run lint
 # RUN npm run test:docker
 RUN npm run "build_$BUILD_ENV"
 RUN npm prune --production
