@@ -117,12 +117,12 @@ describe('CommonsDatasetCreateEditComponent', () => {
 
     fixture.detectChanges();
 
-    const irbNumbersReq = httpMock.expectOne(`undefined/commons/permissions/user/irb_protocols`);
+    const irbNumbersReq = httpMock.expectOne(`undefined/commonssecure/permissions/user/irb_protocols`);
     expect(irbNumbersReq.request.method).toEqual('GET');
     irbNumbersReq.flush(mockIrbNumbers);
     expect(component.irbNumbers).toEqual(mockIrbNumbers);
 
-    const irbInvestigatorsReq = httpMock.expectOne(`undefined/commons/permissions/datasets/investigators/${mockDataset.id}`);
+    const irbInvestigatorsReq = httpMock.expectOne(`undefined/commonssecure/permissions/datasets/investigators/${mockDataset.id}`);
     expect(irbInvestigatorsReq.request.method).toEqual('GET');
     irbInvestigatorsReq.flush(mockIrbInvestigators);
     expect(component.irbInvestigators).toEqual(mockIrbInvestigators);

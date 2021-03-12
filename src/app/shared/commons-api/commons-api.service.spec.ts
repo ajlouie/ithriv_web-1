@@ -38,7 +38,7 @@ describe('CommonsApiService', () => {
       expect(data).toEqual(mockIrbInvestigators);
     });
 
-    const req = httpMock.expectOne(`undefined/commons/permissions/datasets/investigators/${mockDataset.id}`);
+    const req = httpMock.expectOne(`undefined/commonssecure/permissions/datasets/investigators/${mockDataset.id}`);
     expect(req.request.method).toEqual('GET');
     req.flush(mockIrbInvestigators);
   });
@@ -48,7 +48,7 @@ describe('CommonsApiService', () => {
       expect(data).toEqual(mockIrbNumbers);
     });
 
-    const req = httpMock.expectOne(`undefined/commons/permissions/user/irb_protocols`);
+    const req = httpMock.expectOne(`undefined/commonssecure/permissions/user/irb_protocols`);
     expect(req.request.method).toEqual('GET');
     req.flush(mockIrbNumbers);
   });
