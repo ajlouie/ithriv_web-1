@@ -227,14 +227,14 @@
             fxFlex.xs="calc(50% - 20px)"
             id="expand-categories"
             mat-stroked-button
-            *ngIf="!(isNetworkOrBrowseView() && isGraphViewSupported())"
+            *ngIf="shouldDisplaySearchBar"
           >
             Browse Resources
             <mat-icon>{{isExpanded ? 'expand_less' : 'expand_more'}}</mat-icon>
           </button>
 
           <ng-container
-            *ngIf="isNetworkOrBrowseView() && isGraphViewSupported()"
+            *ngIf="!shouldDisplaySearchBar"
           >
             <div>Change View:</div>
             <mat-button-toggle-group #group="matButtonToggleGroup">
@@ -261,7 +261,7 @@
         </mat-toolbar-row>
       </mat-toolbar>
       <app-search-bar
-        *ngIf="!(isNetworkOrBrowseView() && isGraphViewSupported())"
+        *ngIf="!hideHeader && shouldDisplaySearchBar"
         [isExpanded]="isExpanded"
       ></app-search-bar>
 

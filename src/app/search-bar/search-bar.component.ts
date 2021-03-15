@@ -10,7 +10,7 @@ import { User } from '../user';
   styleUrls: ['./search-bar.component.scss']
 })
 export class SearchBarComponent implements OnInit {
-  categories: Category[] = [];
+  categories: Category[];
   user: User;
   publicpage: boolean;
   @Input() isExpanded: boolean;
@@ -28,6 +28,10 @@ export class SearchBarComponent implements OnInit {
         this.publicpage = !!(params.get('publicpage'));
       }
     });
+  }
+
+  get shouldDisplay(): boolean {
+    return this ? !!(this.user || this.publicpage) : false;
   }
 
   ngOnInit() {

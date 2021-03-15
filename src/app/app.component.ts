@@ -138,6 +138,10 @@ export class AppComponent implements OnInit, OnDestroy {
     }, 1000);
   }
 
+  get shouldDisplaySearchBar(): boolean {
+    return !(this.isNetworkOrBrowseView() && this.isGraphViewSupported());
+  }
+
   get isSearch(): boolean {
     const pathArray = this.location.path().split('/');
     return (
