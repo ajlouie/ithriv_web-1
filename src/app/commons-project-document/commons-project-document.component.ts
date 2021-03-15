@@ -38,7 +38,7 @@ export class CommonsProjectDocumentComponent implements OnInit {
   uploadUrlDocument() {
     return (
       this.cas.getLandingServiceUrl(this.projectDocumentMap.user) +
-      `/commons/meta/projects/file/${this.projectDocumentMap.project.id}/${this.documentTypeControl.value}`
+      `/commonssecure/data/projects/file/${this.projectDocumentMap.project.id}/${this.documentTypeControl.value}`
     );
   }
 
