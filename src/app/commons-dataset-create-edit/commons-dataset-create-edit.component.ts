@@ -127,6 +127,7 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
   }
 
   showNext() {
+    console.log('===== showNext ====>');
     this.currentFormChange.emit({displayForm: 'commons-project'});
     this.currentFormChange.emit({
       currentDataset: this.dataset,

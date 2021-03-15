@@ -11,6 +11,7 @@ import {
   MatTabsModule,
   MatToolbarModule, MatTooltipModule, MatTreeModule
 } from '@angular/material';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { RichTextEditorModule } from '@syncfusion/ej2-angular-richtexteditor';
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
@@ -34,6 +35,7 @@ import { ErrorMessageComponent } from '../error-message/error-message.component'
 import { FileUploadComponent } from '../file-upload/file-upload.component';
 import { FormFieldLabelComponent } from '../form-field-label/form-field-label.component';
 import { FormFieldComponent } from '../form-field/form-field.component';
+import { mockUser } from '../shared/fixtures/user';
 import { TreeSelectComponent } from '../tree-select/tree-select.component';
 import { CommonsHomeComponent } from './commons-home.component';
 
@@ -88,6 +90,7 @@ describe('CommonsHomeComponent', () => {
         MatToolbarModule,
         MatTooltipModule,
         MatTreeModule,
+        NoopAnimationsModule,
         OwlDateTimeModule,
         OwlNativeDateTimeModule,
         NgProgressModule,
@@ -102,10 +105,41 @@ describe('CommonsHomeComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(CommonsHomeComponent);
     component = fixture.componentInstance;
+    component.user = mockUser;
+    component.formStatus = 'commons-projects-list';
+    component.tabIndex = 3;
     fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should display project list breadcrumbs', () => {
+    const checkBreadcrumbs = (titles: string[]) => {
+      component.updateBreadcrumbs();
+      titles.forEach((s, i) => {
+        expect(component.navItems[i].title).toEqual(s);
+      });
+    };
+
+    expect(Object.entries((component as any).statusNavItems).length).toEqual(5);
+
+    component.formStatus = 'commons-projects-list';
+    component.projectCreateEditPrevForm = 'commons-projects-list';
+    component.projectCreateEditPrevForm = 'commons-projects-list';
+    checkBreadcrumbs([ 'Commons Home' ]);
+
+    component.formStatus = 'commons-project-create-edit';
+    checkBreadcrumbs([ 'Commons Home', 'Edit Project' ]);
+
+    component.projectCreateEditPrevForm = 'commons-project';
+    checkBreadcrumbs([ 'Commons Home', 'Project Home', 'Edit Project' ]);
+
+    component.formStatus = 'commons-dataset-create-edit';
+    checkBreadcrumbs([ 'Commons Home', 'Project Home', 'Edit Dataset' ]);
+
+    component.datasetCreateEditPrevForm = 'commons-dataset';
+    checkBreadcrumbs([ 'Commons Home', 'Project Home', 'View Dataset', 'Edit Dataset' ]);
   });
 });

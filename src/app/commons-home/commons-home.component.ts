@@ -101,30 +101,37 @@ export class CommonsHomeComponent implements OnInit {
       this.datasetCreateEditPrevForm = 'commons-project';
     }
 
+    this.updateBreadcrumbs();
+  }
+
+  handleProjectDelete($event: boolean) {
+    // Inform the commons-project.component that the project has been deleted.
+  }
+
+  updateBreadcrumbs() {
     // Update breadcrumbs items
     if (this.formStatus === 'commons-dataset-create-edit') {
-      if (
-        this.currentDataset === undefined ||
-        this.currentDataset.id === undefined ||
-        this.currentDataset.id === ''
-      ) {
-        // New dataset. Leave out the "View Dataset" item.
-        // Home > Commons Home > Project Home > Edit Dataset
-        this.navItems = [
-          this.statusNavItems['commons-projects-list'],
-          this.statusNavItems['commons-project'],
-          this.statusNavItems['commons-dataset-create-edit'],
-        ];
-      } else {
-        // Home > Commons Home > Project Home > View Dataset > Edit Dataset
-        this.navItems = [
-          this.statusNavItems['commons-projects-list'],
-          this.statusNavItems['commons-project'],
-          this.statusNavItems['commons-dataset'],
-          this.statusNavItems['commons-dataset-create-edit'],
-        ];
+      // Edit Dataset
+
+      // Add Commons Home and Project Home to the breadcrumbs.
+      this.navItems = [
+        this.statusNavItems['commons-projects-list'],
+      ];
+
+      // The project can be edited from the projects list or the project home.
+      // If it's from the project home screen, add it to the breadcrumbs.
+      if (this.projectCreateEditPrevForm === 'commons-project') {
+        this.navItems.push(this.statusNavItems['commons-project']);
       }
 
+      // The dataset can be edited from project home or from the dataset home screen.
+      // If it's from the dataset home screen, add it to the breadcrumbs.
+      if (this.datasetCreateEditPrevForm === 'commons-dataset') {
+        this.navItems.push(this.statusNavItems['commons-dataset']);
+      }
+
+      // Add the dataset edit screen last.
+      this.navItems.push(this.statusNavItems['commons-dataset-create-edit']);
     } else if (this.formStatus === 'commons-dataset') {
       // Home > Commons Home > Project Home > View Dataset
       this.navItems = [
@@ -133,25 +140,19 @@ export class CommonsHomeComponent implements OnInit {
         this.statusNavItems['commons-dataset'],
       ];
     } else if (this.formStatus === 'commons-project-create-edit') {
-      if (
-        this.currentProject === undefined ||
-        this.currentProject.id === undefined ||
-        this.currentProject.id === ''
-      ) {
-        // New project. Leave out the "View Project" item.
-        // Home > Commons Home > Edit Project
-        this.navItems = [
-          this.statusNavItems['commons-projects-list'],
-          this.statusNavItems['commons-project-create-edit'],
-        ];
-      } else {
-        // Home > Commons Home > Project Home > Edit Project
-        this.navItems = [
-          this.statusNavItems['commons-projects-list'],
-          this.statusNavItems['commons-project'],
-          this.statusNavItems['commons-project-create-edit'],
-        ];
+      // Edit Project
+
+      // Add Commons Home to the breadcrumbs.
+      this.navItems = [this.statusNavItems['commons-projects-list']];
+
+      // The project can be edited from the projects list or the project home.
+      // If it's from the project home screen, add it to the breadcrumbs.
+      if (this.projectCreateEditPrevForm === 'commons-project') {
+        this.navItems.push(this.statusNavItems['commons-project']);
       }
+
+      // Add the project edit screen last.
+      this.navItems.push(this.statusNavItems['commons-project-create-edit']);
     } else if (this.formStatus === 'commons-project') {
       // Home > Commons Home > Project Home
       this.navItems = [
@@ -166,9 +167,5 @@ export class CommonsHomeComponent implements OnInit {
     }
 
     this.formStatusChange.emit(this.formStatus);
-  }
-
-  handleProjectDelete($event: boolean) {
-    // Inform the commons-project.component that the project has been deleted.
   }
 }
