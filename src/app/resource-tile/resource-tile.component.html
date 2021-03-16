@@ -6,8 +6,8 @@
 >
   <div class="category-color" [appCategoryColorBorder]="resource"></div>
 
-  <div class="icon-with-content">
-    <div>
+  <div class="icon-with-content" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="20px">
+    <div fxFlex="70px">
       <div class="type-icon" *ngIf="typeIconId(resource)">
         <mat-icon
           svgIcon="ithriv_{{ typeIconId(resource) }}"
@@ -24,7 +24,7 @@
       </div>
     </div>
 
-    <div>
+    <div fxFlex="calc(100% - 90px)">
       <mat-card-header [routerLink]="resourceRoute(resource)">
         <mat-card-title *ngIf="resource.segment.name === 'Event'"
           >{{ resource.segment.name }}: {{ resource.name }}</mat-card-title
