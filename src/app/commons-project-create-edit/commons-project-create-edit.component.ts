@@ -463,8 +463,7 @@ export class CommonsProjectCreateEditComponent implements OnInit, OnChanges {
               this.displayError(error1);
               this.errorMessage = error1;
             } else {
-              this.errorMessage =
-                'Failed to create project, please try again later or contact system admin';
+              this.errorMessage = CommonsApiService.getErrorText('create project');
             }
             this.formStatus = 'form';
             this.changeDetectorRef.detectChanges();
@@ -506,8 +505,7 @@ export class CommonsProjectCreateEditComponent implements OnInit, OnChanges {
               this.displayError(error1);
               this.errorMessage = error1;
             } else {
-              this.errorMessage =
-                'Failed to update project, please try again later or contact system admin';
+              this.errorMessage = CommonsApiService.getErrorText('update project');
               this.displayError(this.errorMessage);
             }
             this.formStatus = 'form';

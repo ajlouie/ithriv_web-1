@@ -28,6 +28,10 @@ export class CommonsApiService {
     root: '/',
   };
 
+  static getErrorText(verb: string, canRetry = true) {
+    return `Failed to ${verb}, please${canRetry ? ' try again later or' : ''} contact system admin`;
+  }
+
   constructor(private http: HttpClient) {
   }
 

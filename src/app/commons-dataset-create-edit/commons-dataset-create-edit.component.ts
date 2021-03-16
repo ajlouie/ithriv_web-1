@@ -592,8 +592,7 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
                       this.displayError(error1);
                       this.errorMessage = error1;
                     } else {
-                      this.errorMessage =
-                        'Failed to submit request to create REDCap token, please contact system admin';
+                      this.errorMessage = CommonsApiService.getErrorText('submit request to create REDCap token', false);
                       this.displayError(this.errorMessage);
                     }
                   }
@@ -606,8 +605,7 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
               this.displayError(error1);
               this.errorMessage = error1;
             } else {
-              this.errorMessage =
-                'Failed to create dataset, please try again later or contact system admin';
+              this.errorMessage = CommonsApiService.getErrorText('create dataset');
               this.displayError(this.errorMessage);
             }
             this.formStatus = 'form';
@@ -627,8 +625,7 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
               this.displayError(error1);
               this.errorMessage = error1;
             } else {
-              this.errorMessage =
-                'Failed to update dataset, please try again later or contact system admin';
+              this.errorMessage = CommonsApiService.getErrorText('update dataset');
               this.displayError(this.errorMessage);
             }
             this.formStatus = 'form';
@@ -699,7 +696,7 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
           this.displayError(error1);
           this.error = error1;
         } else {
-          this.errorMessage = 'Failed to delete dataset, please try again later or contact system admin';
+          this.errorMessage = CommonsApiService.getErrorText('delete dataset');
           this.displayError(this.errorMessage);
         }
         this.formStatus = 'form';
@@ -752,7 +749,4 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
     });
   }
 
-  private getErrorText(action: string, canTryAgain = true) {
-    return `Failed to ${action}, please${canTryAgain ? ' try again later or' : ''} contact system admin`;
-  }
 }
