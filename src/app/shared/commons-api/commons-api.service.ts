@@ -162,7 +162,7 @@ export class CommonsApiService {
     return this.http
       .put<any>(
         this.getLandingServiceUrl(user) +
-        `/commons/meta/projects/file/` +
+        `/commonssecure/data/projects/file/` +
         project.id +
         `/` +
         document.type +

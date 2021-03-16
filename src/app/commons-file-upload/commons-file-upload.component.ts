@@ -86,7 +86,7 @@ export class CommonsFileUploadComponent implements OnInit {
   private uploadFile(file: FileUploadModel) {
     const fd = new FormData();
     fd.append(this.param, file.data);
-    const headers = new HttpHeaders({ REMOTE_USER: this.user.eppn });
+    const headers = new HttpHeaders({});
     const req = new HttpRequest('POST', this.target, fd, {
       headers: headers,
       reportProgress: true,
