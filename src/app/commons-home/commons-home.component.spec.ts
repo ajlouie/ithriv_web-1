@@ -130,15 +130,19 @@ describe('CommonsHomeComponent', () => {
     component.projectCreateEditPrevForm = 'commons-projects-list';
     checkBreadcrumbs([ 'Commons Home' ]);
 
+    // Add "Edit Project" to breadcrumbs if user is on edit screen
     component.formStatus = 'commons-project-create-edit';
     checkBreadcrumbs([ 'Commons Home', 'Edit Project' ]);
 
+    // Add "Project Home" to breadcrumbs if user navigated to edit screen from Project Home
     component.projectCreateEditPrevForm = 'commons-project';
     checkBreadcrumbs([ 'Commons Home', 'Project Home', 'Edit Project' ]);
 
+    // Add "Project Home" to breadcrumbs if user navigated to edit screen from Project Home
     component.formStatus = 'commons-dataset-create-edit';
     checkBreadcrumbs([ 'Commons Home', 'Project Home', 'Edit Dataset' ]);
 
+    // Add "View Dataset" to breadcrumbs if user navigated to edit screen from Dataset Home
     component.datasetCreateEditPrevForm = 'commons-dataset';
     checkBreadcrumbs([ 'Commons Home', 'Project Home', 'View Dataset', 'Edit Dataset' ]);
   });

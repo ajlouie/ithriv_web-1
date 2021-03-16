@@ -142,9 +142,10 @@
       }
     }
   }
-  ::ng-deep mat-sidenav,
-  ::ng-deep .mat-drawer-content {
-    overflow-x: visible;
+
+  .mat-drawer-content.mat-sidenav-content {
+    max-width: 100vw;
+    overflow-x: hidden;
     overflow-y: visible;
   }
 

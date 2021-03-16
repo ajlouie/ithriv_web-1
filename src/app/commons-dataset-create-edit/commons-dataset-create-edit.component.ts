@@ -127,12 +127,10 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
   }
 
   showNext() {
-    console.log('===== showNext ====>');
-    this.currentFormChange.emit({displayForm: 'commons-project'});
     this.currentFormChange.emit({
       currentDataset: this.dataset,
       previousForm: 'commons-dataset-create-edit',
-      displayForm: this.previousForm,
+      displayForm: this.previousForm || 'commons-project',
     });
   }
 
@@ -582,7 +580,7 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
                   this.user,
                   'Informatics Tools',
                   'Inquiry',
-                  'iTHriov commons portal: Request to create REDcap token',
+                  'iTHriv commons portal: Request to create REDCap token',
                   this.dataset.redcap_project_url
                 )
                 .subscribe(
@@ -595,7 +593,7 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
                       this.errorMessage = error1;
                     } else {
                       this.errorMessage =
-                        'Failed to submit request to create REDCap tokem, please contact system admin';
+                        'Failed to submit request to create REDCap token, please contact system admin';
                       this.displayError(this.errorMessage);
                     }
                   }
@@ -752,5 +750,9 @@ export class CommonsDatasetCreateEditComponent implements OnInit {
       duration: 50000,
       panelClass: 'snackbar-warning',
     });
+  }
+
+  private getErrorText(action: string, canTryAgain = true) {
+    return `Failed to ${action}, please${canTryAgain ? ' try again later or' : ''} contact system admin`;
   }
 }
